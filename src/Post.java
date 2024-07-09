@@ -7,8 +7,10 @@ public class Post {
     int views;
     boolean viewed;
     int comments;
+    String commentContent;
 
-    public Post(String message, int upvotes, int downvotes, Profile poster, int views, boolean viewed, int comments) {
+    public Post(String message, int upvotes, int downvotes, Profile poster, int views, boolean viewed, int comments,
+                String commentContent) {
         this.message = message;
         this.upvotes = upvotes;
         this.downvotes = downvotes;
@@ -16,6 +18,16 @@ public class Post {
         this.views = views;
         this.viewed = viewed;
         this.comments = comments;
+        this.commentContent = commentContent;
+    }
+
+    public Post() {
+        this.message = "Input your ideas here...";
+        this.upvotes = 0;
+        this.downvotes = 0;
+        this.views = 0;
+        this.viewed = false;
+        this.comments = 0;
     }
 
     public String getMessage() {
@@ -49,11 +61,18 @@ public class Post {
 
     public boolean isViewed() {
         return this.viewed;
-    }
+    }//Whether the post is viewed by the user.
 
     public int getComments() {
         return comments;
-        //nothing
+    }// get the number of the comments of the posts.
+
+    public String getCommentContent() {
+        return commentContent;
+    }
+
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
     }
 
     public void deleteComments() {
