@@ -53,6 +53,7 @@ public class Post {
 
     public int getComments() {
         return comments;
+        //nothing
     }
 
     public void deleteComments() {
