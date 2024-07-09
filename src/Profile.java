@@ -78,7 +78,6 @@ public class Profile {
                 return true;
             }
         }
-
         bfr.close();
         return false;
     }
