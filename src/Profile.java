@@ -21,6 +21,7 @@ public class Profile {
     private int age;
     private String gender;
     private ArrayList<Profile> friendRequests;
+    private int numFriends;
 
     public Profile(String username, String password, int age, String gender) {
         this.username = username;
@@ -35,13 +36,47 @@ public class Profile {
         this.friendRequests = new ArrayList<Profile>();
     }
 
-    public boolean signUp(String username, String password) {
+    public boolean signUp(String username, String password) throws IOException {
+        File f = new File("userList.txt");
+        FileReader fr = new FileReader(f);
+        BufferedReader bfr = new BufferedReader(fr);
 
+        String line;
+        while ((line = bfr.readLine()) != null) {
+            String[] parts = line.split("_");
+            if (parts.length > 1) {
+                String fileUsername = parts[0];
+                String filePassword = parts[1];
+                if (fileUsername.equals(username)) {
+                    System.out.println("username not available");
+                    bfr.close();
+                    return false;
+                }
+            }
+        }
+        bfr.close();
+
+        Profile newProfile = new Profile(username, password, age, gender);
+        return true;
     }
 
-    public boolean login(String username, String password) {
+    public boolean login(String username, String password) throws IOException {
+        String combinedString = username + "_" + password;
 
+        File f = new File("userList.txt");
+        FileReader fr = new FileReader(f);
+        BufferedReader bfr = new BufferedReader(fr);
 
+        String line;
+        while ((line = bfr.readLine()) != null) {
+            if (line.equals(combinedString)) {
+                bfr.close();
+                return true;
+            }
+        }
+
+        bfr.close();
+        return false;
     }
 
     //getters
