@@ -28,7 +28,6 @@ public class Profile {
         this.password = password;
         this.age = age;
         this.gender = gender;
-        this.friends = new ArrayList<>();
 
         this.followers = 0;
         this.numFriends = 0;
@@ -37,56 +36,85 @@ public class Profile {
     }
 
     public boolean signUp(String username, String password) throws IOException {
-        File f = new File("userList.txt");
-        FileReader fr = new FileReader(f);
-        BufferedReader bfr = new BufferedReader(fr);
 
-        String line;
-        while ((line = bfr.readLine()) != null) {
-            String[] parts = line.split("_");
-            if (parts.length > 1) {
-                String fileUsername = parts[0];
-                String filePassword = parts[1];
-                if (fileUsername.equals(username)) {
-                    System.out.println("username not available");
-                    bfr.close();
-                    return false;
-                }
-            }
+
+        ArrayList<String> fileInfo = readUserListFile();
+        String fileUsername = fileInfo.get(0);
+        String filePassword = fileInfo.get(1);
+
+
+        if (fileUsername.equals(username)) {
+            System.out.println("username not available");
+            return false;
         }
-        bfr.close();
 
         Profile newProfile = new Profile(username, password, age, gender);
 
-        FileWriter fw = new FileWriter(f, true);
-        BufferedWriter bfw = new BufferedWriter(fw);
-        bfw.write(username + "_" + password);
-        bfw.newLine();
-        bfw.close();
-
+        writeUserListFile(fileInfo);
         return true;
     }
 
-    public boolean login(String username, String password) throws IOException {
-        String combinedString = username + "_" + password;
+    public boolean login(String username, String password) throws IOException, UserNotFoundException {
 
-        File f = new File("userList.txt");
-        FileReader fr = new FileReader(f);
-        BufferedReader bfr = new BufferedReader(fr);
+        ArrayList<String> fileInfo = readUserListFile();
+        String fileUsername = fileInfo.get(0);
+        String filePassword = fileInfo.get(1);
 
-        String line;
-        while ((line = bfr.readLine()) != null) {
-            String[] parts = line.split("_");
-            String fileUsername = parts[0];
-            String filePassword = parts[1];
-            String usernameAndPasswordLine = fileUsername + "_" + filePassword;
-            if (usernameAndPasswordLine.equals(combinedString)) {
-                bfr.close();
-                return true;
-            }
+        if (fileUsername.equals(username) && filePassword.equals(password)) {
+            return true;
+        } else {
+            throw new UserNotFoundException("Invalid login!");
         }
-        bfr.close();
-        return false;
+    }
+
+    public ArrayList<String> readUserListFile() throws IOException {
+        ArrayList<String> fileInfo = new ArrayList<>();
+
+        try {
+            File f = new File("userList.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                String[] parts = line.split("_");
+                if (parts.length < 1) {
+                    throw new IOException("Error occurred when reading or writing a file");
+                }
+
+                String fileUsername = parts[0];
+                String filePassword = parts[1];
+                fileInfo.add(fileUsername);
+                fileInfo.add(filePassword);
+                for (int i = 2; i < parts.length; i++) {
+                    String friend = parts[i];
+                    fileInfo.add(friend);
+                }
+            }
+            bfr.close();
+        } catch (IOException e) {
+            throw new IOException("Error occurred when reading a file");
+        }
+        return fileInfo;
+    }
+
+    public void writeUserListFile(ArrayList<String> userInfo) throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream("userListFile", true), true)) {
+            String fileUsername = userInfo.get(0);
+            String filePassword = userInfo.get(1);
+            pw.print(fileUsername + "_" + filePassword);
+
+            for (int i = 2; i < userInfo.size(); i++) {
+                String friend = userInfo.get(i);
+                pw.print("_" + friend);
+            }
+            pw.println();
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            throw new IOException("Error occurred when writing a file");
+        }
+
     }
 
     //getters
@@ -158,7 +186,6 @@ public class Profile {
     public void rejectRequest(int n) {
         this.friendRequests.remove(n);
     }
-
 
 
 }

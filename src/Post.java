@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 
 public class Post {
-
-
-
     String message;
     int upvotes;
     int downvotes;
