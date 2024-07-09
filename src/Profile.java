@@ -57,6 +57,13 @@ public class Profile {
         bfr.close();
 
         Profile newProfile = new Profile(username, password, age, gender);
+
+        FileWriter fw = new FileWriter(f, true);
+        BufferedWriter bfw = new BufferedWriter(fw);
+        bfw.write(username + "_" + password);
+        bfw.newLine();
+        bfw.close();
+
         return true;
     }
 
