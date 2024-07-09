@@ -69,7 +69,11 @@ public class Profile {
 
         String line;
         while ((line = bfr.readLine()) != null) {
-            if (line.equals(combinedString)) {
+            String[] parts = line.split("_");
+            String fileUsername = parts[0];
+            String filePassword = parts[1];
+            String usernameAndPasswordLine = fileUsername + "_" + filePassword;
+            if (usernameAndPasswordLine.equals(combinedString)) {
                 bfr.close();
                 return true;
             }
