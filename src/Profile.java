@@ -1,3 +1,6 @@
+import java.util.*;
+import java.io.*;
+
 /*
 This is the profile class of Dunstagram that has some information.
 
@@ -6,7 +9,9 @@ This is the profile class of Dunstagram that has some information.
 @author Mukund Rao
  */
 
-import java.util.ArrayList;
+
+// login, signup, friend interaction, add or remove posts and comments
+//
 
 public class Profile {
     private String username;
@@ -22,10 +27,21 @@ public class Profile {
         this.password = password;
         this.age = age;
         this.gender = gender;
+        this.friends = new ArrayList<>();
 
         this.followers = 0;
+        this.numFriends = 0;
         this.friends = new ArrayList<Profile>();
         this.friendRequests = new ArrayList<Profile>();
+    }
+
+    public boolean signUp(String username, String password) {
+
+    }
+
+    public boolean login(String username, String password) {
+
+
     }
 
     //getters

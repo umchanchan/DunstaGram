@@ -1,4 +1,8 @@
+import java.util.ArrayList;
+
 public class Post {
+
+
 
     String message;
     int upvotes;
@@ -59,6 +63,7 @@ public class Post {
     public void deleteComments() {
         this.comments = comments - 1;
     }
+
 
 
 }
