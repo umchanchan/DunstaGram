@@ -80,16 +80,24 @@ public class Profile {
         this.gender = gender;
     }
 
-    public void setFriendRequests(Profile profile) {
+    public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
         this.friendRequests.add(profile);
     }
     //other methods (will be explained)
 
-    public boolean isFriends(Profile firstUser, Profile secondUser) {
-        return false;
-    }
-
-    public void addFriend(Profile profile) {
+    public void addFriend(Profile profile) { //sends a friend request to the desired user.
         profile.setFriendRequests(this);
     }
+
+    public void acceptRequest(int n) { //accepts requests of the user, removes that user from the list of friend requests
+        this.friends.add(friendRequests.get(n));
+        this.friendRequests.remove(n);
+    }
+
+    public void rejectRequest(int n) {
+        this.friendRequests.remove(n);
+    }
+
+
+
 }
