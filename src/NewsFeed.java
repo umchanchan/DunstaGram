@@ -32,6 +32,7 @@ public class NewsFeed implements INewsFeed {
     public void downvotePost(Post post) {
         post.setDownvotes(post.getDownvotes() + 1);
     }
+
     public void cancelDownvotePost(Post post) {
         post.setDownvotes(post.getDownvotes() - 1);
     }

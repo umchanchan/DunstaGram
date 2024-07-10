@@ -9,7 +9,7 @@ public interface IPost {
     public int getComments();
     public String getCommentContent();
     public void setCommentContent(String commentContent);
-    void addComment(Profile commenter, String content);
+    public void addComment(Profile commenter, String content);
     public void deleteComment(Comment comment);
 
 }
