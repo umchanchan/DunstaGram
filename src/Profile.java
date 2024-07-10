@@ -17,10 +17,10 @@ public class Profile {
     private String username;
     private String password;
     private int followers;
-    private ArrayList<String> friends;
+    private ArrayList<Profile> friends;
     private int age;
     private String gender;
-    private ArrayList<String> friendRequests;
+    private ArrayList<Profile> friendRequests;
     private int numFriends;
     private ArrayList<Post> userPosts;
     private ArrayList<Profile> blockedList;
@@ -36,7 +36,21 @@ public class Profile {
         this.friends = new ArrayList<>();
         this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
-        this.blockedList = new ArrayList<Profile>;
+        this.blockedList = new ArrayList<Profile>();
+    }
+
+    public Profile(String username) {
+        this.username = username;
+        this.password = "";
+        this.age = 0;
+        this.gender = "";
+
+        this.followers = 0;
+        this.numFriends = 0;
+        this.friends = new ArrayList<>();
+        this.friendRequests = new ArrayList<>();
+        this.userPosts = new ArrayList<>();
+        this.blockedList = new ArrayList<>();
     }
 
     public boolean signUp(String username, String password) throws IOException {
@@ -88,7 +102,7 @@ public class Profile {
                 fileInfo.add(filePassword);
                 for (int i = 2; i < parts.length; i++) {
                     String friendUsername = parts[i];
-                    friends.add(friendUsername);
+                    friends.add(new Profile(friendUsername));
                 }
             }
             bfr.close();
@@ -117,6 +131,18 @@ public class Profile {
 
     }
 
+    public void reWriteUserListFile(ArrayList<String> lines) throws IOException {
+        try (BufferedWriter bfw = new BufferedWriter(new FileWriter("userList.txt"))) {
+            for (String updatedLine : lines) {
+                bfw.write(updatedLine);
+                bfw.newLine();
+            }
+            bfw.close();
+        } catch (IOException e) {
+            throw new IOException("User not found in the file");
+        }
+    }
+
     //getters
 
     public String getUsername() {
@@ -131,7 +157,7 @@ public class Profile {
         return followers;
     }
 
-    public ArrayList<String> getFriends() {
+    public ArrayList<Profile> getFriends() {
         return friends;
     }
 
@@ -143,7 +169,7 @@ public class Profile {
         return gender;
     }
 
-    public ArrayList<String> getFriendRequests() {
+    public ArrayList<Profile> getFriendRequests() {
         return friendRequests;
     }
 
@@ -164,7 +190,7 @@ public class Profile {
         this.followers = followers;
     }
 
-    public void setFriends(ArrayList<String> friends) {
+    public void setFriends(ArrayList<Profile> friends) {
         this.friends = friends;
     }
 
@@ -177,7 +203,7 @@ public class Profile {
     }
 
     public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
-        this.friendRequests.add(profile.getUsername());
+        this.friendRequests.add(profile);
     }
 
     //friend methods
@@ -188,48 +214,62 @@ public class Profile {
     }
 
     public boolean isFriends(Profile profile) {
-       return friends.contains(profile.getUsername());
+        return friends.contains(profile);
     }
 
-    public boolean acceptRequest(Profile profile) { //accepts requests of the user, removes that user from the list of friend requests
+    public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException { //accepts requests of the user, removes that user from the list of friend requests
         try {
             File f = new File("userList.txt");
             FileReader fr = new FileReader(f);
             BufferedReader bfr = new BufferedReader(fr);
+            ArrayList<String> lines = new ArrayList<>();
 
             String line;
-            int index = 0;
             while ((line = bfr.readLine()) != null) {
-                index++;
-                String[] parts = line.split("_");
-                if (parts.length < 1) {
-                    throw new IOException("Error occurred when reading or writing a file");
-                }
-
-                String fileUsername = parts[0];
-                if (fileUsername.equals(username)) {
-                    break;
-                }
-                for (int i = 2; i < parts.length; i++) {
-                    String friendUsername = parts[i];
-                    friends.add(friendUsername);
-                }
+                lines.add(line);
             }
             bfr.close();
+            boolean userFound = false;
+            for (int i = 0; i < lines.size(); i++) {
+                String[] parts = line.split("_");
+                if (parts.length > 0 && parts[0].equals(username)) {
+                    StringBuilder sb = new StringBuilder(parts[0] + "_" + parts[1]);
+                    for (int j = 2; j < parts.length; j++) {
+                        sb.append("_").append(parts[j]);
+                    }
+                    sb.append("_").append(friend.getUsername());
+                    lines.set(i, sb.toString());
+                    userFound = true;
+                    break;
+                } else if (parts.length > 0 && parts[0].equals(friend.username)) {
+                    StringBuilder sb = new StringBuilder(parts[0] + "_" + parts[1]);
+                    for (int j = 2; j < parts.length; j++) {
+                        sb.append("_").append(parts[j]);
+                    }
+                    sb.append("_").append(username);
+                    lines.set(i, sb.toString());
+                    userFound = true;
+                    break;
+                }
+            }
+
+            reWriteUserListFile(lines);
+
+            if (!userFound) {
+                throw new UserNotFoundException("User not found in the file");
+            }
         } catch (IOException e) {
-            throw new IOException("Error occurred when reading a file");
+            throw new RuntimeException("Error occurred when reading a file");
         }
 
-
-
-        if (!friendRequests.contains(profile)) {
+        if (!friendRequests.contains(friend)) {
             return false;
         }
-        this.friends.add(profile);
-        this.friendRequests.remove(profile);
+        this.friends.add(friend);
+        friend.friends.add(this);
+        this.friendRequests.remove(friend);
 
         return true;
-
     }
 
     public boolean rejectRequest(Profile profile) {
