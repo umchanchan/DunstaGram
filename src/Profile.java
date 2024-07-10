@@ -172,19 +172,35 @@ public class Profile {
     public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
         this.friendRequests.add(profile);
     }
-    //other methods (will be explained)
+
+    //friend methods
 
     public void addFriend(Profile profile) { //sends a friend request to the desired user.
         profile.setFriendRequests(this);
     }
 
-    public void acceptRequest(int n) { //accepts requests of the user, removes that user from the list of friend requests
-        this.friends.add(friendRequests.get(n));
-        this.friendRequests.remove(n);
+    public boolean acceptRequest(int n) { //accepts requests of the user, removes that user from the list of friend requests
+        try {
+            this.friends.add(friendRequests.get(n));
+            this.friendRequests.remove(n);
+        } catch(IndexOutOfBoundsException e) {
+            return false;
+        }
+        return true;
     }
 
     public void rejectRequest(int n) {
-        this.friendRequests.remove(n);
+        try {
+            this.friendRequests.remove(n);
+        } catch(IndexOutOfBoundsException e) {
+            return;
+        }
+    }
+
+    //post methods
+
+    public boolean makePost() {
+        return true;
     }
 
 
