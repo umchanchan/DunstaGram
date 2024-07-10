@@ -104,7 +104,7 @@ public class Profile {
             String filePassword = userInfo.get(1);
             pw.print(fileUsername + "_" + filePassword);
 
-            for (int i = 2; i < userInfo.size(); i++) {
+            for (int i = 0; i < friends.size(); i++) {
                 String friend = userInfo.get(i);
                 pw.print("_" + friend);
             }
@@ -188,16 +188,43 @@ public class Profile {
     }
 
     public boolean isFriends(Profile profile) {
-        if(friends.contains(profile)) {
-            return true;
-        }
-        return false;
+       return friends.contains(profile.getUsername());
     }
+
     public boolean acceptRequest(Profile profile) { //accepts requests of the user, removes that user from the list of friend requests
-        if(!friendRequests.contains(profile)) {
-            return false;
+        try {
+            File f = new File("userList.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+
+            String line;
+            int index = 0;
+            while ((line = bfr.readLine()) != null) {
+                index++;
+                String[] parts = line.split("_");
+                if (parts.length < 1) {
+                    throw new IOException("Error occurred when reading or writing a file");
+                }
+
+                String fileUsername = parts[0];
+                if (fileUsername.equals(username)) {
+                    break;
+                }
+                for (int i = 2; i < parts.length; i++) {
+                    String friendUsername = parts[i];
+                    friends.add(friendUsername);
+                }
+            }
+            bfr.close();
+        } catch (IOException e) {
+            throw new IOException("Error occurred when reading a file");
         }
 
+
+
+        if (!friendRequests.contains(profile)) {
+            return false;
+        }
         this.friends.add(profile);
         this.friendRequests.remove(profile);
 
@@ -206,27 +233,20 @@ public class Profile {
     }
 
     public boolean rejectRequest(Profile profile) {
-        if(!friendRequests.contains(profile)) {
+        if (!friendRequests.contains(profile)) {
             return false;
         }
-
         this.friendRequests.remove(profile);
         return true;
     }
 
     public void removeFriend(Profile f) {
-        if(friends.contains(f)) {
-            friends.remove(f);
-            if(f.getFriends().contains(this)) {
-                f.removeFriend(this);
-            }
-        } else {
-            return;
-        }
+        friends.remove(f.getUsername());
+        f.getFriends().remove(this.getUsername());
     }
 
     public void blockUser(Profile user) {
-        if(user.isFriends(this)) {
+        if (user.isFriends(this)) {
             this.removeFriend(user);
             user.removeFriend(this);
             blockedList.add(user);
