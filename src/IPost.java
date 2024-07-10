@@ -6,7 +6,6 @@ public interface IPost {
     public int getDownvotes();
     public void setDownvotes(int downvotes);
     public Profile getPoster();
-    public boolean isViewed();
     public int getComments();
     public String getCommentContent();
     public void setCommentContent(String commentContent);
