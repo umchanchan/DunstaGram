@@ -1,4 +1,4 @@
-public class Comment extends Post {
+public class Comment extends Post implements IComment {
     private Profile commenter;
     private String contents;
     private int upvote;
