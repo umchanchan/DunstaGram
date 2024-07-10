@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Post {
+public class Post implements IPost {
     String message;
     int upvotes;
     int downvotes;
