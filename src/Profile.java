@@ -214,7 +214,7 @@ public class Profile {
     }
 
     public boolean isFriends(Profile profile) {
-        return friends.contains(profile);
+        return friends.contains(profile) && profile.getFriends().contains(this);
     }
 
     public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException { //accepts requests of the user, removes that user from the list of friend requests
@@ -281,8 +281,10 @@ public class Profile {
     }
 
     public void removeFriend(Profile f) {
-        friends.remove(f.getUsername());
-        f.getFriends().remove(this.getUsername());
+        if(f.isFriends(this)) {
+            friends.remove(f);
+            f.removeFriend(this);
+        } else return;
     }
 
     public void blockUser(Profile user) {
@@ -301,6 +303,18 @@ public class Profile {
         Post newPost = new Post(msg, this);
         newPost.setMessage(msg);
         this.userPosts.add(newPost);
+    }
+
+    public void upVote(Post post) { //you can also do this with comments since it's a subclass :)
+        post.setUpvotes(post.getUpvotes() + 1);
+    }
+
+    public void downVote(Post post) {
+        post.setDownvotes(post.getDownvotes() - 1);
+    }
+
+    public void comment(Post post, String msg) {
+        post.addComment(this, msg);
     }
 
 
