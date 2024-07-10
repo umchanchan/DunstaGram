@@ -10,6 +10,7 @@ public interface IPost {
     public int getComments();
     public String getCommentContent();
     public void setCommentContent(String commentContent);
-    public void deleteComments();
+    void addComment(Profile commenter, String content);
+    public void deleteComment(Comment comment);
 
 }

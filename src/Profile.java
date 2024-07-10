@@ -17,10 +17,10 @@ public class Profile {
     private String username;
     private String password;
     private int followers;
-    private ArrayList<Profile> friends;
+    private ArrayList<String> friends;
     private int age;
     private String gender;
-    private ArrayList<Profile> friendRequests;
+    private ArrayList<String> friendRequests;
     private int numFriends;
     private ArrayList<Post> userPosts;
     private ArrayList<Profile> blockedList;
@@ -33,19 +33,17 @@ public class Profile {
 
         this.followers = 0;
         this.numFriends = 0;
-        this.friends = new ArrayList<Profile>();
-        this.friendRequests = new ArrayList<Profile>();
+        this.friends = new ArrayList<>();
+        this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>;
     }
 
     public boolean signUp(String username, String password) throws IOException {
 
-
         ArrayList<String> fileInfo = readUserListFile();
         String fileUsername = fileInfo.get(0);
         String filePassword = fileInfo.get(1);
-
 
         if (fileUsername.equals(username)) {
             System.out.println("username not available");
@@ -59,7 +57,6 @@ public class Profile {
     }
 
     public boolean login(String username, String password) throws IOException, UserNotFoundException {
-
         ArrayList<String> fileInfo = readUserListFile();
         String fileUsername = fileInfo.get(0);
         String filePassword = fileInfo.get(1);
@@ -73,7 +70,6 @@ public class Profile {
 
     public ArrayList<String> readUserListFile() throws IOException {
         ArrayList<String> fileInfo = new ArrayList<>();
-
         try {
             File f = new File("userList.txt");
             FileReader fr = new FileReader(f);
@@ -91,8 +87,8 @@ public class Profile {
                 fileInfo.add(fileUsername);
                 fileInfo.add(filePassword);
                 for (int i = 2; i < parts.length; i++) {
-                    String friend = parts[i];
-                    fileInfo.add(friend);
+                    String friendUsername = parts[i];
+                    friends.add(friendUsername);
                 }
             }
             bfr.close();
@@ -127,7 +123,7 @@ public class Profile {
         return username;
     }
 
-    public String getPassword() {
+    private String getPassword() {
         return password;
     }
 
@@ -135,7 +131,7 @@ public class Profile {
         return followers;
     }
 
-    public ArrayList<Profile> getFriends() {
+    public ArrayList<String> getFriends() {
         return friends;
     }
 
@@ -147,7 +143,7 @@ public class Profile {
         return gender;
     }
 
-    public ArrayList<Profile> getFriendRequests() {
+    public ArrayList<String> getFriendRequests() {
         return friendRequests;
     }
 
@@ -168,7 +164,7 @@ public class Profile {
         this.followers = followers;
     }
 
-    public void setFriends(ArrayList<Profile> friends) {
+    public void setFriends(ArrayList<String> friends) {
         this.friends = friends;
     }
 
@@ -181,13 +177,14 @@ public class Profile {
     }
 
     public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
-        this.friendRequests.add(profile);
+        this.friendRequests.add(profile.getUsername());
     }
 
     //friend methods
 
     public void addFriend(Profile profile) { //sends a friend request to the desired user.
         profile.setFriendRequests(this);
+
     }
 
     public boolean isFriends(Profile profile) {
@@ -241,7 +238,7 @@ public class Profile {
     //post methods
 
     public void makePost(String msg) {
-        Post newPost = new Post();
+        Post newPost = new Post(msg, this);
         newPost.setMessage(msg);
         this.userPosts.add(newPost);
     }

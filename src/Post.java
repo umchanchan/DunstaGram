@@ -3,34 +3,39 @@ import java.util.ArrayList;
 
 public class Post implements IPost {
     private String message;
-    private int upvotes;
-    private int downvotes;
+    private int upvote;
+    private int downvote;
     private Profile poster;
-    private int views;
-    private boolean viewed;
+    private ArrayList<Comment> comments = new ArrayList<>();
     private Comment comment;
-    private int comments;
+    private int numComments;
     private String commentContent;
 
-    public Post(String message, int upvotes, int downvotes, Profile poster, int views, boolean viewed, int comments,
+
+    public Post(String message, int upvote, int downvote, Profile poster, int numComments,
                 String commentContent) {
         this.message = message;
-        this.upvotes = upvotes;
-        this.downvotes = downvotes;
+        this.upvote = upvote;
+        this.downvote = downvote;
         this.poster = poster;
-        this.views = views;
-        this.viewed = viewed;
-        this.comments = comments;
+        this.numComments = numComments;
         this.commentContent = commentContent;
     }
 
+    public Post(String message, Profile poster) {
+        this.poster = poster;
+        this.message = message;
+        this.upvote = 0;
+        this.downvote = 0;
+        this.numComments = 0;
+    }
+
     public Post() {
-        this.message = "Input your ideas here...";
-        this.upvotes = 0;
-        this.downvotes = 0;
-        this.views = 0;
-        this.viewed = false;
-        this.comments = 0;
+        this.poster = null;
+        this.message = null;
+        this.upvote = 0;
+        this.downvote = 0;
+        this.numComments = 0;
     }
 
     public String getMessage() {
@@ -42,32 +47,27 @@ public class Post implements IPost {
     }
 
     public int getUpvotes() {
-        return upvotes;
+        return upvote;
     }
 
-    public void setUpvotes(int upvotes) {
-        this.upvotes = upvotes;
+    public void setUpvotes(int upvote) {
+        this.upvote = upvote;
     }
 
     public int getDownvotes() {
-        return downvotes;
+        return downvote;
     }
 
-    public void setDownvotes(int downvotes) {
-        this.downvotes = downvotes;
+    public void setDownvotes(int downvote) {
+        this.downvote = downvote;
     }
 
     public Profile getPoster() {
         return poster;
     }
 
-
-    public boolean isViewed() {
-        return this.viewed;
-    }//Whether the post is viewed by the user.
-
     public int getComments() {
-        return comments;
+        return numComments;
     }// get the number of the comments of the posts.
 
     public String getCommentContent() {
@@ -78,9 +78,17 @@ public class Post implements IPost {
         this.commentContent = commentContent;
     }
 
-    public void deleteComments() {
-        this.comments = comments - 1;
+    public void addComment(Profile commenter, String content) {
+        Comment comment = new Comment(commenter, content);
+        comments.add(comment);
+        numComments++;
     }
+
+    public void deleteComment(Comment comment) {
+        comments.remove(comment);
+        this.numComments--;
+    }
+
 
 
 
