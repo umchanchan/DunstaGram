@@ -7,6 +7,7 @@ public class Comment extends Post {
 
 
     public Comment(Profile commenter, String contents) {
+        super();
         this.commenter = commenter;
         this.username = commenter.getUsername();
         this.contents = contents;
