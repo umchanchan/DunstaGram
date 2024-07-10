@@ -1,14 +1,16 @@
 import java.util.ArrayList;
 
+
 public class Post implements IPost {
-    String message;
-    int upvotes;
-    int downvotes;
-    Profile poster;
-    int views;
-    boolean viewed;
-    int comments;
-    String commentContent;
+    private String message;
+    private int upvotes;
+    private int downvotes;
+    private Profile poster;
+    private int views;
+    private boolean viewed;
+    private Comment comment;
+    private int comments;
+    private String commentContent;
 
     public Post(String message, int upvotes, int downvotes, Profile poster, int views, boolean viewed, int comments,
                 String commentContent) {
