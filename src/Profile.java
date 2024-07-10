@@ -22,6 +22,8 @@ public class Profile {
     private String gender;
     private ArrayList<Profile> friendRequests;
     private int numFriends;
+    private ArrayList<Post> userPosts;
+    private ArrayList<Profile> blockedList;
 
     public Profile(String username, String password, int age, String gender) {
         this.username = username;
@@ -33,6 +35,8 @@ public class Profile {
         this.numFriends = 0;
         this.friends = new ArrayList<Profile>();
         this.friendRequests = new ArrayList<Profile>();
+        this.userPosts = new ArrayList<Post>();
+        this.blockedList = new ArrayList<Profile>;
     }
 
     public boolean signUp(String username, String password) throws IOException {
@@ -147,6 +151,13 @@ public class Profile {
         return friendRequests;
     }
 
+    public ArrayList<Post> getMyPosts() {
+        return this.userPosts;
+    }
+
+    public ArrayList<Profile> getBlockedList() {
+        return this.blockedList;
+    }
     //setters
 
     public void setUsername(String username) {
@@ -179,23 +190,52 @@ public class Profile {
         profile.setFriendRequests(this);
     }
 
-    public boolean acceptRequest(int n) { //accepts requests of the user, removes that user from the list of friend requests
-        try {
-            this.friends.add(friendRequests.get(n));
-            this.friendRequests.remove(n);
-        } catch(IndexOutOfBoundsException e) {
-            return false; //probably no requests
+    public boolean isFriends(Profile profile) {
+        if(friends.contains(profile)) {
+            return true;
         }
-        return true; //successful
+        return false;
+    }
+    public boolean acceptRequest(Profile profile) { //accepts requests of the user, removes that user from the list of friend requests
+        if(!friendRequests.contains(profile)) {
+            return false;
+        }
+
+        this.friends.add(profile);
+        this.friendRequests.remove(profile);
+
+        return true;
+
     }
 
-    public boolean rejectRequest(int n) {
-        try {
-            this.friendRequests.remove(n);
-        } catch(IndexOutOfBoundsException e) {
-            return false; //since it's false, say that there was an issue (the user does not have any requests)
+    public boolean rejectRequest(Profile profile) {
+        if(!friendRequests.contains(profile)) {
+            return false;
         }
-        return true; //just display that the user has successfully rejected the request
+
+        this.friendRequests.remove(profile);
+        return true;
+    }
+
+    public void removeFriend(Profile f) {
+        if(friends.contains(f)) {
+            friends.remove(f);
+            if(f.getFriends().contains(this)) {
+                f.removeFriend(this);
+            }
+        } else {
+            return;
+        }
+    }
+
+    public void blockUser(Profile user) {
+        if(user.isFriends(this)) {
+            this.removeFriend(user);
+            user.removeFriend(this);
+            blockedList.add(user);
+        } else {
+            blockedList.add(user);
+        }
     }
 
     //post methods
@@ -203,6 +243,7 @@ public class Profile {
     public void makePost(String msg) {
         Post newPost = new Post();
         newPost.setMessage(msg);
+        this.userPosts.add(newPost);
     }
 
 
