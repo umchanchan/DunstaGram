@@ -184,23 +184,25 @@ public class Profile {
             this.friends.add(friendRequests.get(n));
             this.friendRequests.remove(n);
         } catch(IndexOutOfBoundsException e) {
-            return false;
+            return false; //probably no requests
         }
-        return true;
+        return true; //successful
     }
 
-    public void rejectRequest(int n) {
+    public boolean rejectRequest(int n) {
         try {
             this.friendRequests.remove(n);
         } catch(IndexOutOfBoundsException e) {
-            return;
+            return false; //since it's false, say that there was an issue (the user does not have any requests)
         }
+        return true; //just display that the user has successfully rejected the request
     }
 
     //post methods
 
-    public boolean makePost() {
-        return true;
+    public void makePost(String msg) {
+        Post newPost = new Post();
+        newPost.setMessage(msg);
     }
 
 
