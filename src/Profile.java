@@ -13,7 +13,7 @@ This is the profile class of Dunstagram that has some information.
 // login, signup, friend interaction, add or remove posts and comments
 //
 
-public class Profile {
+public class Profile implements IProfile {
     private String username;
     private String password;
     private int followers;
@@ -53,6 +53,7 @@ public class Profile {
         this.blockedList = new ArrayList<>();
     }
 
+    @Override
     public boolean signUp(String username, String password) throws IOException {
 
         ArrayList<String> fileInfo = readUserListFile();
@@ -70,6 +71,7 @@ public class Profile {
         return true;
     }
 
+    @Override
     public boolean login(String username, String password) throws IOException, UserNotFoundException {
         ArrayList<String> fileInfo = readUserListFile();
         String fileUsername = fileInfo.get(0);
@@ -82,6 +84,7 @@ public class Profile {
         }
     }
 
+    @Override
     public ArrayList<String> readUserListFile() throws IOException {
         ArrayList<String> fileInfo = new ArrayList<>();
         try {
@@ -112,6 +115,7 @@ public class Profile {
         return fileInfo;
     }
 
+    @Override
     public void writeUserListFile(ArrayList<String> userInfo) throws IOException {
         try (PrintWriter pw = new PrintWriter(new FileOutputStream("userListFile", true), true)) {
             String fileUsername = userInfo.get(0);
@@ -131,6 +135,7 @@ public class Profile {
 
     }
 
+    @Override
     public void reWriteUserListFile(ArrayList<String> lines) throws IOException {
         try (BufferedWriter bfw = new BufferedWriter(new FileWriter("userList.txt"))) {
             for (String updatedLine : lines) {
@@ -145,78 +150,96 @@ public class Profile {
 
     //getters
 
+    @Override
     public String getUsername() {
         return username;
     }
 
-    private String getPassword() {
+    @Override
+    public String getPassword() {
         return password;
     }
 
+    @Override
     public int getFollowers() {
         return followers;
     }
 
+    @Override
     public ArrayList<Profile> getFriends() {
         return friends;
     }
 
+    @Override
     public int getAge() {
         return age;
     }
 
+    @Override
     public String getGender() {
         return gender;
     }
 
+    @Override
     public ArrayList<Profile> getFriendRequests() {
         return friendRequests;
     }
 
+    @Override
     public ArrayList<Post> getMyPosts() {
         return this.userPosts;
     }
 
+    @Override
     public ArrayList<Profile> getBlockedList() {
         return this.blockedList;
     }
     //setters
 
+    @Override
     public void setUsername(String username) {
         this.username = username;
     }
 
+    @Override
     public void setFollowers(int followers) {
         this.followers = followers;
     }
 
+    @Override
     public void setFriends(ArrayList<Profile> friends) {
         this.friends = friends;
     }
 
+    @Override
     public void setAge(int age) {
         this.age = age;
     }
 
+    @Override
     public void setGender(String gender) {
         this.gender = gender;
     }
 
+    @Override
     public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
         this.friendRequests.add(profile);
     }
 
     //friend methods
 
+    @Override
     public void addFriend(Profile profile) { //sends a friend request to the desired user.
         profile.setFriendRequests(this);
 
     }
 
+    @Override
     public boolean isFriends(Profile profile) {
         return friends.contains(profile);
     }
 
+    @Override
     public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException { //accepts requests of the user, removes that user from the list of friend requests
         try {
             File f = new File("userList.txt");
@@ -272,6 +295,7 @@ public class Profile {
         return true;
     }
 
+    @Override
     public boolean rejectRequest(Profile profile) {
         if (!friendRequests.contains(profile)) {
             return false;
@@ -280,11 +304,13 @@ public class Profile {
         return true;
     }
 
+    @Override
     public void removeFriend(Profile f) {
         friends.remove(f.getUsername());
         f.getFriends().remove(this.getUsername());
     }
 
+    @Override
     public void blockUser(Profile user) {
         if (user.isFriends(this)) {
             this.removeFriend(user);
@@ -297,6 +323,7 @@ public class Profile {
 
     //post methods
 
+    @Override
     public void makePost(String msg) {
         Post newPost = new Post(msg, this);
         newPost.setMessage(msg);

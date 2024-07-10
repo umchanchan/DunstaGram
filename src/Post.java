@@ -89,7 +89,4 @@ public class Post implements IPost {
         this.numComments--;
     }
 
-
-
-
 }
