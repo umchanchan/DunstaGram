@@ -36,7 +36,7 @@ public class Profile {
         this.friends = new ArrayList<>();
         this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
-        this.blockedList = new ArrayList<Profile>;
+        this.blockedList = new ArrayList<Profile>();
     }
 
     public Profile(String username) {
