@@ -7,7 +7,7 @@ import java.util.*;
  *
  *
  */
-public class NewsFeed {
+public class NewsFeed implements INewsFeed {
     private Profile profile;
     private ArrayList<Post> allPost;
 
