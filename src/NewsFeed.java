@@ -14,6 +14,7 @@ public class NewsFeed implements INewsFeed {
     public NewsFeed(Profile profile, ArrayList<Post> allPost) {
         this.profile = profile;
         this.allPost = allPost;
+
     }
 
     public void makePost(String message) {
