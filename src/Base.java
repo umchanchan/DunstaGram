@@ -11,6 +11,7 @@ public class Base {
                 return profile;
             }
         }
+        return new Profile();
     }
 
     public Profile signUp(String username, String password, int age, String gender) throws IOException {

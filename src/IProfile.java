@@ -2,15 +2,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public interface IProfile {
-    public boolean signUp(String username, String password) throws IOException;
+    //public boolean signUp(String username, String password) throws IOException;
 
-    public boolean login(String username, String password) throws IOException, UserNotFoundException;
+    //public boolean login(String username, String password) throws IOException, UserNotFoundException;
 
-    public ArrayList<String> readUserListFile() throws IOException;
+    //public ArrayList<String> readUserListFile() throws IOException;
 
-    public void writeUserListFile(ArrayList<String> userInfo) throws IOException;
+   // public void writeUserListFile(ArrayList<String> userInfo) throws IOException;
 
-    public void reWriteUserListFile(ArrayList<String> lines) throws IOException;
+   // public void reWriteUserListFile(ArrayList<String> lines) throws IOException;
 
     public String getUsername();
 

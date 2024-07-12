@@ -66,6 +66,14 @@ public class Profile implements IProfile {
         this.userPosts = new ArrayList<>();
         this.blockedList = new ArrayList<>();
     }
+    //invalid constructor
+
+    public Profile() {
+        this.username = "Profile_Not_Found";
+        this.age = -1;
+        this.gender = "Null";
+
+    }
 
     //getters
 
