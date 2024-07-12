@@ -18,7 +18,7 @@ public class NewsFeed implements INewsFeed {
     }
 
     public void makePost(String message) {
-        Post newPost = new Post(message, profile);
+        Post newPost = new Post(profile, message);
         allPost.add(newPost);
     }
 

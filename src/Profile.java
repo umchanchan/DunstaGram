@@ -24,6 +24,7 @@ public class Profile implements IProfile {
     private int numFriends;
     private ArrayList<Post> userPosts;
     private ArrayList<Profile> blockedList;
+    private ArrayList<Profile> users;
 
     public Profile(String username, String password) {
         this.username = username;
@@ -67,8 +68,31 @@ public class Profile implements IProfile {
         this.blockedList = new ArrayList<>();
     }
 
-    //getters
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append(username).append("_").append(password).append("_")
+                .append(age).append("_").append(gender).append("_");
+        for (int i = 0; i < friends.size(); i++) {
+            result.append(friends.get(i)).append("_");
+        }
 
+        return result.toString();
+    }
+
+    public Profile makeProfile(String userInfo) {
+        String[] parts = userInfo.split("_");
+        String username = parts[0];
+        String password = parts[1];
+        int age = Integer.parseInt(parts[2]);
+        String gender = parts[3];
+        Profile newProfile = new Profile(username, password, age, gender);
+        for (int i = 4; i < parts.length; i++) {
+            newProfile.friends.add(new Profile(parts[i]));
+        }
+        return newProfile;
+    }
+
+    //getters
     public String getUsername() {
         return username;
     }
@@ -112,6 +136,7 @@ public class Profile implements IProfile {
     public ArrayList<Profile> getBlockedList() {
         return this.blockedList;
     }
+
     //setters
     public void setUsername(String username) {
         this.username = username;
@@ -154,46 +179,18 @@ public class Profile implements IProfile {
     }
 
 
-    public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException { //accepts requests of the user, removes that user from the list of friend requests
-        try {
-            ArrayList<String> lines = readUserListFile();
-            boolean userFound = false;
-            for (int i = 0; i < lines.size(); i++) {
-                String[] parts = lines.get(i).split("_");
-                if (parts.length > 0 && parts[0].equals(username)) {
-                    StringBuilder sb = new StringBuilder(parts[0] + "_" + parts[1]);
-                    for (int j = 2; j < parts.length; j++) {
-                        sb.append("_").append(parts[j]);
-                    }
-                    sb.append("_").append(friend.getUsername());
-                    lines.set(i, sb.toString());
-                    userFound = true;
-                    break;
-                } else if (parts.length > 0 && parts[0].equals(friend.username)) {
-                    StringBuilder sb = new StringBuilder(parts[0] + "_" + parts[1]);
-                    for (int j = 2; j < parts.length; j++) {
-                        sb.append("_").append(parts[j]);
-                    }
-                    sb.append("_").append(username);
-                    lines.set(i, sb.toString());
-                    userFound = true;
-                    break;
-                }
-            }
-            reWriteUserListFile(lines);
-            if (!userFound) {
-                throw new UserNotFoundException("User not found in the file");
-            }
-        } catch (IOException e) {
-            throw new IOException("Error occurred when reading a file");
-        }
+    /**
+     * After this method is used writeUserList method must be implemented to update the file.
+     */
+    public boolean acceptRequest(Profile friend) {
+        //accepts requests of the user, removes that user from the list of friend requests
 
         if (!friendRequests.contains(friend)) {
             return false;
         }
-        this.friends.add(friend);
+        friends.add(friend);
         friend.friends.add(this);
-        this.friendRequests.remove(friend);
+        friendRequests.remove(friend);
 
         return true;
     }
@@ -207,10 +204,10 @@ public class Profile implements IProfile {
         return true;
     }
 
-
+    /**
+     * After this method is used writeUserList method must be implemented to update the file.
+     */
     public void removeFriend(Profile f) {
-
-
         if (f.isFriends(this)) {
             friends.remove(f);
             f.removeFriend(this);
@@ -229,7 +226,6 @@ public class Profile implements IProfile {
     }
 
     //post methods
-
 
     public void makePost(String msg) {
         Post newPost = new Post(msg, this);

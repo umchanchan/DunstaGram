@@ -7,22 +7,19 @@ public class Post implements IPost {
     private int downvote;
     private Profile poster;
     private ArrayList<Comment> comments = new ArrayList<>();
-    private Comment comment;
     private int numComments;
-    private String commentContent;
 
 
-    public Post(String message, int upvote, int downvote, Profile poster, int numComments,
-                String commentContent) {
+    public Post(Profile poster, String message, int upvote, int downvote, ArrayList<Comment> comments) {
         this.message = message;
         this.upvote = upvote;
         this.downvote = downvote;
         this.poster = poster;
-        this.numComments = numComments;
-        this.commentContent = commentContent;
+        this.numComments = comments.size();
+        this.comments = comments;
     }
 
-    public Post(String message, Profile poster) {
+    public Post(Profile poster, String message) {
         this.poster = poster;
         this.message = message;
         this.upvote = 0;
@@ -36,6 +33,10 @@ public class Post implements IPost {
         this.upvote = 0;
         this.downvote = 0;
         this.numComments = 0;
+    }
+
+    public String toString() {
+
     }
 
     public String getMessage() {
@@ -69,14 +70,6 @@ public class Post implements IPost {
     public int getComments() {
         return numComments;
     }// get the number of the comments of the posts.
-
-    public String getCommentContent() {
-        return commentContent;
-    }
-
-    public void setCommentContent(String commentContent) {
-        this.commentContent = commentContent;
-    }
 
     public void addComment(Profile commenter, String content) {
         Comment comment = new Comment(commenter, content);
