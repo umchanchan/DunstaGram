@@ -1,62 +1,58 @@
 import java.util.*;
 import java.io.*;
 
+/**
+ * This class's task is to deal with methods that utilize file IO
+ *
+ */
 public class Base {
     private ArrayList<Profile> users;
     private ArrayList<Post> allPosts;
+    private Profile profile;
+    private Post post;
 
-    public Profile searchUser(String username) {
+    /*
+    * not sure where this method should be
+    */
+    public Profile searchUser(String username) throws UserNotFoundException {
         for (Profile profile : users) {
             if (profile.getUsername().equals(username)) {
                 return profile;
+            } else {
+                throw new UserNotFoundException("We can't find the user with" + username);
+            }
+        }
+        return null;
+    }
+
+
+    public boolean signUp(String username, String password, int age, String gender) throws IOException {
+
+        readUserListFile();
+        for (Profile user : users) {
+            if (user.getUsername().equals(username)) {
+                return false;
+            }
+        }
+        Profile newProfile = new Profile(username, password, age, gender);
+        users.add(newProfile);
+        writeUserListFile();
+        return true;
+    }
+
+    public boolean login(String username, String password) throws IOException, UserNotFoundException {
+        readUserListFile();
+        for (Profile user : users) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return true;
+            } else {
+                throw new UserNotFoundException("Invalid login!");
             }
         }
         return new Profile();
     }
 
-    public Profile signUp(String username, String password, int age, String gender) throws IOException {
-
-        ArrayList<String> fileInfo = readUserListFile();
-
-        String fileUsername = "";
-        for (int i = 0; i < fileInfo.size(); i++) {
-            String[] parts = fileInfo.get(i).split("_");
-            fileUsername = parts[0];
-            String filePassword = parts[1];
-        }
-
-        if (fileUsername.equals(username)) {
-            System.out.println("username not available");
-            return null;
-        }
-
-        Profile newProfile = new Profile(username, password, age, gender);
-        users.add(newProfile);
-
-        fileInfo.add(username + "_" + password + "_");
-        writeUserListFile(fileInfo);
-        return newProfile;
-    }
-
-    public boolean login(String username, String password) throws IOException, UserNotFoundException {
-        ArrayList<String> fileInfo = readUserListFile();
-        String fileUsername = "";
-        String filePassword = "";
-        for (int i = 0; i < fileInfo.size(); i++) {
-            String[] parts = fileInfo.get(i).split("_");
-            fileUsername = parts[0];
-            filePassword = parts[1];
-        }
-
-        if (fileUsername.equals(username) && filePassword.equals(password)) {
-            return true;
-        } else {
-            throw new UserNotFoundException("Invalid login!");
-        }
-    }
-
-    public ArrayList<String> readUserListFile() throws IOException {
-        ArrayList<String> fileInfo = new ArrayList<>();
+    public void readUserListFile() throws IOException {
         try {
             File f = new File("userList.txt");
             FileReader fr = new FileReader(f);
@@ -64,36 +60,22 @@ public class Base {
 
             String line;
             while ((line = bfr.readLine()) != null) {
-
-                fileInfo.add(line);
-
-                String[] parts = line.split("_");
-                if (parts.length < 1) {
-                    throw new IOException("Error occurred when reading or writing a file");
-                }
-
-                String username = parts[0];
-                String password = parts[1];
-
-                Profile newProfile = new Profile(username, password);
-                ArrayList<Profile> friends = newProfile.getFriends();
-
-                for (int i = 2; i < parts.length; i++) {
-                    String friendUsername = parts[i];
-                    friends.add(new Profile(friendUsername));
-                }
+                profile = profile.makeProfile(line);
+                users.add(profile);
             }
             bfr.close();
         } catch (IOException e) {
             throw new IOException("Error occurred when reading a file");
         }
-        return fileInfo;
+
     }
 
-    public void writeUserListFile(ArrayList<String> userInfo) throws IOException {
+    public void writeUserListFile() throws IOException {
         try (PrintWriter pw = new PrintWriter(new FileOutputStream("userListFile", true), true)) {
-            for (int i = 0; i < userInfo.size(); i++) {
-                pw.println(userInfo.get(i));
+
+            for (Profile user : users) {
+                String userInfo = user.toString();
+                pw.println(userInfo);
             }
             pw.flush();
             pw.close();
@@ -103,4 +85,20 @@ public class Base {
 
     }
 
+    public void readPostListFile() throws IOException {
+        try {
+            File f = new File("postList.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                post = post.
+                allPost
+            }
+            bfr.close();
+        } catch (IOException e) {
+            throw new IOException("Error occurred when reading a file");
+        }
+    }
 }
