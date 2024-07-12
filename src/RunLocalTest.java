@@ -6,6 +6,6 @@ public class RunLocalTest {
     }
 
     public boolean testProfile() {
-        return false
+        return false;
     }
 }
