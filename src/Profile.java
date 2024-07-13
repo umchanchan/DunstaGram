@@ -151,6 +151,8 @@ public class Profile implements IProfile {
     public boolean removeMyPost(Post post) {
         if(userPosts.contains(post)) {
             userPosts.remove(post);
+            Base b = new Base();
+            b.removePost(post);
             return true;
         }
         return false;

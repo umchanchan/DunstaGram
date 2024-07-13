@@ -11,7 +11,9 @@ public class RunLocalTest {
         n.makePost("Hello");
 
         n1.comment(p.getMyPosts().getFirst(), "Goodbye");
+        n1.upvotePost(p.getMyPosts().get(0));
         System.out.println(p.getMyPosts());
+        System.out.println(p.getMyPosts().getFirst().toStringFileFormat());
 
     }
 

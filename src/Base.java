@@ -78,9 +78,9 @@ public class Base {
     public void writeUserListFile() throws IOException {
         try (PrintWriter pw = new PrintWriter(new FileOutputStream("userListFile", true), true)) {
 
-            for (Profile user : users) {
-                String userInfo = user.toString();
-                pw.println(userInfo);
+            for (Post p : allPosts) {
+                String profileInfo = p.toStringFileFormat();
+                pw.println(profileInfo);
             }
             pw.flush();
             pw.close();
@@ -109,7 +109,31 @@ public class Base {
         }
     }
 
+    public void writePostListFile() throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream("postListFile", true), true)) {
+
+            for (Profile user : users) {
+                String userInfo = user.toString();
+                pw.println(userInfo);
+            }
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            throw new IOException("Error occurred when writing a file");
+        }
+
+    }
+
+
     public ArrayList<Post> getAllPosts() {
         return allPosts;
+    }
+
+    public boolean removePost(Post post) {
+        if(allPosts.contains(post)) {
+            allPosts.remove(post);
+            return true;
+        }
+        return false;
     }
 }

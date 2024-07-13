@@ -50,7 +50,9 @@ public class NewsFeed implements INewsFeed {
         post.addComment(profile, msg);
     }
 
-
+    public void setAllPost(ArrayList<Post> p) {
+        this.allPost = p;
+    }
 
 
 
