@@ -38,10 +38,37 @@ public class Post implements IPost {
 
     public String toString() {
         String str = "";
-        str += poster.toString() + ": ";
+        str += poster.getUsername() + ": ";
         str += message + " | Upvotes: ";
         str += upvote + " | Downvotes: ";
         str += downvote;
+
+        if(!comments.isEmpty()) {
+            str += "\n";
+            str += "- Comments -";
+        }
+        for(Comment i: comments) {
+            str += "\n";
+            str += i.toString();
+
+        }
+        return str;
+    }
+
+    public String toStringFileFormat() {
+        String str = "";
+        str += poster.getUsername() + "_";
+        str += message + "_";
+        str += upvote + "_" + downvote;
+
+        for(int i = 0; i < comments.size(); i++) {
+            str += "_";
+            Comment c = comments.get(i);
+            str += c.getUsername() + "_" + c.getCommentContents() + "_";
+            str += c.getUpvote() + "_" + c.getDownvote();
+
+
+        }
         return str;
     }
     public Post makePost(String postInfo) throws UserNotFoundException {

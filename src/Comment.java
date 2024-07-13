@@ -21,6 +21,13 @@ public class Comment extends Post implements IComment {
         this.downvote = downvotes;
     }
 
+    public String toString() {
+        String str = "";
+        str += commenter.getUsername() + ": " + contents + " | ";
+        str += "Upvotes: " + upvote + " | " + "Downvotes: " + downvote;
+        return str;
+    }
+
     public void addUpvote() {
         upvote++;
     }
