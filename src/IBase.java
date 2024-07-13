@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
 public interface IBase {
     public Profile searchUser(String username) throws UserNotFoundException;
@@ -7,4 +8,7 @@ public interface IBase {
     public void readUserListFile() throws IOException;
     public void writeUserListFile() throws IOException;
     public void readPostListFile() throws IOException;
+    public void writePostListFile() throws IOException;
+    public boolean removePost(Post post);
+    public ArrayList<Post> getAllPosts();
 }
