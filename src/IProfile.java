@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.ArrayList;
 
 public interface IProfile {
@@ -16,15 +15,15 @@ public interface IProfile {
 
     public String getPassword();
 
-    public int getFollowers();
+    public ArrayList<Profile> getFollowers();
 
-    public ArrayList<Profile> getFriends();
+  //  public ArrayList<Profile> getFriends();
 
     public int getAge();
 
     public String getGender();
 
-    public ArrayList<Profile> getFriendRequests();
+   // public ArrayList<Profile> getFriendRequests();
 
     public ArrayList<Post> getMyPosts();
 
@@ -32,27 +31,26 @@ public interface IProfile {
 
     public void setUsername(String username);
 
-    public void setFollowers(int followers);
+    public boolean removeFollowers(Profile p);
 
-    public void setFriends(ArrayList<Profile> friends);
+   // public void setFriends(ArrayList<Profile> friends);
 
     public void setAge(int age);
 
     public void setGender(String gender);
 
-    public void setFriendRequests(Profile profile);
+   // public void setFriendRequests(Profile profile);
 
-    public void addFriend(Profile profile);
+  //  public void addFriend(Profile profile);
 
-    public boolean isFriends(Profile profile);
+  //  public boolean isFriends(Profile profile);
 
-    public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException;
+  //  public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException;
 
-    public boolean rejectRequest(Profile profile);
+  //  public boolean rejectRequest(Profile profile);
 
-    public void removeFriend(Profile f);
+  //  public void removeFriend(Profile f);
 
-    public void blockUser(Profile user);
+    public boolean blockUser(Profile user);
 
-    public void makePost(String msg);
 }

@@ -1,5 +1,4 @@
 import java.util.*;
-import java.io.*;
 
 /*
 This is the profile class of Dunstagram that has some information.
@@ -16,12 +15,17 @@ This is the profile class of Dunstagram that has some information.
 public class Profile implements IProfile {
     private String username;
     private String password;
-    private int followers;
-    private ArrayList<Profile> friends;
+
+    private ArrayList<Profile> followers;
+    private ArrayList<Profile> following;
+
+    //private ArrayList<Profile> friends;
+  //  private ArrayList<Profile> friendRequests;
+
     private int age;
     private String gender;
-    private ArrayList<Profile> friendRequests;
-    private int numFriends;
+
+  //  private int numFriends;
     private ArrayList<Post> userPosts;
     private ArrayList<Profile> blockedList;
     private ArrayList<Profile> users;
@@ -32,10 +36,10 @@ public class Profile implements IProfile {
         this.age = 0;
         this.gender = "";
 
-        this.followers = 0;
-        this.numFriends = 0;
-        this.friends = new ArrayList<>();
-        this.friendRequests = new ArrayList<>();
+        this.followers = new ArrayList<Profile>();
+     //   this.numFriends = 0;
+    //    this.friends = new ArrayList<>();
+        //    this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -46,10 +50,10 @@ public class Profile implements IProfile {
         this.age = age;
         this.gender = gender;
 
-        this.followers = 0;
-        this.numFriends = 0;
-        this.friends = new ArrayList<>();
-        this.friendRequests = new ArrayList<>();
+        this.followers = new ArrayList<Profile>();
+      //  this.numFriends = 0;
+     //   this.friends = new ArrayList<>();
+      //  this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -60,10 +64,10 @@ public class Profile implements IProfile {
         this.age = 0;
         this.gender = "";
 
-        this.followers = 0;
-        this.numFriends = 0;
-        this.friends = new ArrayList<>();
-        this.friendRequests = new ArrayList<>();
+        this.followers = new ArrayList<>();
+      //  this.numFriends = 0;
+      //  this.friends = new ArrayList<>();
+      //  this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<>();
         this.blockedList = new ArrayList<>();
     }
@@ -80,8 +84,8 @@ public class Profile implements IProfile {
         StringBuilder result = new StringBuilder();
         result.append(username).append("_").append(password).append("_")
                 .append(age).append("_").append(gender).append("_");
-        for (int i = 0; i < friends.size(); i++) {
-            result.append(friends.get(i)).append("_");
+        for (int i = 0; i < followers.size(); i++) {
+            result.append(followers.get(i)).append("_");
         }
 
         return result.toString();
@@ -95,7 +99,7 @@ public class Profile implements IProfile {
         String gender = parts[3];
         Profile newProfile = new Profile(username, password, age, gender);
         for (int i = 4; i < parts.length; i++) {
-            newProfile.friends.add(new Profile(parts[i]));
+            newProfile.followers.add(new Profile(parts[i]));
         }
         return newProfile;
     }
@@ -111,14 +115,14 @@ public class Profile implements IProfile {
     }
 
 
-    public int getFollowers() {
+    public ArrayList<Profile> getFollowers() {
         return followers;
     }
 
 
-    public ArrayList<Profile> getFriends() {
+  /*  public ArrayList<Profile> getFriends() {
         return friends;
-    }
+    }*/
 
 
     public int getAge() {
@@ -131,15 +135,26 @@ public class Profile implements IProfile {
     }
 
 
-    public ArrayList<Profile> getFriendRequests() {
+/*    public ArrayList<Profile> getFriendRequests() {
         return friendRequests;
-    }
+    }*/
 
 
     public ArrayList<Post> getMyPosts() {
         return this.userPosts;
     }
 
+    public void addMyPost(Post post) {
+        userPosts.add(post);
+    }
+
+    public boolean removeMyPost(Post post) {
+        if(userPosts.contains(post)) {
+            userPosts.remove(post);
+            return true;
+        }
+        return false;
+    }
 
     public ArrayList<Profile> getBlockedList() {
         return this.blockedList;
@@ -151,14 +166,21 @@ public class Profile implements IProfile {
     }
 
 
-    public void setFollowers(int followers) {
-        this.followers = followers;
+    public void getFollowed(Profile p) {
+        this.followers.add(p);
     }
 
+    public boolean removeFollowers(Profile f) {
+        if(followers.contains(f)) {
+            followers.remove(f);
+            return true;
+        }
+        return false;
+    }
 
-    public void setFriends(ArrayList<Profile> friends) {
+  /* public void setFriends(ArrayList<Profile> friends) {
         this.friends = friends;
-    }
+    }*/
 
 
     public void setAge(int age) {
@@ -171,13 +193,13 @@ public class Profile implements IProfile {
     }
 
 
-    public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
+   /* public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
         this.friendRequests.add(profile);
     }
 
     //friend methods
 
-    public void addFriend(Profile profile) { //sends a friend request to the desired user.
+   public void addFriend(Profile profile) { //sends a friend request to the desired user.
         profile.setFriendRequests(this);
     }
 
@@ -186,10 +208,12 @@ public class Profile implements IProfile {
         return friends.contains(profile) && profile.getFriends().contains(this);
     }
 
-
+*/
     /**
      * After this method is used writeUserList method must be implemented to update the file.
-     */
+     *
+     * @return
+     */ /*
     public boolean acceptRequest(Profile friend) {
         //accepts requests of the user, removes that user from the list of friend requests
 
@@ -214,7 +238,7 @@ public class Profile implements IProfile {
 
     /**
      * After this method is used writeUserList method must be implemented to update the file.
-     */
+
     public void removeFriend(Profile f) {
         if (f.isFriends(this)) {
             friends.remove(f);
@@ -222,36 +246,39 @@ public class Profile implements IProfile {
         } else return;
     }
 
-
-    public void blockUser(Profile user) {
-        if (user.isFriends(this)) {
-            this.removeFriend(user);
-            user.removeFriend(this);
+*/
+    public boolean blockUser(Profile user) { //assumes input is a valid user
+        if (followers.contains(user) || !blockedList.contains(user)) {
+            if(user.getFollowers().contains(this)) {
+                user.removeFollowers(this);
+            }
+            user.unfollow(this);
             blockedList.add(user);
-        } else {
-            blockedList.add(user);
+            return true;
         }
+        return false;
     }
 
-    //post methods
 
-    public void makePost(String msg) {
-        Post newPost = new Post(msg, this);
-        newPost.setMessage(msg);
-        this.userPosts.add(newPost);
+    public void follow(Profile p) {
+        p.getFollowed(this);
+        following.add(p);
     }
 
-    public void upVote(Post post) { //you can also do this with comments since it's a subclass :)
-        post.setUpvotes(post.getUpvotes() + 1);
+    public boolean unfollow(Profile p) {
+        if(following.contains(p)) {
+            if(p.getFollowers().contains(this)) {
+                following.remove(p);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void downVote(Post post) {
-        post.setDownvotes(post.getDownvotes() - 1);
-    }
 
-    public void comment(Post post, String msg) {
-        post.addComment(this, msg);
-    }
+
+
+
 
 
 }

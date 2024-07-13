@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class Post implements IPost {
     private String message;
     private int upvote;
+
     private int downvote;
     private Profile poster;
     private ArrayList<Comment> comments = new ArrayList<>();
@@ -36,9 +37,34 @@ public class Post implements IPost {
     }
 
     public String toString() {
-
+        String str = "";
+        str += poster.toString() + ": ";
+        str += message + " | Upvotes: ";
+        str += upvote + " | Downvotes: ";
+        str += downvote;
+        return str;
     }
+    public Post makePost(String postInfo) throws UserNotFoundException {
+        String[] parts = postInfo.split("_");
+        Base b = new Base();
 
+        Profile writer = b.searchUser(parts[0]);
+        String msg = parts[1];
+        int upvotes = Integer.parseInt(parts[2]);
+        int downvotes = Integer.parseInt(parts[3]);
+        ArrayList<Comment> commentList = new ArrayList<Comment>();
+
+        for (int i = 4; i < parts.length; i += 4) {
+            Profile commenter = b.searchUser(parts[i]);
+            String message = parts[i+1];
+            int commentUpvotes = Integer.parseInt(parts[i+2]);
+            int commentDownvotes = Integer.parseInt(parts[i+3]);
+
+            Comment c = new Comment(commenter, message, commentUpvotes, commentDownvotes);
+            commentList.add(c);
+        }
+        return new Post(writer, msg, upvotes, downvotes, commentList);
+    }
     public String getMessage() {
         return message;
     }
@@ -75,10 +101,12 @@ public class Post implements IPost {
         Comment comment = new Comment(commenter, content);
         comments.add(comment);
         numComments++;
+        commenter.addMyPost(comment);
     }
 
     public void deleteComment(Comment comment) {
         comments.remove(comment);
+        comment.getCommenter().removeMyPost(comment);
         this.numComments--;
     }
 

@@ -9,6 +9,6 @@ public interface INewsFeed {
 
     public void cancelDownvotePost(Post post);
 
-    public void hidePost();
+    public void hidePost(Post post);
 
 }
