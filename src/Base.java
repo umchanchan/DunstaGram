@@ -108,4 +108,8 @@ public class Base {
             throw new RuntimeException(e);
         }
     }
+
+    public ArrayList<Post> getAllPosts() {
+        return allPosts;
+    }
 }

@@ -20,6 +20,7 @@ public class NewsFeed implements INewsFeed {
     public void makePost(String message) {
         Post newPost = new Post(profile, message);
         allPost.add(newPost);
+        profile.addMyPost(newPost);
 
     }
 
@@ -41,6 +42,7 @@ public class NewsFeed implements INewsFeed {
 
     public void hidePost(Post post) { //assumes allPost is different for each specific user
         allPost.remove(post);
+
 
     }
 
