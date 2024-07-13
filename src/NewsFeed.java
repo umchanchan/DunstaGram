@@ -20,6 +20,7 @@ public class NewsFeed implements INewsFeed {
     public void makePost(String message) {
         Post newPost = new Post(profile, message);
         allPost.add(newPost);
+
     }
 
     public void upvotePost(Post post) {
@@ -38,10 +39,14 @@ public class NewsFeed implements INewsFeed {
         post.setDownvotes(post.getDownvotes() - 1);
     }
 
-    public void hidePost() {
+    public void hidePost(Post post) { //assumes allPost is different for each specific user
+        allPost.remove(post);
 
     }
 
+    public void comment(Post post, String msg) {
+        post.addComment(profile, msg);
+    }
 
 
 

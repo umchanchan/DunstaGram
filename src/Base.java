@@ -11,6 +11,7 @@ public class Base {
     private Profile profile;
     private Post post;
 
+
     /*
     * not sure where this method should be
     */
@@ -49,7 +50,7 @@ public class Base {
                 throw new UserNotFoundException("Invalid login!");
             }
         }
-        return new Profile();
+        return false;
     }
 
     public void readUserListFile() throws IOException {
@@ -93,12 +94,14 @@ public class Base {
 
             String line;
             while ((line = bfr.readLine()) != null) {
-                post = post.
-                allPost
+                post = post.makePost(line);
+                this.allPosts.add(post);
             }
             bfr.close();
         } catch (IOException e) {
             throw new IOException("Error occurred when reading a file");
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

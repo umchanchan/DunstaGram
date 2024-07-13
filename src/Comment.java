@@ -5,7 +5,6 @@ public class Comment extends Post implements IComment {
     private int downvote;
     private String username;
 
-
     public Comment(Profile commenter, String contents) {
         super();
         this.commenter = commenter;
@@ -13,6 +12,13 @@ public class Comment extends Post implements IComment {
         this.contents = contents;
         this.upvote = 0;
         this.downvote = 0;
+    }
+
+    public Comment(Profile commenter, String contents, int upvotes, int downvotes) {
+        this.commenter = commenter;
+        this.contents = contents;
+        this.upvote = upvotes;
+        this.downvote = downvotes;
     }
 
     public void addUpvote() {
@@ -38,5 +44,8 @@ public class Comment extends Post implements IComment {
     }
     public int getDownvote() {
         return downvote;
+    }
+    public Profile getCommenter() {
+        return commenter;
     }
 }
