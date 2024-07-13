@@ -11,6 +11,10 @@ public class Base {
     private Profile profile;
     private Post post;
 
+    public Base() {
+        this.allPosts = new ArrayList<Post>();
+    }
+
 
     /*
     * not sure where this method should be
