@@ -148,11 +148,12 @@ public class Profile implements IProfile {
         userPosts.add(post);
     }
 
+    /*
+     * This method should be used in the base class not like calling the base class.
+     */
     public boolean removeMyPost(Post post) {
         if(userPosts.contains(post)) {
             userPosts.remove(post);
-            Base b = new Base();
-            b.removePost(post);
             return true;
         }
         return false;

@@ -22,9 +22,8 @@ public class Comment extends Post implements IComment {
     }
 
     public String toString() {
-        String str = "";
-        str += commenter.getUsername() + ": " + contents + " | ";
-        str += "Upvotes: " + upvote + " | " + "Downvotes: " + downvote;
+        String str = commenter.getUsername() + "_" + contents + "_";
+        str += "_" + upvote + "_" + downvote;
         return str;
     }
 
