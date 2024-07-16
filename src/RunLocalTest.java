@@ -18,6 +18,7 @@ public class RunLocalTest {
     }
 
     public boolean testProfile() {
-        return false;
+        Profile p = new Profile("John", "122", 44);
+
     }
 }

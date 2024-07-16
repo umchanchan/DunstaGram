@@ -195,6 +195,10 @@ public class Profile implements IProfile {
         this.gender = gender;
     }
 
+    public ArrayList<Profile> getFollowing() {
+        return this.following;
+    }
+
 
    /* public void setFriendRequests(Profile profile) { //Adds this profile to user's friend requests
         this.friendRequests.add(profile);
