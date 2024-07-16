@@ -49,8 +49,6 @@ public class Server implements IServer {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (UserNotFoundException e) {
-            throw new RuntimeException(e);
         } finally {
             stopServer();
         }
