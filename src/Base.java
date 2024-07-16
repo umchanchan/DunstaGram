@@ -4,6 +4,8 @@ import java.io.*;
 /**
  * This class's task is to deal with methods that utilize file IO
  */
+
+//It has to implement block method into file io
 public class Base {
     private ArrayList<Profile> users = new ArrayList<>();
     private ArrayList<Post> allPosts = new ArrayList<>();
@@ -15,9 +17,6 @@ public class Base {
     }
 
 
-    /*
-     * not sure where this method should be
-     */
     public Profile searchUser(String username) throws UserNotFoundException {
         for (Profile profile : users) {
             if (profile.getUsername().equals(username)) {
@@ -54,6 +53,26 @@ public class Base {
         return false;
     }
 
+    public void follow(Profile profile, Profile toAdd) throws IOException {
+        for (Profile user : users) {
+            if (user.getUsername().equals(profile.getUsername())) {
+                profile.follow(toAdd);
+                writeUserListFile();
+                break;
+            }
+        }
+    }
+
+    public void unFollow(Profile profile, Profile toUnfollow) throws IOException {
+        for (Profile user : users) {
+            if (user.getUsername().equals(profile.getUsername())) {
+                profile.unfollow(toUnfollow);
+                writeUserListFile();
+                break;
+            }
+        }
+    }
+
     public void readUserListFile() throws IOException {
         clearUsers();
         try {
@@ -66,8 +85,6 @@ public class Base {
                 profile = profile.makeProfile(line);
                 users.add(profile);
             }
-
-
             bfr.close();
         } catch (IOException e) {
             throw new IOException("Error occurred when reading a file");
@@ -138,16 +155,14 @@ public class Base {
 
     public void makeNewPost(Profile poster, String message) throws IOException {
         Post post = new Post(poster, message);
+        poster.addMyPost(post);
         allPosts.add(post);
         writePostListFile();
     }
 
-    public boolean removePost(Post post) throws IOException {
-        if (allPosts.contains(post)) {
-            allPosts.remove(post);
-            writePostListFile();
-            return true;
-        }
-        return false;
+    public void removePost(Profile poster, Post post) throws IOException {
+        allPosts.remove(post);
+        poster.removeMyPost(post);
+        writePostListFile();
     }
 }

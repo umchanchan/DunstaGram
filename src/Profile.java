@@ -8,10 +8,6 @@ This is the profile class of Dunstagram that has some information.
 @author Mukund Rao
  */
 
-
-// login, signup, friend interaction, add or remove posts and comments
-//
-
 public class Profile implements IProfile {
     private String username;
     private String password;
@@ -20,15 +16,14 @@ public class Profile implements IProfile {
     private ArrayList<Profile> following;
 
     //private ArrayList<Profile> friends;
-  //  private ArrayList<Profile> friendRequests;
+    //  private ArrayList<Profile> friendRequests;
 
     private int age;
     private String gender;
 
-  //  private int numFriends;
+    //  private int numFriends;
     private ArrayList<Post> userPosts;
     private ArrayList<Profile> blockedList;
-    private ArrayList<Profile> users;
 
     public Profile(String username, String password) {
         this.username = username;
@@ -37,8 +32,8 @@ public class Profile implements IProfile {
         this.gender = "";
 
         this.followers = new ArrayList<Profile>();
-     //   this.numFriends = 0;
-    //    this.friends = new ArrayList<>();
+        //   this.numFriends = 0;
+        //    this.friends = new ArrayList<>();
         //    this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
@@ -51,9 +46,9 @@ public class Profile implements IProfile {
         this.gender = gender;
 
         this.followers = new ArrayList<Profile>();
-      //  this.numFriends = 0;
-     //   this.friends = new ArrayList<>();
-      //  this.friendRequests = new ArrayList<>();
+        //  this.numFriends = 0;
+        //   this.friends = new ArrayList<>();
+        //  this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -65,9 +60,9 @@ public class Profile implements IProfile {
         this.gender = "";
 
         this.followers = new ArrayList<>();
-      //  this.numFriends = 0;
-      //  this.friends = new ArrayList<>();
-      //  this.friendRequests = new ArrayList<>();
+        //  this.numFriends = 0;
+        //  this.friends = new ArrayList<>();
+        //  this.friendRequests = new ArrayList<>();
         this.userPosts = new ArrayList<>();
         this.blockedList = new ArrayList<>();
     }
@@ -85,7 +80,7 @@ public class Profile implements IProfile {
         result.append(username).append("_").append(password).append("_")
                 .append(age).append("_").append(gender).append("_");
         for (int i = 0; i < followers.size(); i++) {
-            result.append(followers.get(i)).append("_");
+            result.append(followers.get(i).getUsername()).append("_");
         }
 
         return result.toString();
@@ -148,15 +143,8 @@ public class Profile implements IProfile {
         userPosts.add(post);
     }
 
-    /*
-     * This method should be used in the base class not like calling the base class.
-     */
-    public boolean removeMyPost(Post post) {
-        if(userPosts.contains(post)) {
-            userPosts.remove(post);
-            return true;
-        }
-        return false;
+    public void removeMyPost(Post post) {
+        userPosts.remove(post);
     }
 
     public ArrayList<Profile> getBlockedList() {
@@ -174,7 +162,7 @@ public class Profile implements IProfile {
     }
 
     public boolean removeFollowers(Profile f) {
-        if(followers.contains(f)) {
+        if (followers.contains(f)) {
             followers.remove(f);
             return true;
         }
@@ -212,6 +200,7 @@ public class Profile implements IProfile {
     }
 
 */
+
     /**
      * After this method is used writeUserList method must be implemented to update the file.
      *
@@ -252,7 +241,7 @@ public class Profile implements IProfile {
 */
     public boolean blockUser(Profile user) { //assumes input is a valid user
         if (followers.contains(user) || !blockedList.contains(user)) {
-            if(user.getFollowers().contains(this)) {
+            if (user.getFollowers().contains(this)) {
                 user.removeFollowers(this);
             }
             user.unfollow(this);
@@ -268,20 +257,10 @@ public class Profile implements IProfile {
         following.add(p);
     }
 
-    public boolean unfollow(Profile p) {
-        if(following.contains(p)) {
-            if(p.getFollowers().contains(this)) {
-                following.remove(p);
-                return true;
-            }
-        }
-        return false;
+    public void unfollow(Profile p) {
+        following.remove(p);
+        p.getFollowers().remove(this);
     }
-
-
-
-
-
 
 
 }

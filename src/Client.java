@@ -6,7 +6,7 @@ import javax.swing.*;
  * This class serves a client GUI
  */
 
-public class Client {
+public class Client implements IClient {
     public static void main(String[] args) {
         Socket clientSocket;
         try {
@@ -16,6 +16,6 @@ public class Client {
                     "Unable to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        SwingUtilities.invokeLater();//any new frame GUI
+        SwingUtilities.invokeLater(new SignUpGUI(clientSocket));//any new frame GUI
     }
 }
