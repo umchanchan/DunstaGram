@@ -14,7 +14,6 @@ public class BaseTest {
     void setUp() throws IOException {
         base = new Base();
         base.signUp("Jeff", "2332", 22, "Male");
-
     }
 
 

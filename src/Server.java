@@ -20,8 +20,7 @@ public class Server implements IServer {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(12356); //port number not set
-
+        Server server = new Server(3555); //port number not set
         new Thread(server).start();
     }
 
@@ -44,7 +43,6 @@ public class Server implements IServer {
                 //every time a user connects, each user is going to be
                 //assigned to one clientHandler
                 pool.execute(new ClientHandler(clientSocket, base));
-
             }
 
         } catch (IOException e) {

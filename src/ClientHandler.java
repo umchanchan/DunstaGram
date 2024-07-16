@@ -31,9 +31,12 @@ public class ClientHandler implements IClientHandler {
                     return;
                 }
                 switch (clientInput) {
-                    case "" -> {
+                    case "signUp" -> {
+
+
 
                     }
+
 
 
                 }
