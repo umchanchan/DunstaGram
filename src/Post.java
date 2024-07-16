@@ -25,6 +25,7 @@ public class Post implements IPost {
         this.message = message;
         this.upvote = 0;
         this.downvote = 0;
+        this.comments = null;
         this.numComments = 0;
     }
 
@@ -38,19 +39,13 @@ public class Post implements IPost {
 
     public String toString() {
         String str = "";
-        str += poster.getUsername() + ": ";
-        str += message + " | Upvotes: ";
-        str += upvote + " | Downvotes: ";
-        str += downvote;
+        str += poster.getUsername() + "_";
+        str += message + "_";
+        str += upvote + "_";
+        str += downvote + "_";
 
-        if(!comments.isEmpty()) {
-            str += "\n";
-            str += "- Comments -";
-        }
-        for(Comment i: comments) {
-            str += "\n";
+        for (Comment i : comments) {
             str += i.toString();
-
         }
         return str;
     }
@@ -61,37 +56,39 @@ public class Post implements IPost {
         str += message + "_";
         str += upvote + "_" + downvote;
 
-        for(int i = 0; i < comments.size(); i++) {
+        for (int i = 0; i < comments.size(); i++) {
             str += "_";
             Comment c = comments.get(i);
             str += c.getUsername() + "_" + c.getCommentContents() + "_";
             str += c.getUpvote() + "_" + c.getDownvote();
-
-
         }
         return str;
     }
+
+    public Post makeNewPost(Profile poster, String message) {
+        return new Post(poster, message);
+    }
+
     public Post makePost(String postInfo) throws UserNotFoundException {
         String[] parts = postInfo.split("_");
-        Base b = new Base();
-
-        Profile writer = b.searchUser(parts[0]);
+        Profile writer = new Profile(parts[0]);
         String msg = parts[1];
         int upvotes = Integer.parseInt(parts[2]);
         int downvotes = Integer.parseInt(parts[3]);
         ArrayList<Comment> commentList = new ArrayList<Comment>();
 
         for (int i = 4; i < parts.length; i += 4) {
-            Profile commenter = b.searchUser(parts[i]);
-            String message = parts[i+1];
-            int commentUpvotes = Integer.parseInt(parts[i+2]);
-            int commentDownvotes = Integer.parseInt(parts[i+3]);
+            Profile commenter = new Profile(parts[i]);
+            String message = parts[i + 1];
+            int commentUpvotes = Integer.parseInt(parts[i + 2]);
+            int commentDownvotes = Integer.parseInt(parts[i + 3]);
 
             Comment c = new Comment(commenter, message, commentUpvotes, commentDownvotes);
             commentList.add(c);
         }
         return new Post(writer, msg, upvotes, downvotes, commentList);
     }
+
     public String getMessage() {
         return message;
     }

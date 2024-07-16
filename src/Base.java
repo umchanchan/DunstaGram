@@ -3,12 +3,11 @@ import java.io.*;
 
 /**
  * This class's task is to deal with methods that utilize file IO
- *
  */
 public class Base {
-    private ArrayList<Profile> users;
-    private ArrayList<Post> allPosts;
-    private Profile profile;
+    private ArrayList<Profile> users = new ArrayList<>();
+    private ArrayList<Post> allPosts = new ArrayList<>();
+    private Profile profile = new Profile();
     private Post post;
 
     public Base() {
@@ -17,17 +16,15 @@ public class Base {
 
 
     /*
-    * not sure where this method should be
-    */
+     * not sure where this method should be
+     */
     public Profile searchUser(String username) throws UserNotFoundException {
         for (Profile profile : users) {
             if (profile.getUsername().equals(username)) {
                 return profile;
-            } else {
-                throw new UserNotFoundException("We can't find the user with" + username);
             }
         }
-        return null;
+        throw new UserNotFoundException("We can't find the user with " + username);
     }
 
 
@@ -58,6 +55,7 @@ public class Base {
     }
 
     public void readUserListFile() throws IOException {
+        clearUsers();
         try {
             File f = new File("userList.txt");
             FileReader fr = new FileReader(f);
@@ -68,6 +66,8 @@ public class Base {
                 profile = profile.makeProfile(line);
                 users.add(profile);
             }
+
+
             bfr.close();
         } catch (IOException e) {
             throw new IOException("Error occurred when reading a file");
@@ -76,13 +76,13 @@ public class Base {
     }
 
     public void writeUserListFile() throws IOException {
-        try (PrintWriter pw = new PrintWriter(new FileOutputStream("userListFile", true), true)) {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream("userList.txt", false), true)) {
 
-            for (Post p : allPosts) {
-                String profileInfo = p.toStringFileFormat();
+            for (Profile user : users) {
+                String profileInfo = user.toString();
                 pw.println(profileInfo);
+                pw.flush();
             }
-            pw.flush();
             pw.close();
         } catch (IOException e) {
             throw new IOException("Error occurred when writing a file");
@@ -110,11 +110,11 @@ public class Base {
     }
 
     public void writePostListFile() throws IOException {
-        try (PrintWriter pw = new PrintWriter(new FileOutputStream("postListFile", true), true)) {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream("postList.txt", true), true)) {
 
-            for (Profile user : users) {
-                String userInfo = user.toString();
-                pw.println(userInfo);
+            for (Post post : allPosts) {
+                String postInfo = post.toString();
+                pw.println(postInfo);
             }
             pw.flush();
             pw.close();
@@ -124,14 +124,28 @@ public class Base {
 
     }
 
+    public void clearUsers() {
+        users.clear();
+    }
+
+    public ArrayList<Profile> getUsers() {
+        return users;
+    }
 
     public ArrayList<Post> getAllPosts() {
         return allPosts;
     }
 
-    public boolean removePost(Post post) {
-        if(allPosts.contains(post)) {
+    public void makeNewPost(Profile poster, String message) throws IOException {
+        Post post = new Post(poster, message);
+        allPosts.add(post);
+        writePostListFile();
+    }
+
+    public boolean removePost(Post post) throws IOException {
+        if (allPosts.contains(post)) {
             allPosts.remove(post);
+            writePostListFile();
             return true;
         }
         return false;
