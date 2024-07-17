@@ -42,8 +42,6 @@ public class NewsFeed implements INewsFeed {
 
     public void hidePost(Post post) { //assumes allPost is different for each specific user
         allPost.remove(post);
-
-
     }
 
     public void comment(Post post, String msg) {

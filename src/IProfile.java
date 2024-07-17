@@ -1,56 +1,43 @@
 import java.util.ArrayList;
 
 public interface IProfile {
-    //public boolean signUp(String username, String password) throws IOException;
+    String toString();
 
-    //public boolean login(String username, String password) throws IOException, UserNotFoundException;
+    Profile makeProfile(String userInfo);
 
-    //public ArrayList<String> readUserListFile() throws IOException;
+    void addMyPost(Post post);
 
-   // public void writeUserListFile(ArrayList<String> userInfo) throws IOException;
+    void removeMyPost(Post post);
 
-   // public void reWriteUserListFile(ArrayList<String> lines) throws IOException;
+    void follow(Profile p);
 
-    public String getUsername();
+    void unfollow(Profile p);
 
-    public String getPassword();
+    boolean removeFollowers(Profile f);
 
-    public ArrayList<Profile> getFollowers();
+    boolean blockUser(Profile user);
 
-  //  public ArrayList<Profile> getFriends();
+    String getUsername();
 
-    public int getAge();
+    String getPassword();
 
-    public String getGender();
+    ArrayList<Profile> getFollowers();
 
-   // public ArrayList<Profile> getFriendRequests();
+    int getAge();
 
-    public ArrayList<Post> getMyPosts();
+    String getGender();
 
-    public ArrayList<Profile> getBlockedList();
+    ArrayList<Profile> getFollowing();
 
-    public void setUsername(String username);
+    ArrayList<Post> getMyPosts();
 
-    public boolean removeFollowers(Profile p);
+    ArrayList<Profile> getBlockedList();
+    void getFollowed(Profile p);
 
-   // public void setFriends(ArrayList<Profile> friends);
+    void setUsername(String username);
 
-    public void setAge(int age);
+    void setAge(int age);
 
-    public void setGender(String gender);
-
-   // public void setFriendRequests(Profile profile);
-
-  //  public void addFriend(Profile profile);
-
-  //  public boolean isFriends(Profile profile);
-
-  //  public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException;
-
-  //  public boolean rejectRequest(Profile profile);
-
-  //  public void removeFriend(Profile f);
-
-    public boolean blockUser(Profile user);
+    void setGender(String gender);
 
 }
