@@ -4,7 +4,6 @@ import java.util.ArrayList;
 public class Post implements IPost {
     private String message;
     private int upvote;
-
     private int downvote;
     private Profile poster;
     private ArrayList<Comment> comments = new ArrayList<>();
@@ -89,6 +88,19 @@ public class Post implements IPost {
         return new Post(writer, msg, upvotes, downvotes, commentList);
     }
 
+    public void addComment(Profile commenter, String content) {
+        Comment comment = new Comment(commenter, content);
+        comments.add(comment);
+        numComments++;
+        commenter.addMyPost(comment);
+    }
+
+    public void deleteComment(Comment comment) {
+        comments.remove(comment);
+        comment.getCommenter().removeMyPost(comment);
+        this.numComments--;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -117,21 +129,12 @@ public class Post implements IPost {
         return poster;
     }
 
-    public int getComments() {
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+
+    public int getNumComments() {
         return numComments;
     }// get the number of the comments of the posts.
-
-    public void addComment(Profile commenter, String content) {
-        Comment comment = new Comment(commenter, content);
-        comments.add(comment);
-        numComments++;
-        commenter.addMyPost(comment);
-    }
-
-    public void deleteComment(Comment comment) {
-        comments.remove(comment);
-        comment.getCommenter().removeMyPost(comment);
-        this.numComments--;
-    }
 
 }
