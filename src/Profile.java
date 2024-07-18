@@ -1,25 +1,21 @@
-import java.io.IOException;
-import java.lang.reflect.InaccessibleObjectException;
 import java.util.*;
 
-/*
-This is the profile class of Dunstagram that has some information.
-
-@ version 7/8/24
-
-@author Mukund Rao
+/**
+ * Team Project - Profile
+ * <p>
+ * Profile class that has attributes username, password, age, gender, follower, and followers.
+ * It parses user information, constructs a profile based on a line in a file, and all follow and block implications.
+ * </p>
  */
 
 public class Profile implements IProfile {
     private String username;
     private String password;
-    private ArrayList<Profile> followers;
     private ArrayList<Profile> following;
     private int age;
     private String gender;
     private ArrayList<Post> userPosts;
     private ArrayList<Profile> blockedList;
-    private ArrayList<Comment> comments;
 
     /**
      * Profile constructor
@@ -32,8 +28,7 @@ public class Profile implements IProfile {
         this.password = password;
         this.age = 0;
         this.gender = "";
-
-        this.followers = new ArrayList<Profile>();
+        this.following = new ArrayList<Profile>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -51,8 +46,7 @@ public class Profile implements IProfile {
         this.password = password;
         this.age = age;
         this.gender = gender;
-
-        this.followers = new ArrayList<Profile>();
+        this.following = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -67,8 +61,7 @@ public class Profile implements IProfile {
         this.password = "";
         this.age = 0;
         this.gender = "";
-
-        this.followers = new ArrayList<>();
+        this.following = new ArrayList<>();
         this.userPosts = new ArrayList<>();
         this.blockedList = new ArrayList<>();
     }
@@ -79,16 +72,21 @@ public class Profile implements IProfile {
     public Profile() {
         this.username = "Profile_Not_Found";
         this.age = -1;
-        this.gender = "Null";
+        this.gender = "";
 
     }
 
+    /**
+     * toString method that parses the user information for file outputting
+     *
+     * @return result.toString - user information line
+     */
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append(username).append("_").append(password).append("_")
                 .append(age).append("_").append(gender).append("_");
-        for (int i = 0; i < followers.size(); i++) {
-            result.append(followers.get(i).getUsername()).append("_");
+        for (int i = 0; i < following.size(); i++) {
+            result.append(following.get(i).getUsername()).append("_");
         }
         result.append("==+=="); //String that splits friend list and blocked list
         for (int i = 0; i < blockedList.size(); i++) {
@@ -98,6 +96,11 @@ public class Profile implements IProfile {
         return result.toString();
     }
 
+    /**
+     * makeProfile method that constructors a new profile based on the information sent from Base class
+     * @param userInfo - a string line passed from Base class
+     * @return newProfile
+     */
     public Profile makeProfile(String userInfo) {
         String[] firstParse = userInfo.split("==+==");
         String basicInfo = firstParse[0];
@@ -107,10 +110,11 @@ public class Profile implements IProfile {
         String username = parts[0];
         String password = parts[1];
         int age = Integer.parseInt(parts[2]);
+
         String gender = parts[3];
         Profile newProfile = new Profile(username, password, age, gender);
         for (int i = 4; i < parts.length; i++) {
-            newProfile.followers.add(new Profile(parts[i]));
+            newProfile.following.add(new Profile(parts[i]));
         }
 
         String[] parts2 = blockList.split("_");
@@ -121,6 +125,11 @@ public class Profile implements IProfile {
         return newProfile;
     }
 
+    /**
+     * equals method that returns boolean if input profile has the same attributes with this profile
+     * @param toCompare - profile to compare
+     * @return true if they are equal
+     */
     public boolean equals(Profile toCompare) {
         return username.equals(toCompare.getUsername()) &&
                 password.equals(toCompare.getPassword()) &&
@@ -137,28 +146,24 @@ public class Profile implements IProfile {
     }
 
     public void follow(Profile p) {
-        p.getFollowed(this);
         following.add(p);
     }
 
     public void unfollow(Profile p) {
         following.remove(p);
-        p.getFollowers().remove(this);
     }
 
-    public boolean removeFollowers(Profile f) {
-        if (followers.contains(f)) {
-            followers.remove(f);
-            return true;
-        }
-        return false;
+    /**
+     *
+     * @param follow - profile to check if this profile follows
+     * @return
+     */
+    public boolean isFollowing(Profile follow) {
+        return this.following.contains(follow);
     }
 
     public boolean blockUser(Profile user) { //assumes input is a valid user
-        if (followers.contains(user) || !blockedList.contains(user)) {
-            if (user.getFollowers().contains(this)) {
-                user.removeFollowers(this);
-            }
+        if (following.contains(user) || !blockedList.contains(user)) {
             user.unfollow(this);
             blockedList.add(user);
             return true;
@@ -182,10 +187,6 @@ public class Profile implements IProfile {
         return password;
     }
 
-    public ArrayList<Profile> getFollowers() {
-        return followers;
-    }
-
     public int getAge() {
         return age;
     }
@@ -204,10 +205,6 @@ public class Profile implements IProfile {
 
     public ArrayList<Profile> getBlockedList() {
         return this.blockedList;
-    }
-
-    public void getFollowed(Profile p) {
-        this.followers.add(p);
     }
 
     public void setUsername(String username) {

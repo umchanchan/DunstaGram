@@ -13,15 +13,12 @@ public interface IProfile {
 
     void unfollow(Profile p);
 
-    boolean removeFollowers(Profile f);
-
     boolean blockUser(Profile user);
 
     String getUsername();
 
     String getPassword();
 
-    ArrayList<Profile> getFollowers();
 
     int getAge();
 
@@ -32,7 +29,6 @@ public interface IProfile {
     ArrayList<Post> getMyPosts();
 
     ArrayList<Profile> getBlockedList();
-    void getFollowed(Profile p);
 
     void setUsername(String username);
 

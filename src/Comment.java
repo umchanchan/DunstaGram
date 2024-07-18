@@ -1,3 +1,6 @@
+/**
+ *
+ */
 public class Comment extends Post implements IComment {
     private Profile commenter;
     private String contents;
@@ -12,6 +15,7 @@ public class Comment extends Post implements IComment {
         this.originalPost.addComment(commenter, content);
 
     }
+
     public Comment(Profile commenter, String contents) {
         super();
         this.commenter = commenter;
@@ -37,30 +41,39 @@ public class Comment extends Post implements IComment {
     public void addUpvote() {
         upvote++;
     }
+
     public void subtractUpvote() {
         upvote--;
     }
+
     public void addDownvote() {
         downvote++;
     }
+
     public void subtractDownvote() {
         downvote--;
     }
+
     public String getUsername() {
         return username;
     }
+
     public String getCommentContents() {
         return contents;
     }
+
     public int getUpvote() {
         return upvote;
     }
+
     public int getDownvote() {
         return downvote;
     }
+
     public Profile getCommenter() {
         return commenter;
     }
+
     public Post getOriginalPost() {
         return originalPost;
     }
