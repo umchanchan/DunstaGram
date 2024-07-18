@@ -122,10 +122,10 @@ public class Profile implements IProfile {
     }
 
     public boolean equals(Profile toCompare) {
-        return username.equals(toCompare.username) &&
-                password.equals(toCompare.password) &&
-                gender.equals(toCompare.gender) &&
-                age == toCompare.age;
+        return username.equals(toCompare.getUsername()) &&
+                password.equals(toCompare.getPassword()) &&
+                gender.equals(toCompare.getGender()) &&
+                age == toCompare.getAge();
     }
 
     public void addMyPost(Post post) {

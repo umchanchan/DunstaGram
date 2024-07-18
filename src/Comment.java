@@ -4,7 +4,14 @@ public class Comment extends Post implements IComment {
     private int upvote;
     private int downvote;
     private String username;
+    private Post originalPost;
 
+    public Comment(Profile commenter, String content, Post originalPost) {
+        super(commenter, content);
+        this.originalPost = originalPost;
+        this.originalPost.addComment(commenter, content);
+
+    }
     public Comment(Profile commenter, String contents) {
         super();
         this.commenter = commenter;
@@ -53,5 +60,8 @@ public class Comment extends Post implements IComment {
     }
     public Profile getCommenter() {
         return commenter;
+    }
+    public Post getOriginalPost() {
+        return originalPost;
     }
 }
