@@ -70,9 +70,15 @@ public class Profile implements IProfile {
      * Invalid constructor
      */
     public Profile() {
-        this.username = "Profile_Not_Found";
-        this.age = -1;
-        this.gender = "";
+        this.username = null;
+        this.age = Integer.parseInt(null);
+        this.gender = null;
+        this.password = null;
+        this.following = null;
+        this.userPosts = null;
+        this.blockedList = null;
+
+
 
     }
 

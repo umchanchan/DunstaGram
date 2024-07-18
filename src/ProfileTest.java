@@ -48,11 +48,11 @@ class ProfileTest {
         profile1.follow(profile2);
         profile.follow(profile2);
 
-        assertEquals(2, profile2.getFollowers().size());
+        assertEquals(1, profile1.getFollowing().size());
 
         profile.unfollow(profile2);
 
-        assertEquals(1, profile2.getFollowers().size());
+        assertEquals(0, profile.getFollowing().size());
 
 
     }
@@ -60,7 +60,14 @@ class ProfileTest {
     @Test
     public void testPostMethods() {
         Post p = new Post(profile, "NOOOO!");
-        Comment c = new Comment(profile1, "YES!", p);
+        ArrayList<Post> all = new ArrayList<>();
+        all.add(p);
+        Comment c = new Comment(profile1, "YES!");
+
+        NewsFeed n = new NewsFeed(profile1,all);
+
+        n.comment()
+
         assertEquals(1, c.getComments().size());
         assertEquals(1, profile.getMyPosts().size());
     }
