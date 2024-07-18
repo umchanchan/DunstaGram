@@ -1,11 +1,11 @@
 import java.util.*;
+
 /**
- * Team Project -
+ * Team Project - NewsFeed
  * <p>
- *     A class showing all posts
+ * NewsFeed class displaying all posts that each user can view.
+ * This class is going to be mainly implemented for phase 2.
  * </p>
- *
- *
  */
 public class NewsFeed implements INewsFeed {
     private Profile profile;
@@ -14,7 +14,6 @@ public class NewsFeed implements INewsFeed {
     public NewsFeed(Profile profile, ArrayList<Post> allPost) {
         this.profile = profile;
         this.allPost = allPost;
-
     }
 
     public void makePost(String message) {
@@ -22,6 +21,12 @@ public class NewsFeed implements INewsFeed {
         allPost.add(newPost);
         profile.addMyPost(newPost);
 
+    }
+
+    public void filterPost(Profile follow) {
+        if (profile.isFollowing(follow)) {
+            allPost.addAll(follow.getMyPosts());
+        }
     }
 
     public void upvotePost(Post post) {
@@ -51,8 +56,6 @@ public class NewsFeed implements INewsFeed {
     public void setAllPost(ArrayList<Post> p) {
         this.allPost = p;
     }
-
-
 
 
 }

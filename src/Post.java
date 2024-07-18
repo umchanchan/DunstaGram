@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 
+/**
+ *
+ *
+ */
 
 public class Post implements IPost {
     private String message;
