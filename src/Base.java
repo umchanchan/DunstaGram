@@ -12,11 +12,6 @@ public class Base {
     private Profile profile = new Profile();
     private Post post;
 
-    public Base() {
-        this.allPosts = new ArrayList<Post>();
-    }
-
-
     public Profile searchUser(String username) throws UserNotFoundException {
         for (Profile profile : users) {
             if (profile.getUsername().equals(username)) {
@@ -34,6 +29,9 @@ public class Base {
             if (user.getUsername().equals(username)) {
                 return false;
             }
+        }
+        if (username.isEmpty() || password.isEmpty() || gender.isEmpty()) {
+            return false;
         }
         Profile newProfile = new Profile(username, password, age, gender);
         users.add(newProfile);
@@ -53,24 +51,56 @@ public class Base {
         return false;
     }
 
-    public void follow(Profile profile, Profile toAdd) throws IOException {
+    public boolean follow(Profile profile, Profile toAdd) throws IOException {
+        boolean worked = false;
         for (Profile user : users) {
             if (user.getUsername().equals(profile.getUsername())) {
                 profile.follow(toAdd);
+                worked = true;
                 writeUserListFile();
                 break;
             }
         }
+        return worked;
     }
 
-    public void unFollow(Profile profile, Profile toUnfollow) throws IOException {
+    public boolean unFollow(Profile profile, Profile toUnfollow) throws IOException {
+        boolean worked = false;
         for (Profile user : users) {
             if (user.getUsername().equals(profile.getUsername())) {
                 profile.unfollow(toUnfollow);
+                worked = true;
                 writeUserListFile();
                 break;
             }
         }
+        return worked;
+    }
+
+    public boolean block(Profile profile, Profile toBlock) throws IOException {
+        boolean worked = false;
+        for (Profile user : users) {
+            if (user.getUsername().equals(profile.getUsername())) {
+                profile.blockUser(toBlock);
+                worked = true;
+                writeUserListFile();
+                break;
+            }
+        }
+        return worked;
+    }
+
+    public boolean unBlock(Profile profile, Profile unBlock) throws IOException {
+        boolean worked = false;
+        for (Profile user : users) {
+            if (user.getUsername().equals(profile.getUsername())) {
+                profile.unblockUser(unBlock);
+                worked = true;
+                writeUserListFile();
+                break;
+            }
+        }
+        return worked;
     }
 
     public void readUserListFile() throws IOException {
@@ -164,5 +194,27 @@ public class Base {
         allPosts.remove(post);
         poster.removeMyPost(post);
         writePostListFile();
+    }
+
+    public void makeComment(Post post, Profile commenter, String message) throws IOException {
+        for (Post samePost : allPosts) {
+            if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
+                post.addComment(commenter, message);
+                writePostListFile();
+            }
+        }
+    }
+
+    public void deleteComment(Post post, Profile commenter, String message) throws IOException {
+        for (Post samePost : allPosts) {
+            if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
+                for (Comment comment : post.getComments()) {
+                    if ((comment.getCommenter().equals(commenter)) && (comment.getMessage().equals(message))) {
+                        post.deleteComment(comment);
+                    }
+                }
+                writePostListFile();
+            }
+        }
     }
 }

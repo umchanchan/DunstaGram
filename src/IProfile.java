@@ -1,56 +1,39 @@
 import java.util.ArrayList;
 
 public interface IProfile {
-    //public boolean signUp(String username, String password) throws IOException;
+    String toString();
 
-    //public boolean login(String username, String password) throws IOException, UserNotFoundException;
+    Profile makeProfile(String userInfo);
 
-    //public ArrayList<String> readUserListFile() throws IOException;
+    void addMyPost(Post post);
 
-   // public void writeUserListFile(ArrayList<String> userInfo) throws IOException;
+    void removeMyPost(Post post);
 
-   // public void reWriteUserListFile(ArrayList<String> lines) throws IOException;
+    void follow(Profile p);
 
-    public String getUsername();
+    void unfollow(Profile p);
 
-    public String getPassword();
+    boolean blockUser(Profile user);
 
-    public ArrayList<Profile> getFollowers();
+    String getUsername();
 
-  //  public ArrayList<Profile> getFriends();
+    String getPassword();
 
-    public int getAge();
 
-    public String getGender();
+    int getAge();
 
-   // public ArrayList<Profile> getFriendRequests();
+    String getGender();
 
-    public ArrayList<Post> getMyPosts();
+    ArrayList<Profile> getFollowing();
 
-    public ArrayList<Profile> getBlockedList();
+    ArrayList<Post> getMyPosts();
 
-    public void setUsername(String username);
+    ArrayList<Profile> getBlockedList();
 
-    public boolean removeFollowers(Profile p);
+    void setUsername(String username);
 
-   // public void setFriends(ArrayList<Profile> friends);
+    void setAge(int age);
 
-    public void setAge(int age);
-
-    public void setGender(String gender);
-
-   // public void setFriendRequests(Profile profile);
-
-  //  public void addFriend(Profile profile);
-
-  //  public boolean isFriends(Profile profile);
-
-  //  public boolean acceptRequest(Profile friend) throws IOException, UserNotFoundException;
-
-  //  public boolean rejectRequest(Profile profile);
-
-  //  public void removeFriend(Profile f);
-
-    public boolean blockUser(Profile user);
+    void setGender(String gender);
 
 }

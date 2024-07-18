@@ -1,5 +1,4 @@
 public interface INewsFeed {
-    public void makePost(String message);
 
     public void upvotePost(Post post);
 

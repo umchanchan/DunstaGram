@@ -32,8 +32,32 @@ public class ClientHandler implements IClientHandler {
                 }
                 switch (clientInput) {
                     case "signUp" -> {
+                        String username = bfr.readLine();
+                        String password = bfr.readLine();
+                        int age = 0;
+                        try {
+                            age = Integer.parseInt(bfr.readLine());
+                        } catch (NumberFormatException e) {
+                            pw.println("Invalid Integer");
+                            pw.flush();
+                        }
+                        if (age < 0) {
+                            pw.println("Invalid Integer");
+                            pw.flush();
+                        }
+                        String gender = bfr.readLine();
+                        if (base.signUp(username, password, age, gender)) {
+                            pw.println("success");
+                            pw.flush();
+                        } else {
+                            pw.println("fail");
+                            pw.flush();
+                        }
+                    }
+                    case "login" -> {
 
-
+                    }
+                    case "follow" -> {
 
                     }
 
