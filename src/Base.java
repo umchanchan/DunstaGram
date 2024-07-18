@@ -12,11 +12,6 @@ public class Base {
     private Profile profile = new Profile();
     private Post post;
 
-    public Base() {
-        this.allPosts = new ArrayList<Post>();
-    }
-
-
     public Profile searchUser(String username) throws UserNotFoundException {
         for (Profile profile : users) {
             if (profile.getUsername().equals(username)) {
@@ -34,6 +29,9 @@ public class Base {
             if (user.getUsername().equals(username)) {
                 return false;
             }
+        }
+        if (username.isEmpty() || password.isEmpty() || gender.isEmpty()) {
+            return false;
         }
         Profile newProfile = new Profile(username, password, age, gender);
         users.add(newProfile);

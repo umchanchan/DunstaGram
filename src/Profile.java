@@ -15,6 +15,7 @@ public class Profile implements IProfile {
     private int age;
     private String gender;
     private ArrayList<Post> userPosts;
+    private ArrayList<Post> followingPosts;
     private ArrayList<Profile> blockedList;
 
     /**
@@ -29,6 +30,7 @@ public class Profile implements IProfile {
         this.age = 0;
         this.gender = "";
         this.following = new ArrayList<Profile>();
+        this.followingPosts = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -47,6 +49,7 @@ public class Profile implements IProfile {
         this.age = age;
         this.gender = gender;
         this.following = new ArrayList<>();
+        this.followingPosts = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -62,6 +65,7 @@ public class Profile implements IProfile {
         this.age = 0;
         this.gender = "";
         this.following = new ArrayList<>();
+        this.followingPosts = new ArrayList<>();
         this.userPosts = new ArrayList<>();
         this.blockedList = new ArrayList<>();
     }
@@ -201,6 +205,14 @@ public class Profile implements IProfile {
 
     public ArrayList<Post> getMyPosts() {
         return this.userPosts;
+    }
+
+    public ArrayList<Post> getFollowingPosts() {
+        NewsFeed myNewsFeed = new NewsFeed(this);
+        for (Profile friend : following) {
+            followingPosts = myNewsFeed.filterPost(friend);
+        }
+        return followingPosts;
     }
 
     public ArrayList<Profile> getBlockedList() {
