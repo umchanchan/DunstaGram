@@ -16,9 +16,4 @@ public class RunLocalTest {
         System.out.println(p.getMyPosts().getFirst().toStringFileFormat());
 
     }
-
-    public boolean testProfile() {
-        Profile p = new Profile("John", "122", 44);
-
-    }
 }

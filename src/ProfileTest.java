@@ -62,13 +62,12 @@ class ProfileTest {
         Post p = new Post(profile, "NOOOO!");
         ArrayList<Post> all = new ArrayList<>();
         all.add(p);
-        Comment c = new Comment(profile1, "YES!");
 
         NewsFeed n = new NewsFeed(profile1,all);
 
-        n.comment()
+        n.comment(p, "YES");
 
-        assertEquals(1, c.getComments().size());
+        assertEquals(1, p.getComments().size());
         assertEquals(1, profile.getMyPosts().size());
     }
 

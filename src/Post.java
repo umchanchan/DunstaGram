@@ -93,7 +93,7 @@ public class Post implements IPost {
     }
 
     public void addComment(Profile commenter, String content) {
-        Comment comment = new Comment(commenter, content, this);
+        Comment comment = new Comment(commenter, content);
         comments.add(comment);
         numComments++;
         commenter.addMyPost(comment);
