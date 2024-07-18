@@ -25,7 +25,7 @@ public class Post implements IPost {
         this.message = message;
         this.upvote = 0;
         this.downvote = 0;
-        this.comments = null;
+        this.comments = new ArrayList<>();
         this.numComments = 0;
     }
 
@@ -35,6 +35,7 @@ public class Post implements IPost {
         this.upvote = 0;
         this.downvote = 0;
         this.numComments = 0;
+        this.comments = new ArrayList<>();
     }
 
     public String toString() {
@@ -132,6 +133,10 @@ public class Post implements IPost {
         comments.remove(comment);
         comment.getCommenter().removeMyPost(comment);
         this.numComments--;
+    }
+
+    public ArrayList<Comment> getCommentsList() {
+        return comments;
     }
 
 }
