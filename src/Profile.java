@@ -110,7 +110,10 @@ public class Profile implements IProfile {
     public Profile makeProfile(String userInfo) {
         String[] firstParse = userInfo.split("==+==");
         String basicInfo = firstParse[0];
-        String blockList = firstParse[1];
+        String blockList = "";
+        if(firstParse.length > 1) {
+            blockList = firstParse[1];
+        }
 
         String[] parts = basicInfo.split("_");
         String username = parts[0];
@@ -123,9 +126,12 @@ public class Profile implements IProfile {
             newProfile.following.add(new Profile(parts[i]));
         }
 
-        String[] parts2 = blockList.split("_");
-        for (String blockName : parts2) {
-            newProfile.blockedList.add(new Profile(blockName));
+        if(blockList != "") {
+            String[] parts2 = blockList.split("_");
+
+            for (String blockName : parts2) {
+                newProfile.blockedList.add(new Profile(blockName));
+            }
         }
 
         return newProfile;
