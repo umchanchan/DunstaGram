@@ -5,6 +5,7 @@
  * It parses user information, constructs a profile based on a line in a file, and all follow and block implications.
  * </p>
  */
+
 public class Comment extends Post implements IComment {
     private Profile commenter;
     private String contents;

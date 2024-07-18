@@ -9,24 +9,17 @@ import java.util.*;
  */
 public class NewsFeed implements INewsFeed {
     private Profile profile;
-    private ArrayList<Post> allPost;
+    private ArrayList<Post> allPost = new ArrayList<>();
 
-    public NewsFeed(Profile profile, ArrayList<Post> allPost) {
+    public NewsFeed(Profile profile) {
         this.profile = profile;
-        this.allPost = allPost;
     }
 
-    public void makePost(String message) {
-        Post newPost = new Post(profile, message);
-        allPost.add(newPost);
-        profile.addMyPost(newPost);
-
-    }
-
-    public void filterPost(Profile follow) {
+    public ArrayList<Post> filterPost(Profile follow) {
         if (profile.isFollowing(follow)) {
             allPost.addAll(follow.getMyPosts());
         }
+        return allPost;
     }
 
     public void upvotePost(Post post) {
