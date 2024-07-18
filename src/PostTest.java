@@ -41,6 +41,9 @@ public class PostTest {
         assertEquals(1, fullPost.getComments());
     }
 
+
+
+
     @Test
     public void testAddComment() {
         post.addComment(commenter, "This is another test comment");
