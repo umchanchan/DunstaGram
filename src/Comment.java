@@ -1,5 +1,9 @@
 /**
- *
+ * Team Project - Profile
+ * <p>
+ * Profile class that has attributes username, password, age, gender, follower, and followers.
+ * It parses user information, constructs a profile based on a line in a file, and all follow and block implications.
+ * </p>
  */
 public class Comment extends Post implements IComment {
     private Profile commenter;
@@ -7,7 +11,6 @@ public class Comment extends Post implements IComment {
     private int upvote;
     private int downvote;
     private String username;
-    private Post originalPost;
 
     public Comment(Profile commenter, String contents) {
         super();
@@ -65,9 +68,5 @@ public class Comment extends Post implements IComment {
 
     public Profile getCommenter() {
         return commenter;
-    }
-
-    public Post getOriginalPost() {
-        return originalPost;
     }
 }
