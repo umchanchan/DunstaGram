@@ -7,6 +7,9 @@ import javax.swing.*;
  */
 import java.util.Scanner;
 
+/**
+ *
+ */
 public class Client implements IClient {
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in); //to be deleted
@@ -21,9 +24,9 @@ public class Client implements IClient {
             oos.writeObject("makeComment");
 //            Profile chan = new Profile("Chan", "1123", 23, "Male");
             Profile profile = new Profile("Chris", "11233");
-            Post post = new Post(profile, "Fuck you");
+            Post post = new Post(profile, "Thank you");
             oos.writeObject(post);
-            oos.writeObject("Fuck you too");
+            oos.writeObject("Thank you too");
             oos.flush();
 
             Object obj = ois.readObject();
