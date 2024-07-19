@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 /**
  * Team Project - Comment
  * <p>
@@ -5,7 +7,7 @@
  * </p>
  */
 
-public class Comment extends Post implements IComment {
+public class Comment extends Post implements IComment, Serializable {
     private Profile commenter;
     private String contents;
     private int upvote;

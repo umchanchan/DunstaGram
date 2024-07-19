@@ -52,12 +52,15 @@ public class Base implements IBase {
                 return null;
             }
             readUserListFile();
+            boolean found = false;
             for (Profile user : users) {
                 if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                    found = true;
                     return new Profile(user.getUsername(), user.getPassword(), user.getAge(), user.getGender());
-                } else {
-                    throw new UserNotFoundException("Invalid login!");
                 }
+            }
+            if (!found) {
+                throw new UserNotFoundException("Invalid login!");
             }
             return null;
         }

@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * </p>
  */
 
-public class Post implements IPost {
+public class Post implements IPost, Serializable {
     private String message;
     private int upvote;
     private int downvote;

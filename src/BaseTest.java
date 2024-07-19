@@ -25,6 +25,25 @@ public class BaseTest {
         });
     }
 
+    @Test
+    @DisplayName("Login")
+    void writeFile() {
+        assertDoesNotThrow(() -> {
+            base.readUserListFile();
+
+
+            ArrayList<Profile> temp = base.getUsers();
+            Profile profile = base.login("Chan", "1123");
+            Profile to = new Profile("Chris", "11233", 23, "Male");
+            if (base.follow(profile, to)) {
+                System.out.println("Success");
+            } else {
+                System.out.println("fuck");
+            }
+//            assertEquals("Chan", profile.getUsername());
+        });
+    }
+
 
     @Test
     @DisplayName("Test if searchUser and signUp method work")
