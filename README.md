@@ -1,33 +1,84 @@
-Welcome To DunstaGram!
+# Project Name : DunstaGram
 
 
-Instructions for Compilation and Execution of the Program:
+## Compilation and Execution Instructions
+To compile and run the project, follow these steps:
 
-1. Ensure that the Java Development Kit is installed on your system.
-2. In your system open a terminal or command prompt
-3. Navigate through the directory containing the source files and compile all Java files using the command javac [filename].java
+1. Ensure you have Java JDK installed on your system.
+2. Navigate to the project directory where the `.java` files are located.
+3. Compile the Java files.
+4. Run the `Server` class.
+5. Run the `ClientGUI` class for initiate a client.
 
-For Execution:
-1. In a terminal, start the server with the command "java Server"
-2. In a different terminal or command prompt, start the client with the command "java Client"
+## Class Descriptions
 
-Student Submissions:
-[NAME HERE] - Submitted Report on Brightspace
-[NAME HERE] - Submitted on Vocareum Workspace
+### Base Class
+The `Foundation` class is the core component responsible for managing user accounts, posts, and file operations within the system. It ensures data persistence by reading from and writing to text files whenever changes occur.
 
-Class Descriptions: 
-The following information is a description of all of the classes, their functionalities, their test cases, and their relationships to other classes within the program. 
+- **Functionality**: Manages user data, posts, and interactions such as sign-up, login, follow/unfollow, block/unblock, post creation, commenting, and voting.
+- **Testing**: Unit tests cover user creation, posting, follow/unfollow, and file operations to ensure class methods perform as expected.
+- **Relationships**: 
 
-Base.java:
-The purpose of this class is to manage file I/O operations as well as user profiles and posts. This includes things like signing in, logging in, following or unfollowing other users, blocking or unblocking other users, and managing posts and comments. This class works with other classes such as Profile, Post, and Comment to manage users and their posts and implements the Base interface.
 
-Test cases for this class is included in the BaseTest.java file. It creates a new user by passing through the "signUp" method. It then tests other methods in the class such as the "searchUser" method and "writeUserList" method to make sure the input passed into "signUp" worked.
+### Client Class
+Functions as the client which the user will see. Complex GUIs will be implemented in phase 2. This client exchanges information with the `ClientHandler` class, which is how it determines its inputs and outputs.
 
-Client.java:
-The purpose of this class is to handle the client GUI for the application. It works with ClientHandler and Base classes to connect to the server and handle user interactions. 
+- **Functionality**: Functions as the client which the user will see, allows the user to interact with it, takes user inputs and displays information back to the user.
+- **Testing**: Tested for alignment of inputs and outputs with `ClientHandler`, loops and switches. Tested using scanner for inputs.
+- **Relationship to Other Classes**: Reads from and writes to `ClientHandler`.
 
-ClientHandler.java:
-This class handles communication between the client and the server in a run() loop that processes client requests.
+### ClientHandler Class
+Functions as a server for an instance of `ClientGUI` to interact with.
+
+- **Functionality**: Functions as an individual server for an individual client to interact with. Instances of `ClientHandler` are initiated as a thread in `Server` for efficiency.
+- **Testing**: Tested in conjunction with `ClientGUI` as `ClientGui` reads from this class for outputs.
+- **Relationship to Other Classes**: Instances are created in threads by `Server`. Uses methods in `Base` to create outputs, which are sent to `ClientGUI` to parse into the client.
+
+### Comment Class
+Contains the contents of one comment.
+
+- **Functionality**: 
+- **Testing**: 
+- **Relationship to Other Classes**: 
+
+### Profile Class
+Represents an individual user in the system.
+
+- **Functionality**:
+- **Testing**:
+- **Relationship to Other Classes**:
+
+### NewsFeed Class
+Represents 
+
+- **Functionality**:
+- **Testing**:
+- **Relationship to Other Classes**:
+
+### Post Class
+Represents
+
+- **Functionality**:
+- **Testing**:
+- **Relationship to Other Classes**:
+
+### Server Class
+Runs indefinitely in the background, creating threads that runs the `ClientHandler` class.
+
+- **Functionality**: The server will accept client connection as they come, creating `ClientHandler` instances accordingly.
+- **Testing**: Tested in proxy when testing `ClientGUI` and `ClientHandler` as they require the functionality of `Server` to run.
+- **Relationship to Other Classes**: Creates `ClientHandler` instances when a connection from `ClientGUI` is accepted.
+
+## Exception Descriptions
+
+### UserNotFoundException
+
+An exception to be thrown when a user is not found. This is used by the `Profile` and `Base` classes as they search for an `Profile` object.
+
+
+
+
+---
 
 Comment.java:
 This class is what allows users to create comments on a post. This class extends the class Post and implements the IComment interface. It includes methods to add upvotes or downvotes to a comment, and can return a string with the Username of the commenter, plus the contents of the comment. 
@@ -45,6 +96,3 @@ This is a class that allows a user to create a post. It implements the interface
 
 Server.java:
 This class is meant for handling server operations and client connections. It implements the IServer interface and works with the Client class to handle the Server-Client relationship.
-
-UserNotFoundException.java:
-This is a class that includes a custom exception to be thrown when a user cannot be found. This exception is used in the Base class, the Profile class, and the Post class. 
