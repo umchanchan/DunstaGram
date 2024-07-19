@@ -61,4 +61,10 @@ public class Comment extends Post implements IComment, Serializable {
     public Profile getCommenter() {
         return commenter;
     }
+
+    public void setCommentContents(String contents) {
+        this.contents = contents;
+    }
+
+
 }
