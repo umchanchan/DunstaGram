@@ -18,47 +18,47 @@ public class ClientHandler implements IClientHandler {
 
     public void run() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
-            PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
             ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
 
             while (true) {
-                String clientInput = bfr.readLine();
+                String clientInput = (String) ois.readObject();
                 //To stop this thread when the user closes the software.
                 if (clientInput == null) {
-                    pw.close();
-                    bfr.close();
+                    ois.close();
+                    oos.close();
                     clientSocket.close();
                     return;
                 }
                 switch (clientInput) {
                     case "signUp" -> {
-                        String username = bfr.readLine();
-                        String password = bfr.readLine();
+                        String username = (String) ois.readObject();
+                        String password = (String) ois.readObject();
+                        System.out.println(username);
+                        System.out.println(password);
                         int age = 0;
                         try {
-                            age = Integer.parseInt(bfr.readLine());
+                            age = Integer.parseInt((String) ois.readObject());
                         } catch (NumberFormatException e) {
-                            pw.println("Invalid");
-                            pw.flush();
+                            oos.writeObject("Invalid");
+                            oos.flush();
                         }
                         if (age < 0) {
-                            pw.println("Invalid");
-                            pw.flush();
+                            oos.writeObject("Invalid");
+                            oos.flush();
                         }
-                        String gender = bfr.readLine();
+                        String gender = (String) ois.readObject();
                         if (base.signUp(username, password, age, gender)) {
-                            pw.println("Success");
-                            pw.flush();
+                            oos.writeObject("Success");
+                            oos.flush();
                         } else {
-                            pw.println("Fail");
-                            pw.flush();
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
                     }
                     case "login" -> {
-                        String username = bfr.readLine();
-                        String password = bfr.readLine();
+                        String username = (String) ois.readObject();
+                        String password = (String) ois.readObject();
                         String result;
                         try {
                             if ((profile = base.login(username, password)) != null) {
@@ -79,44 +79,44 @@ public class ClientHandler implements IClientHandler {
                     case "follow" -> {
                         Profile toFollow = (Profile) ois.readObject();
                         if (base.follow(profile, toFollow)) {
-                            pw.println("Success");
-                            pw.flush();
+                            oos.writeObject("Success");
+                            oos.flush();
                         } else {
-                            pw.println("Fail");
-                            pw.flush();
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
                     }
 
                     case "unfollow" -> {
                         Profile toUnfollow = (Profile) ois.readObject();
                         if (base.unFollow(profile, toUnfollow)) {
-                            pw.println("Success");
-                            pw.flush();
+                            oos.writeObject("Success");
+                            oos.flush();
                         } else {
-                            pw.println("Fail");
-                            pw.flush();
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
                     }
 
                     case "block" -> {
                         Profile toBlock = (Profile) ois.readObject();
                         if (base.block(profile, toBlock)) {
-                            pw.println("Success");
-                            pw.flush();
+                            oos.writeObject("Success");
+                            oos.flush();
                         } else {
-                            pw.println("Fail");
-                            pw.flush();
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
                     }
 
                     case "unblock" -> {
                         Profile unBlock = (Profile) ois.readObject();
                         if (base.unBlock(profile, unBlock)) {
-                            pw.println("Success");
-                            pw.flush();
+                            oos.writeObject("Success");
+                            oos.flush();
                         } else {
-                            pw.println("Fail");
-                            pw.flush();
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
                     }
 
@@ -133,7 +133,7 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "makePost" -> {
-                        String message = bfr.readLine();
+                        String message = (String) ois.readObject();
                         Post post = base.makeNewPost(profile, message);
                         boolean samePost = false;
                         //first check if the user has the same post
@@ -153,12 +153,12 @@ public class ClientHandler implements IClientHandler {
                     case "removePost" -> {
                         Post post = (Post) ois.readObject();
                         if (base.removePost(profile, post)) {
-                            pw.println("Success");
-                            pw.flush();
+                            oos.writeObject("Success");
+                            oos.flush();
                         } else {
                             //inform user doesn't have authority
-                            pw.println("Fail");
-                            pw.flush();
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
                     }
 
@@ -169,7 +169,7 @@ public class ClientHandler implements IClientHandler {
 
                     case "makeComment" -> {
                         Post post = (Post) ois.readObject();
-                        String message = bfr.readLine();
+                        String message = (String) ois.readObject();
                         boolean sameComment = false;
                         //first check if the user has the same comment
                         for (Comment comment : post.getComments()) {
@@ -197,12 +197,12 @@ public class ClientHandler implements IClientHandler {
                         Post post = (Post) ois.readObject();
                         Comment comment = (Comment) ois.readObject();
                         if (base.deleteComment(post, profile, comment)) {
-                            pw.println("Success");
-                            pw.flush();
+                            oos.writeObject("Success");
+                            oos.flush();
                         } else {
                             //inform user doesn't have authority
-                            pw.println("Fail");
-                            pw.flush();
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
                     }
 
@@ -231,20 +231,22 @@ public class ClientHandler implements IClientHandler {
                     case "showNumComments" -> {
                         Post post = (Post) ois.readObject();
                         int numComments = post.getNumComments();
-                        pw.println(numComments);
-                        pw.flush();
+                        String numStr = String.valueOf(numComments);
+                        oos.writeObject(numStr);
+                        oos.flush();
                     }
 
                     case "showNumFollowing" -> {
                         Profile viewUser = (Profile) ois.readObject();
                         int numFollowing = viewUser.getFollowing().size();
-                        pw.println(numFollowing);
-                        pw.flush();
+                        String numStr = String.valueOf(numFollowing);
+                        oos.writeObject(numStr);
+                        oos.flush();
                     }
 
                     case "searchUser" -> {
                         try {
-                            String username = bfr.readLine();
+                            String username = (String) ois.readObject();
                             Profile searchedUser = base.searchUser(username);
                             oos.writeObject(searchedUser);
                             oos.flush();

@@ -16,6 +16,14 @@ public class BaseTest {
         base.signUp("Jeff", "2332", 22, "Male");
     }
 
+    @Test
+    @DisplayName("Test if searchUser and signUp method work")
+    void testFileWriting() {
+        assertDoesNotThrow(() -> {
+            Profile user = base.searchUser("Jeff");
+            assertEquals("Jeff", user.getUsername());
+        });
+    }
 
 
     @Test
