@@ -59,4 +59,10 @@ public class Comment extends Post implements IComment {
     public Profile getCommenter() {
         return commenter;
     }
+
+    public void setCommentContents(String contents) {
+        this.contents = contents;
+    }
+
+
 }
