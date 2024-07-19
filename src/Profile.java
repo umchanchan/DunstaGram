@@ -79,7 +79,7 @@ public class Profile implements IProfile {
      */
     public Profile() {
         this.username = null;
-        this.age = Integer.parseInt(null);
+        this.age = 0;
         this.gender = null;
         this.password = null;
         this.following = null;

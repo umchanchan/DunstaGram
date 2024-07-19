@@ -66,7 +66,7 @@ class ProfileTest {
         ArrayList<Post> all = new ArrayList<>();
         all.add(p);
 
-        NewsFeed n = new NewsFeed(profile1,all);
+        NewsFeed n = new NewsFeed(profile1);
 
         n.comment(p, "YES");
 

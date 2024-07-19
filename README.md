@@ -93,6 +93,3 @@ This is a class that is meant to display all of the current posts so that each u
 Post.java:
 This is a class that allows a user to create a post. It implements the interface IPost. The class manages post content, post interaction, and comments. This class also includes a test case within the PostTest.java file. This test case verifies the Post class works by creating a user, a commenter, and a test comment to see that the input is correctly used in the methods within the Post class. 
 
-
-Server.java:
-This class is meant for handling server operations and client connections. It implements the IServer interface and works with the Client class to handle the Server-Client relationship.
