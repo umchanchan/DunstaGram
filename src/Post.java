@@ -25,6 +25,7 @@ public class Post implements IPost, Serializable {
         this.poster = poster;
         this.numComments = comments.size();
         this.comments = comments;
+        poster.addMyPost(this);
     }
 
     public Post(Profile poster, String message) {
@@ -34,6 +35,7 @@ public class Post implements IPost, Serializable {
         this.downvote = 0;
         this.comments = new ArrayList<>();
         this.numComments = 0;
+        poster.addMyPost(this);
     }
 
     public Post() {
@@ -76,6 +78,10 @@ public class Post implements IPost, Serializable {
             commentList.add(c);
         }
         return new Post(writer, msg, upvotes, downvotes, commentList);
+    }
+
+    public boolean equals(Post post) {
+        return post.poster.getUsername().equals(poster.getUsername()) && post.getMessage().equals(message);
     }
 
     public Comment addComment(Profile commenter, String content) {

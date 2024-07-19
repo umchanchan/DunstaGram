@@ -30,7 +30,7 @@ public class Comment extends Post implements IComment, Serializable {
 
     public String toString() {
         String str = commenter.getUsername() + "_" + contents + "_";
-        str += "_" + upvote + "_" + downvote;
+        str += upvote + "_" + downvote;
         return str;
     }
 
