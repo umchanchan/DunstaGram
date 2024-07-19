@@ -101,11 +101,13 @@ public class Profile implements IProfile, Serializable {
         for (int i = 0; i < following.size(); i++) {
             result.append(following.get(i).getUsername()).append("_");
         }
+
         if (!blockedList.isEmpty()) {
             result.append("===="); //String that splits friend list and blocked list
             for (int i = 0; i < blockedList.size(); i++) {
                 result.append(blockedList.get(i).username).append("_");
             }
+
         }
 
         return result.toString();
