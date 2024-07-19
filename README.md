@@ -13,7 +13,7 @@ To compile and run the project, follow these steps:
 ## Class Descriptions
 
 ### Base Class
-The `Foundation` class is the core component responsible for managing user accounts, posts, and file operations within the system. It ensures data persistence by reading from and writing to text files whenever changes occur.
+The `Base` class is the core component responsible for managing user accounts, posts, and file operations within the system. It ensures data persistence by reading from and writing to text files whenever changes occur.
 
 - **Functionality**: Manages user data, posts, and interactions such as sign-up, login, follow/unfollow, block/unblock, post creation, commenting, and voting.
 - **Testing**: Unit tests cover user creation, posting, follow/unfollow, and file operations to ensure class methods perform as expected.
