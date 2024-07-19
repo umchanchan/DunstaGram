@@ -27,6 +27,14 @@ public class Base implements IBase {
         }
     }
 
+    public ArrayList<String> getUserInfo(Profile toGet) {
+        ArrayList<String> retrievedUserInfo = new ArrayList<>();
+        retrievedUserInfo.add(toGet.getUsername());
+        retrievedUserInfo.add(String.valueOf(toGet.getAge()));
+        retrievedUserInfo.add(toGet.getGender());
+        return retrievedUserInfo;
+    }
+
 
     public boolean signUp(String username, String password, int age, String gender) throws IOException {
         synchronized (obj) {
@@ -71,7 +79,7 @@ public class Base implements IBase {
             boolean worked = false;
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
-                    profile.follow(toAdd);
+                    user.follow(toAdd);
                     worked = true;
                     writeUserListFile();
                     break;
@@ -86,7 +94,7 @@ public class Base implements IBase {
             boolean worked = false;
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
-                    profile.unfollow(toUnfollow);
+                    user.unfollow(toUnfollow);
                     worked = true;
                     writeUserListFile();
                     break;
@@ -101,9 +109,10 @@ public class Base implements IBase {
             boolean worked = false;
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
-                    profile.blockUser(toBlock);
-                    worked = true;
-                    writeUserListFile();
+                    if (user.blockUser(toBlock)) {
+                        worked = true;
+                        writeUserListFile();
+                    }
                     break;
                 }
             }
@@ -116,7 +125,7 @@ public class Base implements IBase {
             boolean worked = false;
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
-                    profile.unblockUser(unBlock);
+                    user.unblockUser(unBlock);
                     worked = true;
                     writeUserListFile();
                     break;
@@ -164,6 +173,7 @@ public class Base implements IBase {
 
     public void readPostListFile() throws IOException {
         synchronized (obj) {
+            clearAllPosts();
             try {
                 File f = new File("postList.txt");
                 FileReader fr = new FileReader(f);
@@ -232,6 +242,9 @@ public class Base implements IBase {
     public void clearUsers() {
         users.clear();
     }
+    public void clearAllPosts() {
+        allPosts.clear();
+    }
 
     public ArrayList<Profile> getUsers() {
         return users;
@@ -243,19 +256,38 @@ public class Base implements IBase {
 
     public Post makeNewPost(Profile poster, String message) throws IOException {
         synchronized (obj) {
-            Post post = new Post(poster, message);
-            poster.addMyPost(post);
-            allPosts.add(post);
-            writePostListFile();
-            return post;
+            for (Profile user : users) {
+                if (user.getUsername().equals(poster.getUsername())) {
+                    for (Post samePost : allPosts) {
+                        if (user.getUsername().equals(samePost.getPoster().getUsername())) {
+                            return null;
+                        }
+                    }
+                    Post post = new Post(user, message);
+                    user.addMyPost(post);
+                    allPosts.add(post);
+                    writePostListFile();
+                    return post;
+                }
+            }
+            return null;
         }
     }
 
     public boolean removePost(Profile poster, Post post) throws IOException {
         synchronized (obj) {
-            if (poster.equals(post.getPoster())) {
-                allPosts.remove(post);
-                poster.removeMyPost(post);
+            if (poster.getUsername().equals(post.getPoster().getUsername())) {
+                for (Post post1 : allPosts) {
+                    if (post1.equals(post)) {
+                        allPosts.remove(post1);
+                        break;
+                    }
+                }
+                for (Profile user : users) {
+                    if (user.getUsername().equals(poster.getUsername())) {
+                        poster.removeMyPost(post);
+                    }
+                }
                 writePostListFile();
                 return true;
             }
@@ -265,8 +297,12 @@ public class Base implements IBase {
 
     public void hidePost(Profile profile, Post post) throws IOException {
         synchronized (obj) {
-            if (!(profile.equals(post.getPoster()))) {
-                profile.hidePost(post);
+            if (!(profile.getUsername().equals(post.getPoster().getUsername()))) {
+                for (Post post1 : allPosts) {
+                    if (post.equals(post1)) {
+                        profile.hidePost(post1);
+                    }
+                }
                 writeHidePostListFile();
             }
         }
@@ -274,14 +310,22 @@ public class Base implements IBase {
 
     public void addUpvote(Post post) throws IOException {
         synchronized (obj) {
-            post.addUpvote();
+            for (Post post1 : allPosts) {
+                if (post1.equals(post)) {
+                    post1.addUpvote();
+                }
+            }
             writePostListFile();
         }
     }
 
     public void addDownvote(Post post) throws IOException {
         synchronized (obj) {
-            post.addDownvote();
+            for (Post post1 : allPosts) {
+                if (post1.equals(post)) {
+                    post1.addDownvote();
+                }
+            }
             writePostListFile();
         }
     }
@@ -310,9 +354,18 @@ public class Base implements IBase {
 
     public Comment makeComment(Post post, Profile commenter, String message) throws IOException {
         synchronized (obj) {
+            readPostListFile();
             for (Post samePost : allPosts) {
-                if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
-                    Comment comment = post.addComment(commenter, message);
+                if ((post.getPoster().getUsername().equals(samePost.getPoster().getUsername())) &&
+                        (post.getMessage().equals(samePost.getMessage()))) {
+                    ArrayList<Comment> comments = samePost.getComments();
+                    for (Comment comment1 : comments) {
+                        if (comment1.getCommenter().getUsername().equals(commenter.getUsername()) &&
+                        comment1.getCommentContents().equals(message)) {
+                            return null;
+                        }
+                    }
+                    Comment comment = samePost.addComment(commenter, message);
                     writePostListFile();
                     return comment;
                 }
@@ -323,10 +376,21 @@ public class Base implements IBase {
 
     public boolean deleteComment(Post post, Profile profile, Comment comment) throws IOException {
         synchronized (obj) {
+            readPostListFile();
             for (Post samePost : allPosts) {
-                if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
-                    if (profile.equals(post.getPoster()) || profile.equals(comment.getCommenter())) {
-                        post.deleteComment(comment);
+                if ((post.getPoster().getUsername().equals(samePost.getPoster().getUsername())) &&
+                        (post.getMessage().equals(samePost.getMessage()))) {
+
+                    if (profile.getUsername().equals(post.getPoster().getUsername()) ||
+                            profile.getUsername().equals(comment.getCommenter().getUsername())) {
+                        ArrayList<Comment> comments = samePost.getComments();
+                        for (Comment comment1 : comments) {
+                            if (comment1.getCommenter().getUsername().equals(comment.getCommenter().getUsername()) &&
+                            comment1.getCommentContents().equals(comment.getCommentContents())) {
+                                samePost.deleteComment(comment1);
+                                break;
+                            }
+                        }
                         writePostListFile();
                         return true;
                     }

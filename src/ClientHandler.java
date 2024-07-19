@@ -66,9 +66,7 @@ public class ClientHandler implements IClientHandler {
                     }
                     case "login" -> {
                         String username = (String) ois.readObject();
-                        System.out.println(username);
                         String password = (String) ois.readObject();
-                        System.out.println(password);
                         String result;
                         try {
                             if ((profile = base.login(username, password)) != null) {
@@ -143,24 +141,20 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "makePost" -> {
+                        profile = new Profile("Chris", "11233");
                         String message = (String) ois.readObject();
-                        Post post = base.makeNewPost(profile, message);
-                        boolean samePost = false;
-                        //first check if the user has the same post
-                        for (Post existPost : base.getAllPosts()) {
-                            if (existPost.getPoster().equals(profile) && existPost.getMessage().equals(message)) {
-                                oos.writeObject("Fail");
-                                oos.flush();
-                                samePost = true;
-                            }
-                        }
-                        if (!samePost) {
+                        Post post;
+                        if ((post = base.makeNewPost(profile, message)) != null) {
                             oos.writeObject(post);
+                            oos.flush();
+                        } else {
+                            oos.writeObject("Fail");
                             oos.flush();
                         }
                     }
 
                     case "removePost" -> {
+
                         Post post = (Post) ois.readObject();
                         if (base.removePost(profile, post)) {
                             oos.writeObject("Success");
@@ -178,29 +172,19 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "makeComment" -> {
+                        profile = new Profile("Chan", "1123", 23, "Male");
                         Post post = (Post) ois.readObject();
                         String message = (String) ois.readObject();
-                        boolean sameComment = false;
-                        //first check if the user has the same comment
-                        for (Comment comment : post.getComments()) {
-                            if (comment.getCommenter().equals(profile) &&
-                                    comment.getCommentContents().equals(message)) {
-                                oos.writeObject("Fail");
-                                oos.flush();
-                                sameComment = true;
-                            }
+                        Comment comment;
+                        if ((comment = base.makeComment(post, profile, message)) != null) {
+                            oos.writeObject(comment);
+                            oos.flush();
+                        } else {
+                            //this is unlikely to happen because user will choose pick one poster in GUI
+                            oos.writeObject("Fail");
+                            oos.flush();
                         }
-                        if (!sameComment) {
-                            Comment comment;
-                            if ((comment = base.makeComment(post, profile, message)) != null) {
-                                oos.writeObject(comment);
-                                oos.flush();
-                            } else {
-                                //this is unlikely to happen because user will choose pick one poster in GUI
-                                oos.writeObject("Fail");
-                                oos.flush();
-                            }
-                        }
+
                     }
 
                     case "deleteComment" -> {
@@ -278,7 +262,7 @@ public class ClientHandler implements IClientHandler {
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();
                 }
-            } catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
