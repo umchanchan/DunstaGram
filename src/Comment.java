@@ -1,8 +1,7 @@
 /**
- * Team Project - Profile
+ * Team Project - Comment
  * <p>
- * Profile class that has attributes username, password, age, gender, follower, and followers.
- * It parses user information, constructs a profile based on a line in a file, and all follow and block implications.
+ * Comment class that has attributes like commenter, contents, upvote, downvote
  * </p>
  */
 
@@ -11,12 +10,10 @@ public class Comment extends Post implements IComment {
     private String contents;
     private int upvote;
     private int downvote;
-    private String username;
 
     public Comment(Profile commenter, String contents) {
         super();
         this.commenter = commenter;
-        this.username = commenter.getUsername();
         this.contents = contents;
         this.upvote = 0;
         this.downvote = 0;
@@ -35,24 +32,16 @@ public class Comment extends Post implements IComment {
         return str;
     }
 
+    public boolean equals(Comment comment) {
+        return comment.commenter.equals(commenter) && comment.contents.equals(contents);
+    }
+
     public void addUpvote() {
         upvote++;
     }
 
-    public void subtractUpvote() {
-        upvote--;
-    }
-
     public void addDownvote() {
         downvote++;
-    }
-
-    public void subtractDownvote() {
-        downvote--;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public String getCommentContents() {

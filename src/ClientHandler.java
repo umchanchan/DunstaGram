@@ -3,12 +3,12 @@ import java.io.*;
 import java.util.*;
 
 /**
- *  Each client has a server that deals with each client's request
+ * Each client has a server that deals with each client's request
  */
 public class ClientHandler implements IClientHandler {
     private Socket clientSocket;
     private Base base;
-
+    private Profile profile;
 
     public ClientHandler(Socket clientSocket, Base base) {
         this.clientSocket = clientSocket;
@@ -19,11 +19,13 @@ public class ClientHandler implements IClientHandler {
     public void run() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
             PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
+            ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
 
             while (true) {
                 String clientInput = bfr.readLine();
-                //To stop this thread when the user close the software.
+                //To stop this thread when the user closes the software.
                 if (clientInput == null) {
                     pw.close();
                     bfr.close();
@@ -38,38 +40,226 @@ public class ClientHandler implements IClientHandler {
                         try {
                             age = Integer.parseInt(bfr.readLine());
                         } catch (NumberFormatException e) {
-                            pw.println("Invalid Integer");
+                            pw.println("Invalid");
                             pw.flush();
                         }
                         if (age < 0) {
-                            pw.println("Invalid Integer");
+                            pw.println("Invalid");
                             pw.flush();
                         }
                         String gender = bfr.readLine();
                         if (base.signUp(username, password, age, gender)) {
-                            pw.println("success");
+                            pw.println("Success");
                             pw.flush();
                         } else {
-                            pw.println("fail");
+                            pw.println("Fail");
                             pw.flush();
                         }
                     }
                     case "login" -> {
-
+                        String username = bfr.readLine();
+                        String password = bfr.readLine();
+                        String result;
+                        try {
+                            if ((profile = base.login(username, password)) != null) {
+                                oos.writeObject(profile); //in client side, check what the object is by instanceOf
+                                oos.flush();
+                            } else {
+                                result = "Fail";
+                                oos.writeObject(result);
+                                oos.flush();
+                            }
+                        } catch (UserNotFoundException e) {
+                            result = "Invalid";
+                            oos.writeObject(result);
+                            oos.flush();
+                        }
                     }
+
                     case "follow" -> {
-
+                        Profile toFollow = (Profile) ois.readObject();
+                        if (base.follow(profile, toFollow)) {
+                            pw.println("Success");
+                            pw.flush();
+                        } else {
+                            pw.println("Fail");
+                            pw.flush();
+                        }
                     }
 
+                    case "unfollow" -> {
+                        Profile toUnfollow = (Profile) ois.readObject();
+                        if (base.unFollow(profile, toUnfollow)) {
+                            pw.println("Success");
+                            pw.flush();
+                        } else {
+                            pw.println("Fail");
+                            pw.flush();
+                        }
+                    }
 
+                    case "block" -> {
+                        Profile toBlock = (Profile) ois.readObject();
+                        if (base.block(profile, toBlock)) {
+                            pw.println("Success");
+                            pw.flush();
+                        } else {
+                            pw.println("Fail");
+                            pw.flush();
+                        }
+                    }
 
+                    case "unblock" -> {
+                        Profile unBlock = (Profile) ois.readObject();
+                        if (base.unBlock(profile, unBlock)) {
+                            pw.println("Success");
+                            pw.flush();
+                        } else {
+                            pw.println("Fail");
+                            pw.flush();
+                        }
+                    }
+
+                    case "viewPosts" -> {
+                        ArrayList<Post> postList = profile.getFollowingPosts();
+                        oos.writeObject(postList);
+                        oos.flush();
+                    }
+
+                    case "listMyPosts" -> {
+                        ArrayList<Post> postList = profile.getMyPosts();
+                        oos.writeObject(postList);
+                        oos.flush();
+                    }
+
+                    case "makePost" -> {
+                        String message = bfr.readLine();
+                        Post post = base.makeNewPost(profile, message);
+                        boolean samePost = false;
+                        //first check if the user has the same post
+                        for (Post existPost : base.getAllPosts()) {
+                            if (existPost.getPoster().equals(profile) && existPost.getMessage().equals(message)) {
+                                oos.writeObject("Fail");
+                                oos.flush();
+                                samePost = true;
+                            }
+                        }
+                        if (!samePost) {
+                            oos.writeObject(post);
+                            oos.flush();
+                        }
+                    }
+
+                    case "removePost" -> {
+                        Post post = (Post) ois.readObject();
+                        if (base.removePost(profile, post)) {
+                            pw.println("Success");
+                            pw.flush();
+                        } else {
+                            //inform user doesn't have authority
+                            pw.println("Fail");
+                            pw.flush();
+                        }
+                    }
+
+                    case "hidePost" -> {
+                        Post post = (Post) ois.readObject();
+                        base.hidePost(profile, post);
+                    }
+
+                    case "makeComment" -> {
+                        Post post = (Post) ois.readObject();
+                        String message = bfr.readLine();
+                        boolean sameComment = false;
+                        //first check if the user has the same comment
+                        for (Comment comment : post.getComments()) {
+                            if (comment.getCommenter().equals(profile) &&
+                                    comment.getCommentContents().equals(message)) {
+                                oos.writeObject("Fail");
+                                oos.flush();
+                                sameComment = true;
+                            }
+                        }
+                        if (!sameComment) {
+                            Comment comment;
+                            if ((comment = base.makeComment(post, profile, message)) != null) {
+                                oos.writeObject(comment);
+                                oos.flush();
+                            } else {
+                                //this is unlikely to happen because user will choose pick one poster in GUI
+                                oos.writeObject("Fail");
+                                oos.flush();
+                            }
+                        }
+                    }
+
+                    case "deleteComment" -> {
+                        Post post = (Post) ois.readObject();
+                        Comment comment = (Comment) ois.readObject();
+                        if (base.deleteComment(post, profile, comment)) {
+                            pw.println("Success");
+                            pw.flush();
+                        } else {
+                            //inform user doesn't have authority
+                            pw.println("Fail");
+                            pw.flush();
+                        }
+                    }
+
+                    case "upvotePost" -> {
+                        Post post = (Post) ois.readObject();
+                        base.addUpvote(post);
+                    }
+
+                    case "downvotePost" -> {
+                        Post post = (Post) ois.readObject();
+                        base.addDownvote(post);
+                    }
+
+                    case "upvoteComment" -> {
+                        Post post = (Post) ois.readObject();
+                        Comment comment = (Comment) ois.readObject();
+                        base.addUpvote(post, comment);
+                    }
+
+                    case "downvoteComment" -> {
+                        Post post = (Post) ois.readObject();
+                        Comment comment = (Comment) ois.readObject();
+                        base.addDownvote(post, comment);
+                    }
+
+                    case "showNumComments" -> {
+                        Post post = (Post) ois.readObject();
+                        int numComments = post.getNumComments();
+                        pw.println(numComments);
+                        pw.flush();
+                    }
+
+                    case "showNumFollowing" -> {
+                        Profile viewUser = (Profile) ois.readObject();
+                        int numFollowing = viewUser.getFollowing().size();
+                        pw.println(numFollowing);
+                        pw.flush();
+                    }
+
+                    case "searchUser" -> {
+                        try {
+                            String username = bfr.readLine();
+                            Profile searchedUser = base.searchUser(username);
+                            oos.writeObject(searchedUser);
+                            oos.flush();
+                        } catch (UserNotFoundException e) {
+                            oos.writeObject("Fail");
+                            oos.flush();
+                        }
+                    }
                 }
 
 
             }
 
 
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

@@ -2,14 +2,17 @@ import java.util.*;
 import java.io.*;
 
 /**
- * This class's task is to deal with methods that utilize file IO
+ * Team Project - Base
+ * <p>
+ * Base class that mainly reads and write a file. It updates the file everytime there is a change.
+ * </p>
  */
 
 //It has to implement block method into file io
-public class Base {
+public class Base implements IBase {
     private ArrayList<Profile> users = new ArrayList<>();
     private ArrayList<Post> allPosts = new ArrayList<>();
-    private Profile profile = new Profile();
+    private Profile profile;
     private Post post;
 
     public Profile searchUser(String username) throws UserNotFoundException {
@@ -23,15 +26,14 @@ public class Base {
 
 
     public boolean signUp(String username, String password, int age, String gender) throws IOException {
-
+        if (username.isEmpty() || password.isEmpty() || gender.isEmpty()) {
+            return false;
+        }
         readUserListFile();
         for (Profile user : users) {
             if (user.getUsername().equals(username)) {
                 return false;
             }
-        }
-        if (username.isEmpty() || password.isEmpty() || gender.isEmpty()) {
-            return false;
         }
         Profile newProfile = new Profile(username, password, age, gender);
         users.add(newProfile);
@@ -39,16 +41,19 @@ public class Base {
         return true;
     }
 
-    public boolean login(String username, String password) throws IOException, UserNotFoundException {
+    public Profile login(String username, String password) throws IOException, UserNotFoundException {
+        if (username.isEmpty() || password.isEmpty()) {
+            return null;
+        }
         readUserListFile();
         for (Profile user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                return true;
+                return new Profile(user.getUsername(), user.getPassword(), user.getAge(), user.getGender());
             } else {
                 throw new UserNotFoundException("Invalid login!");
             }
         }
-        return false;
+        return null;
     }
 
     public boolean follow(Profile profile, Profile toAdd) throws IOException {
@@ -157,18 +162,44 @@ public class Base {
     }
 
     public void writePostListFile() throws IOException {
-        try (PrintWriter pw = new PrintWriter(new FileOutputStream("postList.txt", true), true)) {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream("postList.txt", false), true)) {
 
             for (Post post : allPosts) {
                 String postInfo = post.toString();
                 pw.println(postInfo);
+                pw.flush();
             }
-            pw.flush();
             pw.close();
         } catch (IOException e) {
             throw new IOException("Error occurred when writing a file");
         }
 
+    }
+
+    public void readHidePostListFile() throws IOException {
+        try {
+            BufferedReader bfr = new BufferedReader(new FileReader("hidePostList.txt"));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                profile.startHidePostList(line);
+            }
+        } catch (IOException e) {
+            throw new IOException("Error occurred when reading a file");
+        }
+    }
+
+    public void writeHidePostListFile() throws IOException {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream("hidePostList.txt", false), true)) {
+            for (Profile user : users) {
+                ArrayList<String> hideString = user.hidePostToString();
+                for (String line : hideString) {
+                    pw.println(line);
+                    pw.flush();
+                }
+            }
+        } catch (IOException e) {
+            throw new IOException("Error occurred when writing a file");
+        }
     }
 
     public void clearUsers() {
@@ -183,38 +214,80 @@ public class Base {
         return allPosts;
     }
 
-    public void makeNewPost(Profile poster, String message) throws IOException {
+    public Post makeNewPost(Profile poster, String message) throws IOException {
         Post post = new Post(poster, message);
         poster.addMyPost(post);
         allPosts.add(post);
         writePostListFile();
+        return post;
     }
 
-    public void removePost(Profile poster, Post post) throws IOException {
-        allPosts.remove(post);
-        poster.removeMyPost(post);
+    public boolean removePost(Profile poster, Post post) throws IOException {
+        if (poster.equals(post.getPoster())) {
+            allPosts.remove(post);
+            poster.removeMyPost(post);
+            writePostListFile();
+            return true;
+        }
+        return false;
+    }
+
+    public void hidePost(Profile profile, Post post) throws IOException {
+        if (!(profile.equals(post.getPoster()))) {
+            profile.hidePost(post);
+            writeHidePostListFile();
+        }
+    }
+
+    public void addUpvote(Post post) throws IOException {
+        post.addUpvote();
         writePostListFile();
     }
 
-    public void makeComment(Post post, Profile commenter, String message) throws IOException {
-        for (Post samePost : allPosts) {
-            if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
-                post.addComment(commenter, message);
-                writePostListFile();
+    public void addDownvote(Post post) throws IOException {
+        post.addDownvote();
+        writePostListFile();
+    }
+    //we will add cancel addUpvote and addDownvote if we could implement this in GUI
+
+    public void addUpvote(Post post, Comment comment) {
+        for (Comment comment1 : post.getComments()) {
+            if (comment.equals(comment1)) {
+                comment.addUpvote();
             }
         }
     }
 
-    public void deleteComment(Post post, Profile commenter, String message) throws IOException {
-        for (Post samePost : allPosts) {
-            if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
-                for (Comment comment : post.getComments()) {
-                    if ((comment.getCommenter().equals(commenter)) && (comment.getMessage().equals(message))) {
-                        post.deleteComment(comment);
-                    }
-                }
-                writePostListFile();
+    public void addDownvote(Post post, Comment comment) {
+        for (Comment comment1 : post.getComments()) {
+            if (comment.equals(comment1)) {
+                comment.addDownvote();
             }
         }
+    }
+
+
+    public Comment makeComment(Post post, Profile commenter, String message) throws IOException {
+        for (Post samePost : allPosts) {
+            if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
+                Comment comment = post.addComment(commenter, message);
+                writePostListFile();
+                return comment;
+            }
+        }
+        return null;
+    }
+
+    public boolean deleteComment(Post post, Profile profile, Comment comment) throws IOException {
+        for (Post samePost : allPosts) {
+            if ((post.getPoster().equals(samePost.getPoster())) && (post.getMessage().equals(samePost.getMessage()))) {
+                if (profile.equals(post.getPoster()) || profile.equals(comment.getCommenter())) {
+                    post.deleteComment(comment);
+                    writePostListFile();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

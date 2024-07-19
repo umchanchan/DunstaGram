@@ -37,6 +37,7 @@ public class Server implements IServer {
             base = new Base();
             base.readUserListFile();
             base.readPostListFile();
+            base.readHidePostListFile();
 
             while (running) {
                 Socket clientSocket = serverSocket.accept();

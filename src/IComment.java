@@ -1,14 +1,19 @@
 public interface IComment {
 
-    public void addComment(Profile commenter, String content);
-    public void deleteComment(Comment comment);
+    String toString();
 
-    public void addUpvote();
-    public void subtractUpvote();
-    public void addDownvote();
-    public void subtractDownvote();
-    public String getUsername();
-    public String getCommentContents();
-    public int getUpvote();
-    public int getDownvote();
+    boolean equals(Comment comment);
+
+    void addUpvote();
+
+    void addDownvote();
+
+    String getCommentContents();
+
+    int getUpvote();
+
+    int getDownvote();
+
+    Profile getCommenter();
+
 }
