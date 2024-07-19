@@ -8,7 +8,7 @@ import java.util.*;
 public class ClientHandler implements IClientHandler {
     private Socket clientSocket;
     private Base base;
-    private Profile profile;
+    private Profile profile = new Profile();
 
     public ClientHandler(Socket clientSocket, Base base) {
         this.clientSocket = clientSocket;
@@ -17,12 +17,17 @@ public class ClientHandler implements IClientHandler {
 
 
     public void run() {
+        ObjectOutputStream oos = null;
+        ObjectInputStream ois = null;
         try {
-            ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
-            ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+            oos = new ObjectOutputStream(clientSocket.getOutputStream());
+            oos.flush();
+            ois = new ObjectInputStream(clientSocket.getInputStream());
+
 
             while (true) {
                 String clientInput = (String) ois.readObject();
+                System.out.println(clientInput);
                 //To stop this thread when the user closes the software.
                 if (clientInput == null) {
                     ois.close();
@@ -38,9 +43,11 @@ public class ClientHandler implements IClientHandler {
                         System.out.println(password);
                         int age = 0;
                         try {
-                            age = Integer.parseInt((String) ois.readObject());
+                            String temp = (String) ois.readObject();
+                            System.out.println(temp);
+                            age = Integer.parseInt(temp);
                         } catch (NumberFormatException e) {
-                            oos.writeObject("Invalid");
+                            oos.writeObject("Invalid Int");
                             oos.flush();
                         }
                         if (age < 0) {
@@ -48,6 +55,7 @@ public class ClientHandler implements IClientHandler {
                             oos.flush();
                         }
                         String gender = (String) ois.readObject();
+                        System.out.println(gender);
                         if (base.signUp(username, password, age, gender)) {
                             oos.writeObject("Success");
                             oos.flush();
@@ -58,7 +66,9 @@ public class ClientHandler implements IClientHandler {
                     }
                     case "login" -> {
                         String username = (String) ois.readObject();
+                        System.out.println(username);
                         String password = (String) ois.readObject();
+                        System.out.println(password);
                         String result;
                         try {
                             if ((profile = base.login(username, password)) != null) {
@@ -263,6 +273,14 @@ public class ClientHandler implements IClientHandler {
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (clientSocket != null && !clientSocket.isClosed()) {
+                    clientSocket.close();
+                }
+            } catch (IOException e){
+                e.printStackTrace();
+            }
         }
 
 

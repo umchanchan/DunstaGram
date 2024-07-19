@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -8,7 +9,7 @@ import java.util.*;
  * </p>
  */
 
-public class Profile implements IProfile {
+public class Profile implements IProfile, Serializable {
     private String username;
     private String password;
     private ArrayList<Profile> following;

@@ -20,7 +20,7 @@ public class Server implements IServer {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(3555); //port number not set
+        Server server = new Server(3588); //port number not set
         new Thread(server).start();
     }
 
