@@ -16,6 +16,6 @@ public class Client implements IClient {
                     "Unable to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        SwingUtilities.invokeLater(new SignUpGUI(clientSocket));//any new frame GUI
+//        SwingUtilities.invokeLater(new SignUpGUI(clientSocket));//any new frame GUI
     }
 }

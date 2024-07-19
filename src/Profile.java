@@ -16,6 +16,7 @@ public class Profile implements IProfile {
     private String gender;
     private ArrayList<Post> userPosts;
     private ArrayList<Post> followingPosts;
+    private ArrayList<Post> hidePosts;
     private ArrayList<Profile> blockedList;
 
     /**
@@ -31,6 +32,7 @@ public class Profile implements IProfile {
         this.gender = "";
         this.following = new ArrayList<Profile>();
         this.followingPosts = new ArrayList<>();
+        this.hidePosts = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -50,6 +52,7 @@ public class Profile implements IProfile {
         this.gender = gender;
         this.following = new ArrayList<>();
         this.followingPosts = new ArrayList<>();
+        this.hidePosts = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
         this.blockedList = new ArrayList<Profile>();
     }
@@ -66,6 +69,7 @@ public class Profile implements IProfile {
         this.gender = "";
         this.following = new ArrayList<>();
         this.followingPosts = new ArrayList<>();
+        this.hidePosts = new ArrayList<>();
         this.userPosts = new ArrayList<>();
         this.blockedList = new ArrayList<>();
     }
@@ -79,11 +83,9 @@ public class Profile implements IProfile {
         this.gender = null;
         this.password = null;
         this.following = null;
+        this.hidePosts = null;
         this.userPosts = null;
         this.blockedList = null;
-
-
-
     }
 
     /**
@@ -153,12 +155,42 @@ public class Profile implements IProfile {
                 age == toCompare.getAge();
     }
 
+    public void startHidePostList(String info) {
+        String[] parts = info.split("_");
+        if (!(username.equals(parts[0]))) {
+            return;
+        }
+        for (Post post : followingPosts) {
+            if (post.getPoster().getUsername().equals(parts[1]) && post.getMessage().equals(parts[2])) {
+                NewsFeed newsFeed = new NewsFeed(this);
+                newsFeed.hidePost(post);
+                hidePosts.add(post);
+                followingPosts.remove(post);
+            }
+        }
+    }
+
+    public ArrayList<String> hidePostToString() {
+        ArrayList<String> hideString = new ArrayList<>();
+        for (Post post : hidePosts) {
+            hideString.add(username + "_" + post.getPoster() + "_" + post.getMessage());
+        }
+        return hideString;
+    }
+
     public void addMyPost(Post post) {
         userPosts.add(post);
     }
 
     public void removeMyPost(Post post) {
         userPosts.remove(post);
+    }
+
+    public void hidePost(Post post) {
+        NewsFeed newsFeed = new NewsFeed(this);
+        newsFeed.hidePost(post);
+        followingPosts.remove(post);
+        hidePosts.add(post);
     }
 
     public void follow(Profile p) {

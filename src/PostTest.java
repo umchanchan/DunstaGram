@@ -53,7 +53,7 @@ public class PostTest {
     @Test
     public void testDeleteComment() {
         post.addComment(commenter, "Comment to delete");
-        Comment commentToDelete = post.getCommentsList().get(0); // Assuming you have a method to get the comments list
+        Comment commentToDelete = post.getComments().get(0); // Assuming you have a method to get the comments list
         post.deleteComment(commentToDelete);
         assertEquals(0, post.getComments());
     }
@@ -68,6 +68,6 @@ public class PostTest {
     public void testToStringFileFormat() {
         post.addComment(commenter, "File format comment");
         String expectedString = "posterUser_This is a test post_0_0_commenterUser_File format comment_0_0";
-        assertEquals(expectedString, post.toStringFileFormat());
+        assertEquals(expectedString, post.toString());
     }
 }

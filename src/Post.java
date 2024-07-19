@@ -1,8 +1,11 @@
 import java.util.ArrayList;
 
 /**
- *
- *
+ * Team Project - Post
+ * <p>
+ * Post class that has attributes like poster, message, upvote, downvote, and comments
+ * It contains methods that update the post's attributes.
+ * </p>
  */
 
 public class Post implements IPost {
@@ -54,25 +57,6 @@ public class Post implements IPost {
         return str;
     }
 
-    public String toStringFileFormat() {
-        String str = "";
-        str += poster.getUsername() + "_";
-        str += message + "_";
-        str += upvote + "_" + downvote;
-
-        for (int i = 0; i < comments.size(); i++) {
-            str += "_";
-            Comment c = comments.get(i);
-            str += c.getUsername() + "_" + c.getCommentContents() + "_";
-            str += c.getUpvote() + "_" + c.getDownvote();
-        }
-        return str;
-    }
-
-    public Post makeNewPost(Profile poster, String message) {
-        return new Post(poster, message);
-    }
-
     public Post makePost(String postInfo) throws UserNotFoundException {
         String[] parts = postInfo.split("_");
         Profile writer = new Profile(parts[0]);
@@ -93,11 +77,12 @@ public class Post implements IPost {
         return new Post(writer, msg, upvotes, downvotes, commentList);
     }
 
-    public void addComment(Profile commenter, String content) {
+    public Comment addComment(Profile commenter, String content) {
         Comment comment = new Comment(commenter, content);
         comments.add(comment);
         numComments++;
         commenter.addMyPost(comment);
+        return comment;
     }
 
     public void deleteComment(Comment comment) {
@@ -106,28 +91,27 @@ public class Post implements IPost {
         this.numComments--;
     }
 
-    public String getMessage() {
-        return message;
+    public void addUpvote() {
+        upvote++;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void addDownvote() {
+        downvote++;
+    }
+
+    /**
+     * Getters and setters
+     */
+    public String getMessage() {
+        return message;
     }
 
     public int getUpvotes() {
         return upvote;
     }
 
-    public void setUpvotes(int upvote) {
-        this.upvote = upvote;
-    }
-
     public int getDownvotes() {
         return downvote;
-    }
-
-    public void setDownvotes(int downvote) {
-        this.downvote = downvote;
     }
 
     public Profile getPoster() {
@@ -142,8 +126,17 @@ public class Post implements IPost {
         return numComments;
     }// get the number of the comments of the posts.
 
-    public ArrayList<Comment> getCommentsList() {
-        return comments;
+    public void setMessage(String message) {
+        this.message = message;
     }
+
+    public void setDownvotes(int downvote) {
+        this.downvote = downvote;
+    }
+
+    public void setUpvotes(int upvote) {
+        this.upvote = upvote;
+    }
+
 
 }

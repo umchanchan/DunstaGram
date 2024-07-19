@@ -4,6 +4,10 @@ public interface IProfile {
     String toString();
 
     Profile makeProfile(String userInfo);
+    boolean equals(Profile toCompare);
+    void startHidePostList(String info);
+    ArrayList<String> hidePostToString();
+    void hidePost(Post post);
 
     void addMyPost(Post post);
 
@@ -12,8 +16,10 @@ public interface IProfile {
     void follow(Profile p);
 
     void unfollow(Profile p);
+    boolean isFollowing(Profile follow);
 
     boolean blockUser(Profile user);
+    void unblockUser(Profile unblock);
 
     String getUsername();
 
