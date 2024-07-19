@@ -101,7 +101,7 @@ public class Profile implements IProfile, Serializable {
         for (int i = 0; i < following.size(); i++) {
             result.append(following.get(i).getUsername()).append("_");
         }
-        result.append("==+=="); //String that splits friend list and blocked list
+        result.append("===="); //String that splits friend list and blocked list
         for (int i = 0; i < blockedList.size(); i++) {
             result.append(blockedList.get(i)).append("_");
         }
@@ -115,7 +115,7 @@ public class Profile implements IProfile, Serializable {
      * @return newProfile
      */
     public Profile makeProfile(String userInfo) {
-        String[] firstParse = userInfo.split("==+==");
+        String[] firstParse = userInfo.split("====");
         String basicInfo = firstParse[0];
         String blockList = "";
         if(firstParse.length > 1) {
