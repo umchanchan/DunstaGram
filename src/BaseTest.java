@@ -30,16 +30,23 @@ public class BaseTest {
     void writeFile() {
         assertDoesNotThrow(() -> {
             base.readUserListFile();
+            Profile newprofile = new Profile("Chan", "1123", 23, "Male");
+            Profile profile = new Profile("Chris", "11233");
+            Post post = new Post(profile, "Fuck you");
+            Comment comment = new Comment(newprofile, "Fuck you too");
 
-
-            ArrayList<Profile> temp = base.getUsers();
-            Profile profile = base.login("Chan", "1123");
-            Profile to = new Profile("Chris", "11233", 23, "Male");
-            if (base.follow(profile, to)) {
-                System.out.println("Success");
+            if (base.deleteComment(post, newprofile, comment)) {
+                System.out.println("Noice");
             } else {
-                System.out.println("fuck");
+                System.out.println("Fucked");
             }
+
+
+//            if ((comment = base.makeComment(post, newprofile, "Fuck you too"))!= null) {
+//                System.out.println(comment.getCommentContents());
+//            } else {
+//                System.out.println("Fucked up");
+//            }
 //            assertEquals("Chan", profile.getUsername());
         });
     }

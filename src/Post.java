@@ -78,6 +78,10 @@ public class Post implements IPost, Serializable {
         return new Post(writer, msg, upvotes, downvotes, commentList);
     }
 
+    public boolean equals(Post post) {
+        return post.poster.getUsername().equals(poster.getUsername()) && post.getMessage().equals(message);
+    }
+
     public Comment addComment(Profile commenter, String content) {
         Comment comment = new Comment(commenter, content);
         comments.add(comment);

@@ -18,16 +18,22 @@ public class Client implements IClient {
             ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
 
             oos.flush();
-            oos.writeObject("follow");
-            Profile chan = new Profile("Chan", "1123", 23, "Male");
-            oos.writeObject(chan);
+            oos.writeObject("makeComment");
+//            Profile chan = new Profile("Chan", "1123", 23, "Male");
+            Profile profile = new Profile("Chris", "11233");
+            Post post = new Post(profile, "Fuck you");
+            oos.writeObject(post);
+            oos.writeObject("Fuck you too");
             oos.flush();
 
             Object obj = ois.readObject();
             if (obj instanceof String) {
                 System.out.println(obj);
             } else if (obj instanceof Profile) {
-                System.out.println("Success");
+                System.out.println(((Profile) obj).getUsername());
+            } else if (obj instanceof Comment) {
+                System.out.println(((Comment) obj).getCommenter().getUsername());
+                System.out.println(((Comment) obj).getCommentContents());
             }
 
 

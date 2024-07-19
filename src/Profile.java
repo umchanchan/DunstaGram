@@ -101,9 +101,11 @@ public class Profile implements IProfile, Serializable {
         for (int i = 0; i < following.size(); i++) {
             result.append(following.get(i).getUsername()).append("_");
         }
-        result.append("==+=="); //String that splits friend list and blocked list
-        for (int i = 0; i < blockedList.size(); i++) {
-            result.append(blockedList.get(i)).append("_");
+        if (!blockedList.isEmpty()) {
+            result.append("===="); //String that splits friend list and blocked list
+            for (int i = 0; i < blockedList.size(); i++) {
+                result.append(blockedList.get(i).username).append("_");
+            }
         }
 
         return result.toString();
@@ -111,14 +113,15 @@ public class Profile implements IProfile, Serializable {
 
     /**
      * makeProfile method that constructors a new profile based on the information sent from Base class
+     *
      * @param userInfo - a string line passed from Base class
      * @return newProfile
      */
     public Profile makeProfile(String userInfo) {
-        String[] firstParse = userInfo.split("==+==");
+        String[] firstParse = userInfo.split("====");
         String basicInfo = firstParse[0];
         String blockList = "";
-        if(firstParse.length > 1) {
+        if (firstParse.length > 1) {
             blockList = firstParse[1];
         }
 
@@ -133,7 +136,7 @@ public class Profile implements IProfile, Serializable {
             newProfile.following.add(new Profile(parts[i]));
         }
 
-        if(blockList != "") {
+        if (!blockList.isEmpty()) {
             String[] parts2 = blockList.split("_");
 
             for (String blockName : parts2) {
@@ -146,6 +149,7 @@ public class Profile implements IProfile, Serializable {
 
     /**
      * equals method that returns boolean if input profile has the same attributes with this profile
+     *
      * @param toCompare - profile to compare
      * @return true if they are equal
      */
@@ -199,29 +203,60 @@ public class Profile implements IProfile, Serializable {
     }
 
     public void unfollow(Profile p) {
-        following.remove(p);
+        for (Profile profile : following) {
+            if (profile.getUsername().equals(p.username)) {
+                following.remove(profile);
+                break;
+            }
+        }
     }
 
     /**
-     *
      * @param follow - profile to check if this profile follows
      * @return
      */
     public boolean isFollowing(Profile follow) {
-        return this.following.contains(follow);
-    }
-
-    public boolean blockUser(Profile user) { //assumes input is a valid user
-        if (following.contains(user) || !blockedList.contains(user)) {
-            user.unfollow(this);
-            blockedList.add(user);
-            return true;
+        for (Profile profile : following) {
+            if (profile.username.equals(follow.username)) {
+                return true;
+            }
         }
         return false;
     }
 
+    public boolean blockUser(Profile user) { //assumes input is a valid user
+        boolean isFollow = false;
+        boolean isBlock = false;
+        for (Profile profile : following) {
+            if (profile.username.equals(user.username)) {
+                isFollow = true;
+                break;
+            }
+        }
+        for (Profile profile : blockedList) {
+            if (profile.username.equals(user.username)) {
+                isBlock = true;
+                break;
+            }
+        }
+        if (!isBlock) {
+            blockedList.add(user);
+        } else {
+            return false;
+        }
+        if (isFollow) {
+            user.unfollow(this);
+        }
+        return true;
+    }
+
     public void unblockUser(Profile unblock) {
-        blockedList.remove(unblock);
+        for (Profile profile : blockedList) {
+            if (profile.username.equals(unblock.username)) {
+                blockedList.remove(profile);
+                break;
+            }
+        }
     }
 
 
