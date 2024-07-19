@@ -21,11 +21,12 @@ public class PostTest {
 
     @Test
     public void testCreatePostWithMinimalConstructor() {
+        System.out.println(post.getPoster().getUsername());
         assertEquals("posterUser", post.getPoster().getUsername());
         assertEquals("This is a test post", post.getMessage());
         assertEquals(0, post.getUpvotes());
         assertEquals(0, post.getDownvotes());
-        assertEquals(0, post.getComments());
+        assertEquals(0, post.getComments().size());
     }
 
     @Test
@@ -38,7 +39,7 @@ public class PostTest {
         assertEquals("Full constructor post", fullPost.getMessage());
         assertEquals(10, fullPost.getUpvotes());
         assertEquals(2, fullPost.getDownvotes());
-        assertEquals(1, fullPost.getComments());
+        assertEquals(1, fullPost.getComments().size());
     }
 
 
@@ -47,7 +48,7 @@ public class PostTest {
     @Test
     public void testAddComment() {
         post.addComment(commenter, "This is another test comment");
-        assertEquals(1, post.getComments());
+        assertEquals(1, post.getComments().size());
     }
 
     @Test
@@ -55,7 +56,7 @@ public class PostTest {
         post.addComment(commenter, "Comment to delete");
         Comment commentToDelete = post.getComments().get(0); // Assuming you have a method to get the comments list
         post.deleteComment(commentToDelete);
-        assertEquals(0, post.getComments());
+        assertEquals(0, post.getComments().size());
     }
 
     @Test

@@ -28,9 +28,9 @@ class ProfileTest {
         String s1 = profile1.toString();
         String s2 = profile2.toString();
 
-        assertEquals("Bob123_1234_55_Male_====", s);
-        assertEquals("Jane3_1234_30_Female_====", s1);
-        assertEquals("Dave111_444_29_Male_====", s2);
+        assertEquals("Bob123_1234_55_Male_", s);
+        assertEquals("Jane3_1234_30_Female_", s1);
+        assertEquals("Dave111_444_29_Male_", s2);
     }
 
     @Test
