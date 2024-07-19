@@ -1,95 +1,208 @@
-# Project Name : DunstaGram
+# Project Name: DunstaGram
 
+## One Liner
 
-## Compilation and Execution Instructions
+DunstaGram is a sophisticated social media platform consisting of several classes that manage user profiles, posts, comments, and interactions such as upvoting, downvoting, following, and blocking, using server-client communication for handling user requests.
+
+## Instructions to compile and run the project
 To compile and run the project, follow these steps:
+1. Clone this repository to your local device.
+2. Navigate to the project folder and open it in a java IDE.
+3. Run the `Server` class.
+4. Run the `Client` class to initiate a client.
 
-1. Ensure you have Java JDK installed on your system.
-2. Navigate to the project directory where the `.java` files are located.
-3. Compile the Java files.
-4. Run the `Server` class.
-5. Run the `ClientGUI` class for initiate a client.
+## Classes
 
-## Class Descriptions
+### 1. `Profile`
 
-### Base Class
-The `Base` class is the core component responsible for managing user accounts, posts, and file operations within the system. It ensures data persistence by reading from and writing to text files whenever changes occur.
+#### Description
+The `Profile` class represents a user profile within the social media platform. It encapsulates user-specific information and handles various interactions, such as following other profiles, blocking users, hiding posts, and managing personal posts. The class is central to the platform's user management system.
 
-- **Functionality**: Manages user data, posts, and interactions such as sign-up, login, follow/unfollow, block/unblock, post creation, commenting, and voting.
-- **Testing**: Unit tests cover user creation, posting, follow/unfollow, and file operations to ensure class methods perform as expected.
-- **Relationships**: 
+#### Functionality
+- **User Information Management**: Stores and manages user details such as username, password, age, and gender.
+- **Interaction Management**: Allows users to follow or unfollow other profiles, block or unblock users, and hide posts.
+- **Post Management**: Handles creation and deletion of posts, as well as hiding specific posts.
 
+#### Contribution
+- **User Interaction**: Manages how users interact with each other through following and blocking.
+- **Post Visibility**: Controls which posts are visible to the user based on their preferences and interactions.
+- **Data Storage**: Maintains lists of posts and interactions crucial for the functionality of the news feed and user profiles.
 
-### Client Class
-Functions as the client which the user will see. Complex GUIs will be implemented in phase 2. This client exchanges information with the `ClientHandler` class, which is how it determines its inputs and outputs.
+#### Methods
+- **Constructors**: Initialize profile with various details.
+- **`toString()`**: Provides a formatted string of profile details.
+- **`makeProfile(String userInfo)`**: Creates a profile from a string of user information.
+- **`equals(Profile toCompare)`**: Checks equality between profiles.
+- **`startHidePostList(String info)`**: Manages hidden posts.
+- **`addMyPost(Post post)`**: Adds posts to the user’s profile.
+- **`follow(Profile p)`**: Allows the user to follow another profile.
+- **`blockUser(Profile user)`**: Blocks a profile to prevent interactions.
 
-- **Functionality**: Functions as the client which the user will see, allows the user to interact with it, takes user inputs and displays information back to the user.
-- **Testing**: Tested for alignment of inputs and outputs with `ClientHandler`, loops and switches. Tested using scanner for inputs.
-- **Relationship to Other Classes**: Reads from and writes to `ClientHandler`.
+#### Testing
+- Validated profile creation and updating.
+- Ensured correct functionality of following, blocking, and hiding posts.
+- Verified interaction with posts and maintenance of the user's post list.
 
-### ClientHandler Class
-Functions as a server for an instance of `ClientGUI` to interact with.
+### 2. `Post`
 
-- **Functionality**: Functions as an individual server for an individual client to interact with. Instances of `ClientHandler` are initiated as a thread in `Server` for efficiency.
-- **Testing**: Tested in conjunction with `ClientGUI` as `ClientGui` reads from this class for outputs.
-- **Relationship to Other Classes**: Instances are created in threads by `Server`. Uses methods in `Base` to create outputs, which are sent to `ClientGUI` to parse into the client.
+#### Description
+The `Post` class models a post created by a user, including its content, associated profile, and interactions like upvoting and downvoting. It serves as the primary medium for user-generated content on the platform.
 
-### Comment Class
-Contains the contents of one comment.
+#### Functionality
+- **Content Management**: Stores the message of the post and the profile of the poster.
+- **Interaction Tracking**: Tracks upvotes and downvotes, and manages comments associated with the post.
 
-- **Functionality**: 
-- **Testing**: 
-- **Relationship to Other Classes**: 
+#### Contribution
+- **Content Creation**: Allows users to create and share content on the platform.
+- **Engagement Tracking**: Manages how other users interact with the post through voting and commenting.
+- **Comment Management**: Facilitates the addition and deletion of comments.
 
-### Profile Class
-Represents an individual user in the system.
+#### Methods
+- **Constructors**: Initialize post with message and poster profile.
+- **`toString()`**: Provides a detailed string representation of the post.
+- **`addComment(Profile commenter, String content)`**: Adds a comment to the post.
+- **`addUpvote()`**: Increments upvote count.
+- **`addDownvote()`**: Increments downvote count.
 
-- **Functionality**:
-- **Testing**:
-- **Relationship to Other Classes**:
+#### Testing
+- Verified creation, upvoting, and downvoting of posts.
+- Ensured comments are correctly added and displayed.
 
-### NewsFeed Class
-Represents 
+### 3. `Comment`
 
-- **Functionality**:
-- **Testing**:
-- **Relationship to Other Classes**:
+#### Description
+The `Comment` class represents comments made on posts. It includes details about the commenter, the content of the comment, and interactions like upvoting and downvoting.
 
-### Post Class
-Represents
+#### Functionality
+- **Comment Content**: Stores the content of the comment and the profile of the commenter.
+- **Interaction Tracking**: Manages upvotes and downvotes specific to comments.
 
-- **Functionality**:
-- **Testing**:
-- **Relationship to Other Classes**:
+#### Contribution
+- **User Engagement**: Allows users to engage with posts by adding comments.
+- **Interaction Management**: Tracks the popularity and engagement level of comments through upvotes and downvotes.
 
-### Server Class
-Runs indefinitely in the background, creating threads that runs the `ClientHandler` class.
+#### Methods
+- **Constructors**: Initialize comment with content and commenter.
+- **`toString()`**: Provides a formatted string representation of the comment.
+- **`addUpvote()`**: Increments upvote count.
+- **`addDownvote()`**: Increments downvote count.
 
-- **Functionality**: The server will accept client connection as they come, creating `ClientHandler` instances accordingly.
-- **Testing**: Tested in proxy when testing `ClientGUI` and `ClientHandler` as they require the functionality of `Server` to run.
-- **Relationship to Other Classes**: Creates `ClientHandler` instances when a connection from `ClientGUI` is accepted.
+#### Testing
+- Validated creation of comments and interaction functionality.
 
-## Exception Descriptions
+### 4. `NewsFeed`
 
-### UserNotFoundException
+#### Description
+The `NewsFeed` class manages the display and interaction of posts in a user’s feed. It aggregates posts from profiles that the user follows and handles user interactions with these posts.
 
-An exception to be thrown when a user is not found. This is used by the `Profile` and `Base` classes as they search for an `Profile` object.
+#### Functionality
+- **Feed Management**: Aggregates and filters posts based on the user’s follow list.
+- **Interaction Handling**: Manages user actions such as upvoting, downvoting, and commenting on posts.
 
+#### Contribution
+- **Content Aggregation**: Provides a personalized feed based on user interactions.
+- **Interaction Processing**: Facilitates user interactions with posts in the feed.
 
+#### Methods
+- **`filterPost(Profile follow)`**: Filters posts from followed profiles.
+- **`upvotePost(Post post)`**: Manages upvoting of posts in the feed.
+- **`comment(Post post, String msg)`**: Adds comments to posts in the feed.
 
+#### Testing
+- Verified filtering of posts and interaction functionality.
 
----
+### 5. `Server`
 
-Comment.java:
-This class is what allows users to create comments on a post. This class extends the class Post and implements the IComment interface. It includes methods to add upvotes or downvotes to a comment, and can return a string with the Username of the commenter, plus the contents of the comment. 
+#### Description
+The `Server` class sets up and manages the server infrastructure for handling client connections. It listens for incoming client requests, processes them, and maintains the overall server state.
 
-Profile.java:
-This class represents a User's profile. It manages things such as the user information, their posts, and their interactions. It implements the interface IProfile. The test case for this class is included in the ProfileTest.java. It creates 3 separate profiles with different information and tests several things within the class, such as whether or not the accounts were actually created with the correct parameters, and if the follow and unfollow methods are working. 
+#### Functionality
+- **Server Management**: Listens for client connections and handles incoming requests.
+- **Thread Management**: Uses a thread pool to handle multiple client connections concurrently.
 
-NewsFeed.java:
-This is a class that is meant to display all of the current posts so that each user can view them. It implements the interface INewsFeed. It also allows for the ability to upvote and downvote different posts, as well as hiding certain posts and commenting on any post.
+#### Contribution
+- **Client Handling**: Manages client connections and delegates tasks to `ClientHandler` instances.
+- **Server Lifecycle**: Handles starting and stopping of the server.
 
+#### Methods
+- **`startServer()`**: Initializes and starts the server, listening for client connections.
+- **`stopServer()`**: Stops the server and closes resources.
 
-Post.java:
-This is a class that allows a user to create a post. It implements the interface IPost. The class manages post content, post interaction, and comments. This class also includes a test case within the PostTest.java file. This test case verifies the Post class works by creating a user, a commenter, and a test comment to see that the input is correctly used in the methods within the Post class. 
+#### Testing
+- Validated server startup, client connection handling, and shutdown processes.
+
+### 6. `Client`
+
+#### Description
+The `Client` class represents a client connecting to the server. It manages communication with the server, sending requests, and receiving responses.
+
+#### Functionality
+- **Connection Management**: Establishes and maintains a connection to the server.
+- **Communication**: Sends and receives messages between the client and server.
+
+#### Contribution
+- **Client-Server Interaction**: Manages the exchange of data between the client and server.
+
+#### Methods
+- **`connect()`**: Establishes a connection to the server.
+- **`send(String message)`**: Sends messages to the server.
+- **`receive()`**: Receives responses from the server.
+
+#### Testing
+- Validated connection setup and message exchange with the server.
+
+### 7. `ClientHandler`
+
+#### Description
+The `ClientHandler` class manages communication with a single client, processing client requests, and interacting with the `Base` object to perform operations.
+
+#### Functionality
+- **Request Processing**: Handles incoming client requests and performs necessary operations.
+- **Data Interaction**: Interfaces with the `Base` class to manage user and post data.
+
+#### Contribution
+- **Request Handling**: Processes client requests and ensures correct interaction with the server’s data.
+
+#### Methods
+- **`run()`**: Continuously processes client requests and sends responses.
+- **`processRequest(String request)`**: Handles and processes individual client requests.
+
+#### Testing
+- Verified handling of client requests and interaction with the `Base` object.
+
+### 8. `Base`
+
+#### Description
+The `Base` class manages the core data for the platform, including user profiles, posts, and hidden posts. It handles file operations for persistent storage of data.
+
+#### Functionality
+- **Data Management**: Reads and writes user and post data to/from files.
+- **Data Retrieval**: Provides methods for accessing user profiles and posts.
+
+#### Contribution
+- **Data Storage**: Ensures data persistence and retrieval across server restarts.
+- **Data Access**: Facilitates access to user and post information for other classes.
+
+#### Methods
+- **`readUserListFile()`**: Reads user data from a file.
+- **`readPostListFile()`**: Reads post data from a file.
+- **`readHidePostListFile()`**: Reads hidden post data from a file.
+- **`saveUserListFile()`**: Saves user data to a file.
+- **`savePostListFile()`**: Saves post data to a file.
+- **`getUser(String username)`**: Retrieves a user profile.
+- **`getPost(String postId)`**: Retrieves a post.
+- **`login(String username, String password)`**: Validates user login credentials.
+- **`signup(String username, String password)`**: Registers a new user profile.
+
+#### Testing
+- Validated file operations and data retrieval.
+- Verified user authentication methods (`login` and `signup`).
+
+### 9. `UserNotFoundException`
+
+#### Description
+The `UserNotFoundException` class is a custom exception used to indicate errors when user operations reference non-existent users.
+
+#### Functionality
+- **Exception Handling**: Provides a mechanism for handling errors related to missing user data.
 
