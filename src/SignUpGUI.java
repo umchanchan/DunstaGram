@@ -12,13 +12,22 @@ public class SignUpGUI extends JComponent implements Runnable {
         this.clientSocket = clientSocket;
     }
 
+    public SignUpGUI() { //just so i can test
+
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new SignUpGUI());
+
+    }
     public void run() {
         BufferedReader bfr;
         PrintWriter pw;
 
         try {
-            bfr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            pw = new PrintWriter(clientSocket.getOutputStream(), true);
+            //bfr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+          //  pw = new PrintWriter(clientSocket.getOutputStream(), true);
+            pw = new PrintWriter("Hello");
 
         } catch (Exception e) { //IOException
                 e.printStackTrace();
@@ -30,7 +39,7 @@ public class SignUpGUI extends JComponent implements Runnable {
             Container content = frame.getContentPane();
             content.setLayout(new FlowLayout());
 
-            frame.setSize(480, 480);
+            frame.setSize(360, 250);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setVisible(true);
@@ -55,12 +64,13 @@ public class SignUpGUI extends JComponent implements Runnable {
             JTextField genderField = new JTextField(10);
             JButton genderButton = new JButton("Enter");
 
+            JButton makeAccountButton = new JButton("Make Account"); //NO LISTENER FOR THIS YET
 
             JPanel userPanel = new JPanel();
             JPanel passPanel = new JPanel();
             JPanel agePanel = new JPanel();
             JPanel genderPanel = new JPanel();
-
+            JPanel accPanel = new JPanel();
 
             userPanel.add(userLabel);
             userPanel.add(userField);
@@ -82,6 +92,8 @@ public class SignUpGUI extends JComponent implements Runnable {
             genderPanel.add(genderButton);
             frame.add(genderPanel);
 
+            accPanel.add(makeAccountButton);
+            frame.add(accPanel);
             pw.println("SignUp");
             //pw.println("SignUp");
            // pw.println("Chan");
