@@ -108,7 +108,7 @@ public class SignUpGUI extends JComponent implements Runnable {
             userButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
 
-                    String userName = String.valueOf(Integer.valueOf(userField.getText()));
+                    String userName = String.valueOf(userField.getText());
                     pw.println(userName);
 
 
@@ -117,26 +117,37 @@ public class SignUpGUI extends JComponent implements Runnable {
 
             passButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    String password = String.valueOf(Integer.valueOf(passField.getText()));
+                    String password = String.valueOf(passField.getText());
                     pw.println(password);
                 }
             });
 
             ageButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    int age = Integer.valueOf(ageField.getText());
+                    int age = 0;
+                    try {
+                        age = Integer.valueOf(ageField.getText());
+                    } catch (NumberFormatException e1) {
+                        showError();
+                    }
                     pw.println(age);
                 }
             });
 
             genderButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    int gender = Integer.valueOf(genderField.getText());
+                    String gender = String.valueOf(genderField.getText());
                     pw.println(gender);
                 }
             });
 
 
 
+
+
+    }
+
+    public void showError() {
+        JOptionPane.showMessageDialog(null, "Invalid input!", "Error", JOptionPane.ERROR_MESSAGE);
     }
 }

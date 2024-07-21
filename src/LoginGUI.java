@@ -75,6 +75,6 @@ public class LoginGUI implements Runnable {
     }
 
     public void showError() {
-        JOptionPane.showMessageDialog(null, "Error", "Invalid input!", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Invalid input!", "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
