@@ -166,7 +166,6 @@ public class SignUpGUI extends JComponent implements Runnable {
 
     public void writeObject() throws IOException {
         System.out.println("HEre");
-        oos.writeObject("signUp");
         oos.writeObject(user);
         oos.writeObject(pass);
         oos.writeObject(Integer.toString(age));

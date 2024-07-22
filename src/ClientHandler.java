@@ -27,6 +27,7 @@ public class ClientHandler implements IClientHandler {
 
             while (true) {
                 String clientInput = (String) ois.readObject();
+                oos.writeObject(clientInput);
                 System.out.println(clientInput);
                 //To stop this thread when the user closes the software.
                 if (clientInput == null) {
