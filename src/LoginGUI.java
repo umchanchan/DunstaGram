@@ -2,14 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 public class LoginGUI implements Runnable {
     private String user;
     private String pass;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new LoginGUI());
+
+    public LoginGUI(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
+        this.ois = ois;
+        this.oos = oos;
     }
+
 
     public void run() {
         JFrame frame = new JFrame();

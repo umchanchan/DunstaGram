@@ -30,7 +30,18 @@ public class Client implements IClient {
             return;
         }
 
-        SwingUtilities.invokeLater(new SignUpGUI(ois, oos));//any new frame GUI
+        InitialGUI c = new InitialGUI(ois, oos);
+        SwingUtilities.invokeLater(c);
+
+        String option = (String) ois.readObject();
+        if (option.equals("signUp")) {
+            SwingUtilities.invokeLater(new SignUpGUI(ois, oos));//any new frame GUI
+        } else if (option.equals("login")) {
+            SwingUtilities.invokeLater(new LoginGUI(ois, oos));
+        }
+
+
+
         String outcome = (String) ois.readObject();
         System.out.println(outcome);
 
