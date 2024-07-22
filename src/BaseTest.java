@@ -32,20 +32,20 @@ public class BaseTest {
             base.readUserListFile();
             Profile newprofile = new Profile("Chan", "1123", 23, "Male");
             Profile profile = new Profile("Chris", "11233");
-            Post post = new Post(profile, "Fuck you");
-            Comment comment = new Comment(newprofile, "Fuck you too");
+            Post post = new Post(profile, "**** you");
+            Comment comment = new Comment(newprofile, "**** you too");
 
             if (base.deleteComment(post, newprofile, comment)) {
                 System.out.println("Noice");
             } else {
-                System.out.println("Fucked");
+                System.out.println("******");
             }
 
 
-//            if ((comment = base.makeComment(post, newprofile, "Fuck you too"))!= null) {
+//            if ((comment = base.makeComment(post, newprofile, "**** you too"))!= null) {
 //                System.out.println(comment.getCommentContents());
 //            } else {
-//                System.out.println("Fucked up");
+//                System.out.println("****** up");
 //            }
 //            assertEquals("Chan", profile.getUsername());
         });
