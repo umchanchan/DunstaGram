@@ -32,13 +32,13 @@ public class BaseTest {
             base.readUserListFile();
             Profile newprofile = new Profile("Chan", "1123", 23, "Male");
             Profile profile = new Profile("Chris", "11233");
-            Post post = new Post(profile, "**** you");
-            Comment comment = new Comment(newprofile, "**** you too");
+            Post post = new Post(profile, "I don't like you");
+            Comment comment = new Comment(newprofile, "I dont like you too");
 
             if (base.deleteComment(post, newprofile, comment)) {
                 System.out.println("Noice");
             } else {
-                System.out.println("******");
+                System.out.println("Not good");
             }
 
 
