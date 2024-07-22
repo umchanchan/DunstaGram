@@ -56,13 +56,18 @@ public class ClientHandler implements IClientHandler {
                         }
                         String gender = (String) ois.readObject();
                         System.out.println(gender);
+                        System.out.println("Calling signup");
                         if (base.signUp(username, password, age, gender)) {
+                            System.out.println("Success");
                             oos.writeObject("Success");
                             oos.flush();
                         } else {
+                            System.out.println("Fail");
                             oos.writeObject("Fail");
                             oos.flush();
                         }
+
+
                     }
                     case "login" -> {
                         String username = (String) ois.readObject();
@@ -82,6 +87,8 @@ public class ClientHandler implements IClientHandler {
                             oos.writeObject(result);
                             oos.flush();
                         }
+
+
                     }
 
                     case "follow" -> {
@@ -104,6 +111,7 @@ public class ClientHandler implements IClientHandler {
                             oos.writeObject("Fail");
                             oos.flush();
                         }
+
                     }
 
                     case "block" -> {
@@ -248,6 +256,12 @@ public class ClientHandler implements IClientHandler {
                             oos.writeObject("Fail");
                             oos.flush();
                         }
+
+                    }
+
+                    default -> {
+                        System.out.println("Invalid message...why are you here");
+                        break;
                     }
                 }
 
@@ -255,16 +269,21 @@ public class ClientHandler implements IClientHandler {
             }
 
 
+        } catch (EOFException e) {
+            System.err.print("Caught");
+            return;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        } finally {
+        }  finally {
             try {
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
 
 
