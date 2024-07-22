@@ -19,26 +19,14 @@ public class SignUpGUI extends JComponent implements Runnable {
         this.oos = oos;
     }
 
-  /*  public SignUpGUI() { //just so i can test
-
+    /* public SignUpGUI() { //just so i can test
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new SignUpGUI());
+    } */
 
-    }*/
     public void run() {
-
-       /* try {
-            //bfr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-          //  pw = new PrintWriter(clientSocket.getOutputStream(), true);
-            pw = new PrintWriter("Hello");
-
-        } catch (Exception e) { //IOException
-                e.printStackTrace();
-                return;
-            }*/
-
         JFrame frame = new JFrame();
         frame.setTitle("Sign Up Menu");
         Container content = frame.getContentPane();
@@ -50,24 +38,20 @@ public class SignUpGUI extends JComponent implements Runnable {
         frame.setVisible(true);
 
         JTextField userField = new JTextField(10);
-        JButton userButton = new JButton("Enter");
         JLabel userLabel = new JLabel("Username");
         userLabel.setText("Enter a Username: ");
 
         JLabel passwordLabel = new JLabel("Password");
         passwordLabel.setText("Enter a Password: ");
         JTextField passField = new JTextField(10);
-        JButton passButton = new JButton("Enter");
 
         JLabel ageLabel = new JLabel("Age");
         ageLabel.setText("Enter your Age:       ");
         JTextField ageField = new JTextField(10);
-        JButton ageButton = new JButton("Enter");
 
         JLabel genderLabel = new JLabel("Gender");
         genderLabel.setText("Enter your Gender: ");
         JTextField genderField = new JTextField(10);
-        JButton genderButton = new JButton("Enter");
 
         JButton makeAccountButton = new JButton("Make Account"); //NO LISTENER FOR THIS YET
 
@@ -79,89 +63,61 @@ public class SignUpGUI extends JComponent implements Runnable {
 
         userPanel.add(userLabel);
         userPanel.add(userField);
-        userPanel.add(userButton);
         frame.add(userPanel);
 
         passPanel.add(passwordLabel);
         passPanel.add(passField);
-        passPanel.add(passButton);
         frame.add(passPanel);
 
         agePanel.add(ageLabel);
         agePanel.add(ageField);
-        agePanel.add(ageButton);
         frame.add(agePanel);
 
         genderPanel.add(genderLabel);
         genderPanel.add(genderField);
-        genderPanel.add(genderButton);
         frame.add(genderPanel);
 
         accPanel.add(makeAccountButton);
         frame.add(accPanel);
 
-            //pw.println("SignUp");
-           // pw.println("Chan");
-          //  pw.println("1122");
-          //  pw.println("mm");
-          //  pw.println("Male");
-            //pw.flush();
+        // pw.println("SignUp");
+        // pw.println("Chan");
+        // pw.println("1122");
+        // pw.println("mm");
+        // pw.println("Male");
+        // pw.flush();
 
-            //String line = bfr.readLine();
-            //System.out.println(line);
-
-        userButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                counter++;
-                user = String.valueOf(userField.getText());
-
-
-            }
-        });
-
-        passButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                counter++;
-                pass = String.valueOf(passField.getText());
-            }
-        });
-
-        ageButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    age = Integer.valueOf(ageField.getText());
-                    counter++;
-                } catch (NumberFormatException e1) {
-                    showError();
-                }
-            }
-        });
-
-        genderButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                counter++;
-                gender = String.valueOf(genderField.getText());
-            }
-        });
+        // String line = bfr.readLine();
+        // System.out.println(line);
 
         makeAccountButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (counter < 4) {
+                    // Retrieve and validate inputs
+                    user = userField.getText();
+                    pass = passField.getText();
+                    try {
+                        age = Integer.parseInt(ageField.getText());
+                    } catch (NumberFormatException ex) {
+                        showError();
+                        return;
+                    }
+                    gender = genderField.getText();
+
+                    if (user.isEmpty() || pass.isEmpty() || gender.isEmpty()) {
                         showError();
                     } else {
                         writeObject();
                     }
                 } catch (IOException ex) {
-                    return;
+                    ex.printStackTrace();
                 }
             }
         });
-
     }
 
     public void showError() {
-        JOptionPane.showMessageDialog(null, "Invalid input!", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Invalid input! Please ensure all fields are filled correctly.", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public void writeObject() throws IOException {
