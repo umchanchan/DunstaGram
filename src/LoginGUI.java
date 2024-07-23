@@ -9,6 +9,8 @@ public class LoginGUI implements Runnable {
     private String pass;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
+    private boolean changeUser = false;
+    private boolean changePass = false;
 
 
     public LoginGUI(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
@@ -55,7 +57,7 @@ public class LoginGUI implements Runnable {
 
         userButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                changeUser = true;
                 user = String.valueOf(userField.getText());
 
 
@@ -66,6 +68,7 @@ public class LoginGUI implements Runnable {
         passButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
+                changePass = true;
                 pass = String.valueOf(passField.getText());
 
             }
@@ -74,12 +77,17 @@ public class LoginGUI implements Runnable {
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                try {
-                    writeObjects();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                if (changeUser && changePass) {
+
+                    try {
+                        writeObjects();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    frame.dispose();
+                } else {
+                    showError("Please fill out all fields!");
                 }
-                frame.dispose();
             }
         });
 
@@ -90,7 +98,7 @@ public class LoginGUI implements Runnable {
         oos.writeObject(user);
         oos.writeObject(pass);
     }
-    public void showError() {
-        JOptionPane.showMessageDialog(null, "Invalid input!", "Error", JOptionPane.ERROR_MESSAGE);
+    public void showError(String s) {
+        JOptionPane.showMessageDialog(null, s, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
