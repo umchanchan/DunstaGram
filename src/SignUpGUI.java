@@ -132,7 +132,7 @@ public class SignUpGUI extends JComponent implements Runnable {
                     age = Integer.valueOf(ageField.getText());
                     counter++;
                 } catch (NumberFormatException e1) {
-                    showError();
+                    showError("Please enter a valid age!");
                 }
             }
         });
@@ -148,7 +148,7 @@ public class SignUpGUI extends JComponent implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (counter < 4) {
-                        showError();
+                        showError("Please fill out all fields!");
                     } else {
                         writeObject();
                         frame.dispose();
@@ -162,8 +162,8 @@ public class SignUpGUI extends JComponent implements Runnable {
 
     }
 
-    public void showError() {
-        JOptionPane.showMessageDialog(null, "Invalid input!", "Error", JOptionPane.ERROR_MESSAGE);
+    public void showError(String s) {
+        JOptionPane.showMessageDialog(null, s, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public void writeObject() throws IOException {

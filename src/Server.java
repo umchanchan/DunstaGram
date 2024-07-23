@@ -31,25 +31,27 @@ public class Server implements IServer {
 
     //start the server method and when the user
     public void startServer() {
-        try {
-            serverSocket = new ServerSocket(port);
-            running = true;
-            base = new Base();
-            base.readUserListFile();
-            base.readPostListFile();
-            base.readHidePostListFile();
+        while (true) {
+            try {
+                serverSocket = new ServerSocket(port);
+                running = true;
+                base = new Base();
+                base.readUserListFile();
+                base.readPostListFile();
+                base.readHidePostListFile();
 
-            while (running) {
-                Socket clientSocket = serverSocket.accept();
-                //every time a user connects, each user is going to be
-                //assigned to one clientHandler
-                pool.execute(new ClientHandler(clientSocket, base));
+                while (running) {
+                    Socket clientSocket = serverSocket.accept();
+                    //every time a user connects, each user is going to be
+                    //assigned to one clientHandler
+                    pool.execute(new ClientHandler(clientSocket, base));
+                }
+
+            } catch (IOException e) {
+                //e.printStackTrace();
+            } finally {
+                stopServer();
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            stopServer();
         }
     }
 
@@ -61,7 +63,7 @@ public class Server implements IServer {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
