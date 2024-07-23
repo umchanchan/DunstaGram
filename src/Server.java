@@ -31,7 +31,7 @@ public class Server implements IServer {
 
     //start the server method and when the user
     public void startServer() {
-        while (true) {
+       // while (true) {
             try {
                 serverSocket = new ServerSocket(port);
                 running = true;
@@ -52,7 +52,7 @@ public class Server implements IServer {
             } finally {
                 stopServer();
             }
-        }
+       // }
     }
 
     //stop the server method
