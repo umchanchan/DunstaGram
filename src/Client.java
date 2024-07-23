@@ -30,6 +30,7 @@ public class Client implements IClient {
             return;
         }
 
+        Profile p;
 
         while(true) {
             InitialGUI c = new InitialGUI(ois, oos);
@@ -53,8 +54,10 @@ public class Client implements IClient {
                 Object outcome = ois.readObject();
 
                 if (outcome instanceof Profile) {
+                    p = (Profile) outcome;
                     JOptionPane.showMessageDialog(null, "Successfully logged in!",
                             "Success", JOptionPane.INFORMATION_MESSAGE);
+
                     break;
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid login!",
@@ -67,7 +70,8 @@ public class Client implements IClient {
 
         }
 
-
+        JOptionPane.showMessageDialog(null, "Welcome to Dunstagram!");
+        SwingUtilities.invokeLater(new ApplicationGUI(ois, oos, p));
 
 
 
