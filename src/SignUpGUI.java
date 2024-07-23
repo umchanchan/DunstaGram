@@ -151,7 +151,9 @@ public class SignUpGUI extends JComponent implements Runnable {
                         showError();
                     } else {
                         writeObject();
+                        frame.dispose();
                     }
+
                 } catch (IOException ex) {
                     return;
                 }

@@ -73,6 +73,12 @@ public class LoginGUI implements Runnable {
 
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
+                try {
+                    writeObjects();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 frame.dispose();
             }
         });
@@ -80,6 +86,10 @@ public class LoginGUI implements Runnable {
 
     }
 
+    public void writeObjects() throws IOException {
+        oos.writeObject(user);
+        oos.writeObject(pass);
+    }
     public void showError() {
         JOptionPane.showMessageDialog(null, "Invalid input!", "Error", JOptionPane.ERROR_MESSAGE);
     }
