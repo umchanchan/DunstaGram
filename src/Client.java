@@ -47,6 +47,9 @@ public class Client implements IClient {
                     JOptionPane.showMessageDialog(null, "Successfully signed up!",
                             "Success", JOptionPane.INFORMATION_MESSAGE);
                     continue;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Username already taken!",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else if (option.equals("login")) {
                 SwingUtilities.invokeLater(new LoginGUI(ois, oos));
