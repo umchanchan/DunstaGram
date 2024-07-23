@@ -30,20 +30,46 @@ public class Client implements IClient {
             return;
         }
 
-        InitialGUI c = new InitialGUI(ois, oos);
-        SwingUtilities.invokeLater(c);
 
-        String option = (String) ois.readObject();
-        if (option.equals("signUp")) {
-            SwingUtilities.invokeLater(new SignUpGUI(ois, oos));//any new frame GUI
-        } else if (option.equals("login")) {
-            SwingUtilities.invokeLater(new LoginGUI(ois, oos));
+        while(true) {
+            InitialGUI c = new InitialGUI(ois, oos);
+            SwingUtilities.invokeLater(c);
+
+            String option = (String) ois.readObject();
+            if (option.equals("signUp")) {
+                SwingUtilities.invokeLater(new SignUpGUI(ois, oos));//any new frame GUI
+
+                String outcome = (String) ois.readObject();
+                System.out.println(outcome);
+
+                if (outcome.equals("Success")) {
+                    JOptionPane.showMessageDialog(null, "Successfully signed up!",
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                    continue;
+                }
+            } else if (option.equals("login")) {
+                SwingUtilities.invokeLater(new LoginGUI(ois, oos));
+
+                Object outcome = ois.readObject();
+
+                if (outcome instanceof Profile) {
+                    JOptionPane.showMessageDialog(null, "Successfully logged in!",
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid login!",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+
+            }
+
+
         }
 
 
 
-        String outcome = (String) ois.readObject();
-        System.out.println(outcome);
+
 
 
 
