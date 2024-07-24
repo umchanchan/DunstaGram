@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.*;
 
 
@@ -33,20 +34,32 @@ public class MainGUI extends JComponent implements Runnable {
     private ArrayList<Post> posts = new ArrayList<>();
     private DefaultListModel<Post> postModel;
     private JList<Post> postList;
-
-
+    private MainGUI obj;
     public MainGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) {
         this.user = user;
         this.ois = ois;
         this.oos = oos;
+        obj = this;
     }
 
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == settingButton) {
-                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user));
+                boolean isOpened = false;
+                System.out.println(Arrays.toString(JFrame.getFrames()));
+                for(Frame i: JFrame.getFrames()) {
+                    if (i.toString().toLowerCase().contains("settings")) {
+                        isOpened = true;
+                    }
+                }
+                if (!isOpened) {
+
+                    SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user, obj));
+
+                }
             }
+
 
 
         }
@@ -160,6 +173,10 @@ public class MainGUI extends JComponent implements Runnable {
         });
         mainFrame.setVisible(true);
         mainFrame.setLocationRelativeTo(null);
+    }
+
+    public void logout() {
+        this.mainFrame.dispose();
     }
 
     public void listToModel(ArrayList<Post> postList) {

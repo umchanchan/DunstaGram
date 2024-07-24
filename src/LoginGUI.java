@@ -41,7 +41,7 @@ public class LoginGUI implements Runnable {
                     if (response instanceof Profile) {
                         user = (Profile) response;
                         System.out.println(user.getUsername());
-                        JOptionPane.showMessageDialog(frame, "Login Success!", "Success",
+                        JOptionPane.showMessageDialog(frame, "Login Successful!", "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
                         frame.dispose();
                         SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
