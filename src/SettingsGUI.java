@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class SettingsGUI implements Runnable {
@@ -12,12 +13,14 @@ public class SettingsGUI implements Runnable {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p) {
+    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p) throws IOException {
         profile = p;
         this.in = in;
         this.out = out;
+        out.writeObject("Settings");
 
     }
+
 
 
     public void run() {
@@ -65,13 +68,15 @@ public class SettingsGUI implements Runnable {
                     out.flush();
 
                 } catch (IOException ex) {
-                    return;
+
                 }
 
-                ArrayList<String> userInfo;
+                String userInfo;
 
                 try {
-                    userInfo = (ArrayList<String>) in.readObject();
+                    userInfo = (String) in.readObject();
+                    System.out.println("hi");
+                    System.out.println(userInfo);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 } catch (ClassNotFoundException ex) {

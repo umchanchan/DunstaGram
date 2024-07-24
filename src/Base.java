@@ -32,6 +32,16 @@ public class Base implements IBase {
         retrievedUserInfo.add(toGet.getUsername());
         retrievedUserInfo.add(String.valueOf(toGet.getAge()));
         retrievedUserInfo.add(toGet.getGender());
+        String s = "";
+
+        return retrievedUserInfo;
+    }
+
+    public String getUserInfoString(Profile toGet) {
+        String retrievedUserInfo = "";
+        retrievedUserInfo += toGet.getUsername();
+        retrievedUserInfo += " " + String.valueOf(toGet.getAge());
+        retrievedUserInfo += " " + toGet.getGender();
         return retrievedUserInfo;
     }
 

@@ -267,14 +267,19 @@ public class ClientHandler implements IClientHandler {
 
                     }
 
-                    case "viewProfile" -> {
+                    case "Settings" -> {
                         System.out.println("viewProfile");
-                        Base b = new Base();
-                        Profile profile = (Profile) ois.readObject();
-                        ArrayList<String> userInfo = b.getUserInfo(profile);
+                        String option = (String) ois.readObject();
+                        System.out.println(option);
+                        if (option.equals("viewProfile")) {
+                            Base b = new Base();
+                            Profile profile = (Profile) ois.readObject();
+                            String userInfo = b.getUserInfoString(profile);
 
-                        oos.writeObject(userInfo);
-                        oos.flush();
+                            oos.writeObject(userInfo);
+                            oos.flush();
+                        }
+
 
                     }
 
