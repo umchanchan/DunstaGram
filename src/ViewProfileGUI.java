@@ -20,9 +20,9 @@ public class ViewProfileGUI implements Runnable {
         int usernameLength = userInfo.get(0).length();
         if (usernameLength >= 7) {
             int frameWidth = usernameLength * 60;
-            frame.setSize(frameWidth, 420);
+            frame.setSize(frameWidth, 480);
         } else {
-            frame.setSize(360, 420);
+            frame.setSize(360, 480);
         }
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -47,6 +47,9 @@ public class ViewProfileGUI implements Runnable {
         JLabel label5 = new JLabel("Posts: " + userInfo.get(4));
         label5.setFont(new Font("Arial", Font.BOLD, 48));
         frame.add(label5);
+
+        JButton backButton = new JButton("Back");
+        frame.add(backButton);
     }
 
 }
