@@ -8,68 +8,63 @@ import java.net.*;
 public class SignUpGUI extends JComponent implements Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
+    private Socket clientSocket;
     private String user;
     private String pass;
-    private int age;
+    private String age;
     private String gender;
-    private int counter = 0;
+    private JLabel userLabel;
+    private JLabel passwordLabel;
+    private JLabel genderLabel;
+    private JLabel ageLabel;
+    private JTextField userField;
+    private JTextField genderField;
+    private JTextField ageField;
+    private JTextField passField;
+    private JButton makeAccountButton;
+    private JButton cancelButton;
+    private JFrame frame;
+
 
     public SignUpGUI(ObjectInputStream ois, ObjectOutputStream oos) {
         this.ois = ois;
         this.oos = oos;
     }
 
-  /*  public SignUpGUI() { //just so i can test
-
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new SignUpGUI());
-
-    }*/
     public void run() {
 
-       /* try {
-            //bfr = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-          //  pw = new PrintWriter(clientSocket.getOutputStream(), true);
-            pw = new PrintWriter("Hello");
+//        try {
+//
+//
+//
+//        } catch (IOException e) {
+//            JOptionPane.showMessageDialog(frame, "Error occurred in server!",
+//                    "Error", JOptionPane.ERROR_MESSAGE);
+//
+//        }
 
-        } catch (Exception e) { //IOException
-                e.printStackTrace();
-                return;
-            }*/
-
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setTitle("Sign Up Menu");
         Container content = frame.getContentPane();
-        content.setLayout(new FlowLayout());
+        content.setLayout(new GridLayout(4, 2, 5, 5));
 
-        frame.setSize(360, 250);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
 
-        JTextField userField = new JTextField(10);
-        JButton userButton = new JButton("Enter");
-        JLabel userLabel = new JLabel("Username");
-        userLabel.setText("Enter a Username: ");
+        userField = new JTextField(10);
+        userLabel = new JLabel("Enter a Username: ");
 
-        JLabel passwordLabel = new JLabel("Password");
-        passwordLabel.setText("Enter a Password: ");
-        JTextField passField = new JTextField(10);
-        JButton passButton = new JButton("Enter");
+        passwordLabel = new JLabel("Enter a Password: ");
+        passField = new JTextField(10);
 
-        JLabel ageLabel = new JLabel("Age");
-        ageLabel.setText("Enter your Age:       ");
-        JTextField ageField = new JTextField(10);
-        JButton ageButton = new JButton("Enter");
+        ageLabel = new JLabel("Enter your Age:       ");
+        ageField = new JTextField(10);
 
-        JLabel genderLabel = new JLabel("Gender");
+        genderLabel = new JLabel("Gender");
         genderLabel.setText("Enter your Gender: ");
-        JTextField genderField = new JTextField(10);
-        JButton genderButton = new JButton("Enter");
+        genderField = new JTextField(10);
 
-        JButton makeAccountButton = new JButton("Make Account"); //NO LISTENER FOR THIS YET
+
+        makeAccountButton = new JButton("Make Account");
+        cancelButton = new JButton("Log In");
 
         JPanel userPanel = new JPanel();
         JPanel passPanel = new JPanel();
@@ -79,98 +74,90 @@ public class SignUpGUI extends JComponent implements Runnable {
 
         userPanel.add(userLabel);
         userPanel.add(userField);
-        userPanel.add(userButton);
         frame.add(userPanel);
 
         passPanel.add(passwordLabel);
         passPanel.add(passField);
-        passPanel.add(passButton);
         frame.add(passPanel);
 
         agePanel.add(ageLabel);
         agePanel.add(ageField);
-        agePanel.add(ageButton);
         frame.add(agePanel);
 
         genderPanel.add(genderLabel);
         genderPanel.add(genderField);
-        genderPanel.add(genderButton);
         frame.add(genderPanel);
 
         accPanel.add(makeAccountButton);
+        accPanel.add(cancelButton);
         frame.add(accPanel);
-
-            //pw.println("SignUp");
-           // pw.println("Chan");
-          //  pw.println("1122");
-          //  pw.println("mm");
-          //  pw.println("Male");
-            //pw.flush();
-
-            //String line = bfr.readLine();
-            //System.out.println(line);
-
-        userButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                counter++;
-                user = String.valueOf(userField.getText());
-
-
-            }
-        });
-
-        passButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                counter++;
-                pass = String.valueOf(passField.getText());
-            }
-        });
-
-        ageButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    age = Integer.valueOf(ageField.getText());
-                    counter++;
-                } catch (NumberFormatException e1) {
-                    showError("Please enter a valid age!");
-                }
-            }
-        });
-
-        genderButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                counter++;
-                gender = String.valueOf(genderField.getText());
-            }
-        });
 
         makeAccountButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    if (counter < 4) {
-                        showError("Please fill out all fields!");
-                    } else {
-                        writeObject();
-                        frame.dispose();
-                    }
+                signUpUser();
+            }
+        });
 
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                try {
+                    new LoginGUI(ois, oos).run();
                 } catch (IOException ex) {
-                    return;
+                    JOptionPane.showMessageDialog(frame, "Error communicating with the server.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
+        frame.setSize(800, 450);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
     }
 
-    public void showError(String s) {
-        JOptionPane.showMessageDialog(null, s, "Error", JOptionPane.ERROR_MESSAGE);
+    public void signUpUser() {
+        user = userField.getText();
+        pass = userField.getText();
+        age = userField.getText();
+        gender = genderField.getText();
+        try {
+            writeObject();
+
+            String response = (String) ois.readObject();
+            if (response.equals("Success")) {
+                JOptionPane.showMessageDialog(frame, "Signup successful, please login.",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                frame.dispose();
+                SwingUtilities.invokeLater(new LoginGUI(ois, oos));
+            } else if (response.equals("Fail")) {
+                JOptionPane.showMessageDialog(frame, "Username is already taken, please try another.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equals("Invalid Int")) {
+                JOptionPane.showMessageDialog(frame, "Please enter a valid age.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equals("Invalid")) {
+                JOptionPane.showMessageDialog(frame, "Age can't be smaller than 0",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equals("Empty")) {
+                JOptionPane.showMessageDialog(frame, "One of the fields is empty, please fill them all in.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(frame, "Error communicating with the server.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void writeObject() throws IOException {
-        System.out.println("HEre");
+        oos.writeObject("signUp");
         oos.writeObject(user);
         oos.writeObject(pass);
-        oos.writeObject(Integer.toString(age));
+        oos.writeObject(age);
         oos.writeObject(gender);
         oos.flush();
     }

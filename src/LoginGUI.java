@@ -3,102 +3,103 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.Socket;
 
 public class LoginGUI implements Runnable {
-    private String user;
-    private String pass;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private boolean changeUser = false;
-    private boolean changePass = false;
+    private JTextField userField;
+    private JTextField passField;
+    private Profile user;
+    private JButton signupButton;
+    private JButton loginButton;
+    private JFrame frame;
 
 
     public LoginGUI(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
         this.ois = ois;
         this.oos = oos;
+        oos.flush();
     }
+
+    private ActionListener actionListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == loginButton) {
+                try {
+                    String username = userField.getText();
+                    String pass = passField.getText();
+
+                    oos.writeObject("login");
+                    oos.writeObject(username);
+                    oos.writeObject(pass);
+                    oos.flush();
+
+                    Object response = ois.readObject();
+                    if (response instanceof Profile) {
+                        user = (Profile) response;
+                        System.out.println(user.getUsername());
+                        JOptionPane.showMessageDialog(frame, "Login Success!", "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                        SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
+
+                    } else if (response instanceof String) {
+                        JOptionPane.showMessageDialog(frame, "Please check your username or password",
+                                "Login Fail", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                } catch (IOException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(frame, "Error communicating with the server.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } else if (e.getSource() == signupButton) {
+                SwingUtilities.invokeLater(new SignUpGUI(ois, oos));
+                frame.dispose();
+            }
+        }
+    };
 
 
     public void run() {
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setTitle("Login Menu");
         Container content = frame.getContentPane();
-        content.setLayout(new FlowLayout());
+        content.setLayout(new GridLayout(4, 2, 5,5));
 
-        frame.setSize(360, 180);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
 
-        JTextField userField = new JTextField(10);
-        JButton userButton = new JButton("Enter");
+        userField = new JTextField(10);
         JLabel userLabel = new JLabel("Username");
         userLabel.setText("Enter your username: ");
 
         JPanel userPanel = new JPanel();
         userPanel.add(userLabel);
         userPanel.add(userField);
-        userPanel.add(userButton);
         content.add(userPanel);
 
-        JTextField passField = new JTextField(10);
-        JButton passButton = new JButton("Enter");
+        passField = new JTextField(10);
         JLabel passLabel = new JLabel("Password");
         passLabel.setText("Enter your password: ");
 
         JPanel passPanel = new JPanel();
         passPanel.add(passLabel);
         passPanel.add(passField);
-        passPanel.add(passButton);
         content.add(passPanel);
 
-        JButton loginButton = new JButton("Login");
+        loginButton = new JButton("Login");
         content.add(loginButton);
 
-        userButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                changeUser = true;
-                user = String.valueOf(userField.getText());
+        signupButton = new JButton("Don't have an account?");
+        content.add(signupButton);
 
+        loginButton.addActionListener(actionListener);
+        signupButton.addActionListener(actionListener);
 
-
-            }
-        });
-
-        passButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-                changePass = true;
-                pass = String.valueOf(passField.getText());
-
-            }
-        });
-
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-                if (changeUser && changePass) {
-
-                    try {
-                        writeObjects();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    frame.dispose();
-                } else {
-                    showError("Please fill out all fields!");
-                }
-            }
-        });
-
-
-    }
-
-    public void writeObjects() throws IOException {
-        oos.writeObject(user);
-        oos.writeObject(pass);
-    }
-    public void showError(String s) {
-        JOptionPane.showMessageDialog(null, s, "Error", JOptionPane.ERROR_MESSAGE);
+        frame.setSize(1000, 1000);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
