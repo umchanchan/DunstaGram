@@ -44,6 +44,9 @@ public class MainGUI extends JComponent implements Runnable {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == settingButton) {
+                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user));
+            }
 
 
         }
