@@ -1,13 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ViewProfileGUI implements Runnable {
     private ArrayList<String> userInfo;
     private boolean myProfile;
+    private static boolean isOpen;
     public ViewProfileGUI(ArrayList<String> userInfo, boolean myProfile) {
         this.userInfo = userInfo;
         this.myProfile = myProfile;
+        this.isOpen = true;
     }
     public void run() {
         JFrame frame = new JFrame();
@@ -24,7 +29,7 @@ public class ViewProfileGUI implements Runnable {
         } else {
             frame.setSize(360, 480);
         }
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -49,7 +54,22 @@ public class ViewProfileGUI implements Runnable {
         frame.add(label5);
 
         JButton backButton = new JButton("Back");
+        Dimension d = new Dimension(240, 60);
+        backButton.setSize(d);
         frame.add(backButton);
+
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                isOpen = false;
+                frame.dispose();
+
+
+            }
+        });
+    }
+
+    public static boolean checkOpen() {
+        return isOpen;
     }
 
 }
