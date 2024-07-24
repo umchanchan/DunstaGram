@@ -84,7 +84,20 @@ public class SettingsGUI implements Runnable {
             }
         });
 
-
+        logout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?",
+                        "Logout", JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    frame.dispose();
+                    try {
+                        out.writeObject("logout");
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+        });
 
 
     }
