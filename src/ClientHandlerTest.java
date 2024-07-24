@@ -1,49 +1,64 @@
 import org.junit.jupiter.api.*;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BaseTest {
+public class ClientHandlerTest {
     private Base base;
-
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+    private Profile user;
+    private ArrayList<Post> posts;
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, ClassNotFoundException {
         base = new Base();
-        base.signUp("Jeff", "2332", 22, "Male");
+        Socket clientSocket = new Socket("localhost", 3588);
+        oos = new ObjectOutputStream(clientSocket.getOutputStream());
+        ois = new ObjectInputStream(clientSocket.getInputStream());
+        oos.flush();
+
+        oos.writeObject("login");
+        oos.writeObject("Chris");
+        oos.writeObject("11233");
+        oos.flush();
+
+        Object response = ois.readObject();
+        if (response instanceof Profile) {
+            user = (Profile) response;
+            System.out.println(user.getUsername());
+
+        } else if (response instanceof String) {
+            System.out.println(response);
+        }
+
     }
 
     @Test
-    void temp() throws IOException, UserNotFoundException {
-        Profile chris = new Profile("Chris", "11233", 23, "Male");
+    void temp() throws IOException, ClassNotFoundException {
+        oos.writeObject("listMyPosts");
+        oos.flush();
 
-        base.readUserListFile();
-        base.readPostListFile();
-        base.readHidePostListFile();
+        Object response = ois.readObject();
 
-        Profile user = base.login("Chris", "11233");
-        ArrayList<Post> userPost = user.getMyPosts();
-        System.out.println(userPost.size());
-        Post post2 = new Post(user, "Nah");
-        Post post3 = base.makeNewPost(user, "Nh");
-        for (Post userP : userPost) {
-            System.out.println(userP.getMessage());
+        if (response instanceof ArrayList<?>) {
+            ArrayList<?> list = (ArrayList<?>) response;
+
+            if (!list.isEmpty() && list.get(0) instanceof Post) {
+                posts = (ArrayList<Post>) list;
+            }
+        } else {
+            System.out.println("WTF");
         }
 
-        base.readPostListFile();
-
-//        ArrayList<Profile> following = user.getFollowing();
-//        System.out.println(following.size());
-
-        ArrayList<Post> userPost2 = user.getMyPosts();
-        System.out.println(userPost2.size());
-
-
-        assertEquals(chris.getUsername(), user.getUsername());
-
+        System.out.println(posts.size());
     }
 
     @Test

@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.util.stream.DoubleStream;
 
 /**
  * Team Project - Base
@@ -184,6 +185,11 @@ public class Base implements IBase {
                 String line;
                 while ((line = bfr.readLine()) != null) {
                     post = post.makePost(line, users);
+                    for (Profile user : users) {
+                        if (post.getPoster().getUsername().equals(user.getUsername())) {
+                            user.addMyPost(post);
+                        }
+                    }
                     this.allPosts.add(post);
                 }
                 bfr.close();
@@ -268,7 +274,7 @@ public class Base implements IBase {
                     }
                     Post post = new Post(user, message);
                     user.addMyPost(post);
-                    poster.addMyPost(post);
+//                    poster.addMyPost(post);
                     allPosts.add(post);
                     writePostListFile();
                     return post;
