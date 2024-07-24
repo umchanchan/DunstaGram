@@ -24,17 +24,9 @@ public class ClientHandler implements IClientHandler {
             oos.flush();
             ois = new ObjectInputStream(clientSocket.getInputStream());
 
-            int it = 0;
+
             while (true) {
-                System.out.println(it);
-                it++;
                 String clientInput = (String) ois.readObject();
-
-                if (clientInput.equals("signUp") || clientInput.equals("login")) {
-                    oos.writeObject(clientInput);
-                    oos.flush();
-                }
-
                 System.out.println(clientInput);
                 //To stop this thread when the user closes the software.
                 if (clientInput == null) {
@@ -47,39 +39,37 @@ public class ClientHandler implements IClientHandler {
                     case "signUp" -> {
                         String username = (String) ois.readObject();
                         String password = (String) ois.readObject();
-                        System.out.println(username);
-                        System.out.println(password);
                         int age = 0;
+                        String gender = "";
                         try {
                             String temp = (String) ois.readObject();
-                            System.out.println(temp);
+                            gender = (String) ois.readObject();
                             age = Integer.parseInt(temp);
+                            if (username == null || password == null || temp == null || gender == null) {
+                                oos.writeObject("Empty");
+                                oos.flush();
+                            } else if (age < 0) {
+                                oos.writeObject("Invalid");
+                                oos.flush();
+                            } else if (base.signUp(username, password, age, gender)) {
+                                oos.writeObject("Success");
+                                oos.flush();
+                            } else {
+                                oos.writeObject("Fail");
+                                oos.flush();
+                            }
+
                         } catch (NumberFormatException e) {
                             oos.writeObject("Invalid Int");
                             oos.flush();
                         }
-                        if (age < 0) {
-                            oos.writeObject("Invalid");
-                            oos.flush();
-                        }
-                        String gender = (String) ois.readObject();
-                        System.out.println(gender);
-                        System.out.println("Calling signup");
-                        if (base.signUp(username, password, age, gender)) {
-                            System.out.println("Success");
-                            oos.writeObject("Success");
-                            oos.flush();
-                        } else {
-                            System.out.println("Fail");
-                            oos.writeObject("Fail");
-                            oos.flush();
-                        }
-
 
                     }
                     case "login" -> {
                         String username = (String) ois.readObject();
                         String password = (String) ois.readObject();
+                        System.out.println(username);
+                        System.out.println(password);
                         String result;
                         try {
                             if ((profile = base.login(username, password)) != null) {
@@ -91,7 +81,7 @@ public class ClientHandler implements IClientHandler {
                                 oos.flush();
                             }
                         } catch (UserNotFoundException e) {
-                            result = "Invalid";
+                            result = "Fail";
                             oos.writeObject(result);
                             oos.flush();
                         }
@@ -264,17 +254,6 @@ public class ClientHandler implements IClientHandler {
                             oos.writeObject("Fail");
                             oos.flush();
                         }
-
-                    }
-
-                    case "viewProfile" -> {
-                        System.out.println("viewProfile");
-                        Base b = new Base();
-                        Profile profile = (Profile) ois.readObject();
-                        ArrayList<String> userInfo = b.getUserInfo(profile);
-
-                        oos.writeObject(userInfo);
-                        oos.flush();
 
                     }
 
