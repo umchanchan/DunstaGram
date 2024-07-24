@@ -24,10 +24,17 @@ public class ClientHandler implements IClientHandler {
             oos.flush();
             ois = new ObjectInputStream(clientSocket.getInputStream());
 
-
+            int it = 0;
             while (true) {
+                System.out.println(it);
+                it++;
                 String clientInput = (String) ois.readObject();
-                oos.writeObject(clientInput);
+
+                if (clientInput.equals("signUp") || clientInput.equals("login")) {
+                    oos.writeObject(clientInput);
+                    oos.flush();
+                }
+
                 System.out.println(clientInput);
                 //To stop this thread when the user closes the software.
                 if (clientInput == null) {
@@ -260,6 +267,17 @@ public class ClientHandler implements IClientHandler {
 
                     }
 
+                    case "viewProfile" -> {
+                        System.out.println("viewProfile");
+                        Base b = new Base();
+                        Profile profile = (Profile) ois.readObject();
+                        ArrayList<String> userInfo = b.getUserInfo(profile);
+
+                        oos.writeObject(userInfo);
+                        oos.flush();
+
+                    }
+
                     default -> {
                         System.out.println("Invalid message...why are you here");
                         break;
@@ -272,7 +290,6 @@ public class ClientHandler implements IClientHandler {
 
         } catch (EOFException e) {
             System.err.print("Caught");
-            return;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }  finally {

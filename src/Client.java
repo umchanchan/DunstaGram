@@ -74,7 +74,8 @@ public class Client implements IClient {
         }
 
         JOptionPane.showMessageDialog(null, "Welcome to Dunstagram!");
-        SwingUtilities.invokeLater(new ApplicationGUI(ois, oos, p));
+
+        SwingUtilities.invokeLater(new SettingsGUI(ois, oos, p));
 
 
 
