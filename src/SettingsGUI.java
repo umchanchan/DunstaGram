@@ -96,7 +96,7 @@ public class SettingsGUI implements Runnable {
                     frame.dispose();
                     obj.logout();
                     try {
-                        out.writeObject("logout");
+                        out.writeObject("Exit");
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
