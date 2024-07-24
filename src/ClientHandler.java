@@ -269,7 +269,6 @@ public class ClientHandler implements IClientHandler {
 
         } catch (EOFException e) {
             System.err.print("Caught");
-            return;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }  finally {
