@@ -5,11 +5,6 @@ import javax.swing.*;
 /**
  * This class serves a client GUI
  */
-import java.util.Scanner;
-
-/**
- *
- */
 public class Client implements IClient {
     public static void main(String[] args) {
         Socket clientSocket;
