@@ -7,21 +7,25 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import static java.awt.Window.getWindows;
+
 public class SettingsGUI implements Runnable {
     private Profile profile;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private MainGUI obj;
 
-    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p) {
+    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p, MainGUI obj) {
         profile = p;
         this.in = in;
         this.out = out;
-
+        this.obj = obj;
     }
 
 
     public void run() {
         JFrame frame = new JFrame();
+        frame.setResizable(false);
         frame.setLayout(new FlowLayout());
         frame.setTitle("Settings");
         frame.setSize(400, 350);
@@ -90,12 +94,16 @@ public class SettingsGUI implements Runnable {
                         "Logout", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     frame.dispose();
+                    obj.logout();
                     try {
                         out.writeObject("logout");
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
+
                 }
+
+
             }
         });
 

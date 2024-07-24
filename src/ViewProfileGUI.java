@@ -19,7 +19,7 @@ public class ViewProfileGUI implements Runnable {
         frame.setLayout(new FlowLayout());
         int usernameLength = userInfo.get(0).length();
         if (usernameLength >= 7) {
-            int frameWidth = usernameLength * 60;
+            int frameWidth = usernameLength * 61;
             frame.setSize(frameWidth, 480);
         } else {
             frame.setSize(360, 480);
