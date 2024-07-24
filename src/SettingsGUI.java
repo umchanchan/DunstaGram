@@ -78,6 +78,7 @@ public class SettingsGUI implements Runnable {
                     throw new RuntimeException(ex);
                 }
                 System.out.println(userInfo);
+                SwingUtilities.invokeLater(new ViewProfileGUI(userInfo, true));
 
 
             }
