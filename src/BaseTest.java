@@ -20,9 +20,7 @@ public class BaseTest {
     void temp() throws IOException, UserNotFoundException {
         Profile chris = new Profile("Chris", "11233", 23, "Male");
 
-        base.readUserListFile();
-        base.readPostListFile();
-        base.readHidePostListFile();
+        base.readAllListFile();
 
         Profile user = base.login("Chris", "11233");
         ArrayList<Post> userPost = user.getMyPosts();
@@ -33,7 +31,7 @@ public class BaseTest {
             System.out.println(userP.getMessage());
         }
 
-        base.readPostListFile();
+        base.readAllListFile();
 
 //        ArrayList<Profile> following = user.getFollowing();
 //        System.out.println(following.size());
@@ -59,7 +57,7 @@ public class BaseTest {
     @DisplayName("Login")
     void writeFile() {
         assertDoesNotThrow(() -> {
-            base.readUserListFile();
+            base.readAllListFile();
             Profile newprofile = new Profile("Chan", "1123", 23, "Male");
             Profile profile = new Profile("Chris", "11233");
             Post post = new Post(profile, "I don't like you");
@@ -95,7 +93,7 @@ public class BaseTest {
     @DisplayName("Test writeUserList method works when signUp")
     void testSignUpByAllUserList() {
         assertDoesNotThrow(() -> {
-            base.readUserListFile();
+            base.readAllListFile();
             ArrayList<Profile> users = base.getUsers();
             for (Profile user : users) {
                 System.out.println(user);

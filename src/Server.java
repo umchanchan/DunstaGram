@@ -14,6 +14,10 @@ public class Server implements IServer {
     private Base base;
     private ExecutorService pool = Executors.newCachedThreadPool();
 
+    public Server() {
+        port = 0; // workaround intellij bug
+    }
+
     public Server(int port) {
         this.base = null;
         this.port = port;
@@ -36,9 +40,7 @@ public class Server implements IServer {
             serverSocket = new ServerSocket(port);
             running = true;
             base = new Base();
-            base.readUserListFile();
-            base.readPostListFile();
-            base.readHidePostListFile();
+            base.readAllListFile();
 
             while (running) {
                 Socket clientSocket = serverSocket.accept();

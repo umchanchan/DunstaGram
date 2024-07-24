@@ -74,7 +74,7 @@ public class ClientHandlerTest {
     @DisplayName("Login")
     void writeFile() {
         assertDoesNotThrow(() -> {
-            base.readUserListFile();
+            base.readAllListFile();
             Profile newprofile = new Profile("Chan", "1123", 23, "Male");
             Profile profile = new Profile("Chris", "11233");
             Post post = new Post(profile, "I don't like you");
@@ -110,7 +110,7 @@ public class ClientHandlerTest {
     @DisplayName("Test writeUserList method works when signUp")
     void testSignUpByAllUserList() {
         assertDoesNotThrow(() -> {
-            base.readUserListFile();
+            base.readAllListFile();
             ArrayList<Profile> users = base.getUsers();
             for (Profile user : users) {
                 System.out.println(user);

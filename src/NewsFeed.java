@@ -15,9 +15,14 @@ public class NewsFeed implements INewsFeed {
         this.profile = profile;
     }
 
-    public ArrayList<Post> filterPost(Profile follow) {
+    public ArrayList<Post> filterPost(String follow, Base base) {
         if (profile.isFollowing(follow)) {
-            allPost.addAll(follow.getMyPosts());
+            try {
+                Profile p = base.searchUser(follow);
+                allPost.addAll(p.getMyPosts());
+            } catch (UserNotFoundException e) {
+                return allPost;
+            }
         }
         return allPost;
     }

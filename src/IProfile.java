@@ -18,6 +18,8 @@ public interface IProfile {
     void unfollow(Profile p);
     boolean isFollowing(Profile follow);
 
+    boolean isFollowing(String follow);
+
     boolean blockUser(Profile user);
     void unblockUser(Profile unblock);
 
@@ -30,7 +32,7 @@ public interface IProfile {
 
     String getGender();
 
-    ArrayList<Profile> getFollowing();
+    ArrayList<String> getFollowing();
 
     ArrayList<Post> getMyPosts();
 
