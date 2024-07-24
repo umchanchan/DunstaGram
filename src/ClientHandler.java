@@ -260,6 +260,13 @@ public class ClientHandler implements IClientHandler {
 
                     }
 
+                    case "viewProfile" -> {
+                        Base b = new Base();
+                        Profile p = (Profile) ois.readObject();
+                        ArrayList<String> list = b.getUserInfo(p);
+                        oos.writeObject(list);
+                    }
+
                     default -> {
                         System.out.println("Invalid message...why are you here");
                         break;

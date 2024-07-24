@@ -77,6 +77,7 @@ public class SettingsGUI implements Runnable {
                 } catch (ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
+                System.out.println(userInfo);
 
 
             }
