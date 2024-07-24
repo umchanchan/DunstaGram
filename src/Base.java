@@ -31,6 +31,8 @@ public class Base implements IBase {
         retrievedUserInfo.add(toGet.getUsername());
         retrievedUserInfo.add(String.valueOf(toGet.getAge()));
         retrievedUserInfo.add(toGet.getGender());
+        retrievedUserInfo.add(String.valueOf(toGet.getFollowing().size()));
+        retrievedUserInfo.add(String.valueOf(toGet.getMyPosts().size()));
         return retrievedUserInfo;
     }
 
