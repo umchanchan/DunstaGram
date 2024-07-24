@@ -14,12 +14,14 @@ public class SettingsGUI implements Runnable {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private MainGUI obj;
+    private static boolean isOpened;
 
     public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p, MainGUI obj) {
         profile = p;
         this.in = in;
         this.out = out;
         this.obj = obj;
+        isOpened = true;
     }
 
 
@@ -29,7 +31,7 @@ public class SettingsGUI implements Runnable {
         frame.setLayout(new FlowLayout());
         frame.setTitle("Settings");
         frame.setSize(400, 350);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -60,6 +62,14 @@ public class SettingsGUI implements Runnable {
         logout.setSize(log);
         logout.setPreferredSize(log);
         frame.add(logout);
+
+        JButton back = new JButton("Back");
+        back.setFont(new Font("Arial", Font.PLAIN, 24));
+        Dimension back2 = new Dimension(180, 40);
+        back.setSize(back2);
+        back.setPreferredSize(back2);
+        frame.add(back);
+
 
         viewProfile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -93,10 +103,11 @@ public class SettingsGUI implements Runnable {
                 int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?",
                         "Logout", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
-                    frame.dispose();
-                    obj.logout();
                     try {
-                        out.writeObject("Exit");
+                        out.flush();
+                        frame.dispose();
+                        obj.logout();
+                        SwingUtilities.invokeLater(new LoginGUI(in, out));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -107,6 +118,17 @@ public class SettingsGUI implements Runnable {
             }
         });
 
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                isOpened = false;
+            }
+        });
 
+
+    }
+
+    public static boolean findOpened() {
+        return isOpened;
     }
 }

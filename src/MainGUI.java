@@ -45,15 +45,8 @@ public class MainGUI extends JComponent implements Runnable {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == settingButton) {
-                boolean isOpened = false;
-                System.out.println(Arrays.toString(JFrame.getFrames()));
-                for(Frame i: JFrame.getFrames()) {
-                    if (i.toString().toLowerCase().contains("settings")) {
-                        isOpened = true;
-                    }
-                }
-                if (!isOpened) {
+            if (!SettingsGUI.findOpened()) {
+                if (e.getSource() == settingButton) {
 
                     SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user, obj));
 
