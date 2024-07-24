@@ -8,7 +8,6 @@ import java.io.*;
  * </p>
  */
 
-//It has to implement block method into file io
 public class Base implements IBase {
     private ArrayList<Profile> users = new ArrayList<>();
     private ArrayList<Post> allPosts = new ArrayList<>();
@@ -63,8 +62,7 @@ public class Base implements IBase {
             boolean found = false;
             for (Profile user : users) {
                 if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                    found = true;
-                    return new Profile(user.getUsername(), user.getPassword(), user.getAge(), user.getGender());
+                    return user;
                 }
             }
             if (!found) {
@@ -80,6 +78,7 @@ public class Base implements IBase {
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
                     user.follow(toAdd);
+                    profile.follow(toAdd);
                     worked = true;
                     writeUserListFile();
                     break;
@@ -95,6 +94,7 @@ public class Base implements IBase {
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
                     user.unfollow(toUnfollow);
+                    profile.unfollow(toUnfollow);
                     worked = true;
                     writeUserListFile();
                     break;
@@ -181,7 +181,7 @@ public class Base implements IBase {
 
                 String line;
                 while ((line = bfr.readLine()) != null) {
-                    post = post.makePost(line);
+                    post = post.makePost(line, users);
                     this.allPosts.add(post);
                 }
                 bfr.close();
@@ -259,12 +259,14 @@ public class Base implements IBase {
             for (Profile user : users) {
                 if (user.getUsername().equals(poster.getUsername())) {
                     for (Post samePost : allPosts) {
-                        if (user.getUsername().equals(samePost.getPoster().getUsername())) {
+                        if (user.getUsername().equals(samePost.getPoster().getUsername()) &&
+                                message.equals(samePost.getMessage())) {
                             return null;
                         }
                     }
                     Post post = new Post(user, message);
                     user.addMyPost(post);
+                    poster.addMyPost(post);
                     allPosts.add(post);
                     writePostListFile();
                     return post;

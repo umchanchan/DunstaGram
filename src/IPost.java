@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public interface IPost {
     String toString();
 
-    Post makePost(String postInfo) throws UserNotFoundException;
+    Post makePost(String postInfo, ArrayList<Profile> users) throws UserNotFoundException;
 
     Comment addComment(Profile commenter, String content);
 

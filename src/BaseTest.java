@@ -17,6 +17,17 @@ public class BaseTest {
     }
 
     @Test
+    void temp() throws IOException {
+        Profile chris = new Profile("Chris", "11233", 23, "Male");
+        Post post = new Post(chris, "Hey");
+
+        base.readPostListFile();
+
+
+
+    }
+
+    @Test
     @DisplayName("Test if searchUser and signUp method work")
     void testFileWriting() {
         assertDoesNotThrow(() -> {
