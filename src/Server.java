@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -70,5 +71,20 @@ public class Server implements IServer {
         }
     }
 
+    public List<Profile> getUsers() {
+        return base.getUsers();
+    }
+
+    public boolean unBlock(Profile profile, Profile unBlock) throws IOException {
+        return base.unBlock(profile, unBlock);
+    }
+
+    public boolean block(Profile profile, Profile toBlock) throws IOException {
+        return base.block(profile, toBlock);
+    }
+
+    public boolean unFollow(Profile profile, Profile toUnfollow) throws IOException {
+        return base.unFollow(profile, toUnfollow);
+    }
 
 }
