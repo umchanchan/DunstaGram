@@ -69,14 +69,14 @@ public class MainGUI extends JComponent implements Runnable {
     public void run() {
 //        temp();
 //        temp2();
-        receivePostList();
+
 
         mainFrame = new JFrame("DunstaGram");
         mainFrame.setSize(800, 450);
         mainFrame.setLayout(new BorderLayout());
 
         postModel = new DefaultListModel<>();
-
+        receivePostList();
 
         postList = new JList<>(postModel);
         postList.setCellRenderer(new ListCellRenderer<Post>() {
@@ -103,6 +103,7 @@ public class MainGUI extends JComponent implements Runnable {
                 downPanel.add(downvoteButton);
                 downPanel.add(viewCommentButton);
                 hidePostButton.addActionListener(actionListener);
+//                hidePostButton.setEnabled(false);
                 upvoteButton.addActionListener(actionListener);
                 downvoteButton.addActionListener(actionListener);
                 viewCommentButton.addActionListener(actionListener);

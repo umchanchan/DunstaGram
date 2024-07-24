@@ -79,6 +79,7 @@ public class Post implements IPost, Serializable {
         for (Profile user : users) {
             if (parts[0].equals(user.getUsername())) {
                 post = new Post(user, msg, upvotes, downvotes, commentList);
+                user.addMyPost(post);
             }
         }
         return post;

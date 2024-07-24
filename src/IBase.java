@@ -16,15 +16,11 @@ public interface IBase {
 
     boolean unBlock(Profile profile, Profile unBlock) throws IOException;
 
-    void readUserListFile() throws IOException;
+    void readAllListFile() throws IOException;
 
     void writeUserListFile() throws IOException;
 
-    void readPostListFile() throws IOException;
-
     void writePostListFile() throws IOException;
-
-    void readHidePostListFile() throws IOException;
 
     void writeHidePostListFile() throws IOException;
 

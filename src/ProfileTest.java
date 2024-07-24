@@ -11,9 +11,12 @@ class ProfileTest {
     Profile profile1;
     Profile profile2;
 
+    Base base = new Base();
+
     @BeforeEach
-    public void set() {
-        Profile profile = new Profile("Bob123", "1234", 55, "Male");
+    public void set() throws IOException, UserNotFoundException {
+        base.signUp("Bob123", "1234", 55, "Male");
+        Profile profile = base.searchUser("Bob123");
         Profile profile1 = new Profile("Jane3", "1234", 30, "Female");
         Profile profile2 = new Profile("Dave111", "444", 29, "Male");
         this.profile = profile;
@@ -28,7 +31,7 @@ class ProfileTest {
 
         profile1.follow(profile);
 
-        ArrayList<Post> friendPost = profile1.getFollowingPosts();
+        ArrayList<Post> friendPost = profile1.getFollowingPosts(base);
         for (Post post2 : friendPost) {
             System.out.println(post2.getPoster());
             System.out.println(post2.getMessage());

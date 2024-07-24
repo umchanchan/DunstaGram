@@ -12,7 +12,7 @@ import java.util.*;
 public class Profile implements IProfile, Serializable {
     private String username;
     private String password;
-    private ArrayList<Profile> following;
+    private ArrayList<String> following;
     private int age;
     private String gender;
     private ArrayList<Post> userPosts;
@@ -31,7 +31,7 @@ public class Profile implements IProfile, Serializable {
         this.password = password;
         this.age = 0;
         this.gender = "";
-        this.following = new ArrayList<Profile>();
+        this.following = new ArrayList<>();
         this.followingPosts = new ArrayList<>();
         this.hidePosts = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
@@ -99,7 +99,7 @@ public class Profile implements IProfile, Serializable {
         result.append(username).append("_").append(password).append("_")
                 .append(age).append("_").append(gender).append("_");
         for (int i = 0; i < following.size(); i++) {
-            result.append(following.get(i).getUsername()).append("_");
+            result.append(following.get(i)).append("_");
         }
 
         if (!blockedList.isEmpty()) {
@@ -135,7 +135,7 @@ public class Profile implements IProfile, Serializable {
         String gender = parts[3];
         Profile newProfile = new Profile(username, password, age, gender);
         for (int i = 4; i < parts.length; i++) {
-            newProfile.following.add(new Profile(parts[i]));
+            newProfile.following.add(parts[i]);
         }
 
         if (!blockList.isEmpty()) {
@@ -201,13 +201,13 @@ public class Profile implements IProfile, Serializable {
     }
 
     public void follow(Profile p) {
-        following.add(p);
+        following.add(p.getUsername());
     }
 
     public void unfollow(Profile p) {
-        for (Profile profile : following) {
-            if (profile.getUsername().equals(p.username)) {
-                following.remove(profile);
+        for (String username : following) {
+            if (username.equals(p.username)) {
+                following.remove(username);
                 break;
             }
         }
@@ -218,8 +218,12 @@ public class Profile implements IProfile, Serializable {
      * @return
      */
     public boolean isFollowing(Profile follow) {
-        for (Profile profile : following) {
-            if (profile.username.equals(follow.username)) {
+        return isFollowing(follow.getUsername());
+    }
+
+    public boolean isFollowing(String follow) {
+        for (String username : following) {
+            if (username.equals(follow)) {
                 return true;
             }
         }
@@ -229,8 +233,8 @@ public class Profile implements IProfile, Serializable {
     public boolean blockUser(Profile user) { //assumes input is a valid user
         boolean isFollow = false;
         boolean isBlock = false;
-        for (Profile profile : following) {
-            if (profile.username.equals(user.username)) {
+        for (String username : following) {
+            if (username.equals(user.username)) {
                 isFollow = true;
                 break;
             }
@@ -281,7 +285,7 @@ public class Profile implements IProfile, Serializable {
         return gender;
     }
 
-    public ArrayList<Profile> getFollowing() {
+    public ArrayList<String> getFollowing() {
         return this.following;
     }
 
@@ -289,10 +293,10 @@ public class Profile implements IProfile, Serializable {
         return this.userPosts;
     }
 
-    public ArrayList<Post> getFollowingPosts() {
+    public ArrayList<Post> getFollowingPosts(Base base) {
         NewsFeed myNewsFeed = new NewsFeed(this);
-        for (Profile friend : following) {
-            followingPosts = myNewsFeed.filterPost(friend);
+        for (String friend : following) {
+            followingPosts = myNewsFeed.filterPost(friend, base);
         }
         return followingPosts;
     }

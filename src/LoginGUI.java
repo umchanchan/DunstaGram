@@ -67,7 +67,7 @@ public class LoginGUI implements Runnable {
     public void run() {
         frame = new JFrame();
         frame.setTitle("Login Menu");
-        frame.setLayout(new GridLayout(4, 4, 5, 5));
+        frame.setLayout(new GridLayout(0, 2, 5, 5));
 
 
         userField = new JTextField(10);

@@ -139,7 +139,7 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "viewPosts" -> {
-                        ArrayList<Post> postList = profile.getFollowingPosts();
+                        ArrayList<Post> postList = profile.getFollowingPosts(base);
                         oos.writeObject(postList);
                         oos.flush();
                     }

@@ -133,8 +133,8 @@ public class SearchGUI extends JFrame {
 
     private String getFriendsList(Profile profile) {
         List<String> friendsUsernames = new ArrayList<>();
-        for (Profile friend : profile.getFollowing()) {
-            friendsUsernames.add(friend.getUsername());
+        for (String friend : profile.getFollowing()) {
+            friendsUsernames.add(friend);
         }
         return String.join(", ", friendsUsernames);
     }
