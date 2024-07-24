@@ -29,7 +29,7 @@ public class ClientHandler implements IClientHandler {
                 String clientInput = (String) ois.readObject();
                 System.out.println(clientInput);
                 //To stop this thread when the user closes the software.
-                if (clientInput == null) {
+                if (clientInput.equals("Exit")) {
                     ois.close();
                     oos.close();
                     clientSocket.close();
@@ -44,11 +44,15 @@ public class ClientHandler implements IClientHandler {
                         try {
                             String temp = (String) ois.readObject();
                             gender = (String) ois.readObject();
-                            age = Integer.parseInt(temp);
-                            if (username == null || password == null || temp == null || gender == null) {
+                            if (username == null || username.isEmpty() || password == null || password.isEmpty() ||
+                                    temp == null || temp.isEmpty() || gender == null || gender.isEmpty()) {
                                 oos.writeObject("Empty");
                                 oos.flush();
-                            } else if (age < 0) {
+                                break;
+                            }
+                            age = Integer.parseInt(temp);
+                            System.out.println(age);
+                            if (age < 0) {
                                 oos.writeObject("Invalid");
                                 oos.flush();
                             } else if (base.signUp(username, password, age, gender)) {
@@ -147,7 +151,6 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "makePost" -> {
-                        profile = new Profile("Chris", "11233");
                         String message = (String) ois.readObject();
                         Post post;
                         if ((post = base.makeNewPost(profile, message)) != null) {

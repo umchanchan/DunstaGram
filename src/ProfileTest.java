@@ -21,6 +21,20 @@ class ProfileTest {
         this.profile2 = profile2;
 
     }
+    @Test
+    public void testtt() {
+        Post post = new Post(profile, "Hey");
+        profile.addMyPost(post);
+
+        profile1.follow(profile);
+
+        ArrayList<Post> friendPost = profile1.getFollowingPosts();
+        for (Post post2 : friendPost) {
+            System.out.println(post2.getPoster());
+            System.out.println(post2.getMessage());
+        }
+
+    }
 
     @Test
     public void testToString() throws IOException {

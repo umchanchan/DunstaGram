@@ -20,6 +20,16 @@ public class PostTest {
     }
 
     @Test
+    public void temp() {
+        Profile chris = new Profile("Chris", "11233", 23, "Male");
+        Post post = new Post(chris, "Hey");
+
+
+
+
+    }
+
+    @Test
     public void testCreatePostWithMinimalConstructor() {
         System.out.println(post.getPoster().getUsername());
         assertEquals("posterUser", post.getPoster().getUsername());

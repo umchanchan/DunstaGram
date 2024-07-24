@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.Socket;
 
@@ -19,7 +21,7 @@ public class LoginGUI implements Runnable {
     public LoginGUI(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
         this.ois = ois;
         this.oos = oos;
-        oos.flush();
+
     }
 
     private ActionListener actionListener = new ActionListener() {
@@ -41,7 +43,7 @@ public class LoginGUI implements Runnable {
                         System.out.println(user.getUsername());
                         JOptionPane.showMessageDialog(frame, "Login Success!", "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
-
+                        frame.dispose();
                         SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
 
                     } else if (response instanceof String) {
@@ -65,41 +67,52 @@ public class LoginGUI implements Runnable {
     public void run() {
         frame = new JFrame();
         frame.setTitle("Login Menu");
-        Container content = frame.getContentPane();
-        content.setLayout(new GridLayout(4, 2, 5,5));
+        frame.setLayout(new GridLayout(4, 4, 5, 5));
 
 
         userField = new JTextField(10);
-        JLabel userLabel = new JLabel("Username");
-        userLabel.setText("Enter your username: ");
+        JLabel userLabel = new JLabel("Enter your username: ");
 
-        JPanel userPanel = new JPanel();
-        userPanel.add(userLabel);
-        userPanel.add(userField);
-        content.add(userPanel);
+
+        frame.add(userLabel);
+        frame.add(userField);
+
 
         passField = new JTextField(10);
-        JLabel passLabel = new JLabel("Password");
-        passLabel.setText("Enter your password: ");
+        JLabel passLabel = new JLabel("Enter your password: ");
 
-        JPanel passPanel = new JPanel();
-        passPanel.add(passLabel);
-        passPanel.add(passField);
-        content.add(passPanel);
+
+        frame.add(passLabel);
+        frame.add(passField);
 
         loginButton = new JButton("Login");
-        content.add(loginButton);
+        frame.add(loginButton);
 
         signupButton = new JButton("Don't have an account?");
-        content.add(signupButton);
+        frame.add(signupButton);
 
         loginButton.addActionListener(actionListener);
         signupButton.addActionListener(actionListener);
 
-        frame.setSize(1000, 1000);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(800, 450);
         frame.pack();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+
+                try {
+                    oos.writeObject("Exit");
+                    oos.flush();
+                    oos.close();
+                    ois.close();
+                    frame.dispose();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
     }
 }

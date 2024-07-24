@@ -25,7 +25,6 @@ public class Post implements IPost, Serializable {
         this.poster = poster;
         this.numComments = comments.size();
         this.comments = comments;
-        poster.addMyPost(this);
     }
 
     public Post(Profile poster, String message) {
@@ -35,7 +34,6 @@ public class Post implements IPost, Serializable {
         this.downvote = 0;
         this.comments = new ArrayList<>();
         this.numComments = 0;
-        poster.addMyPost(this);
     }
 
     public Post() {
@@ -60,7 +58,7 @@ public class Post implements IPost, Serializable {
         return str;
     }
 
-    public Post makePost(String postInfo) throws UserNotFoundException {
+    public Post makePost(String postInfo, ArrayList<Profile> users) throws UserNotFoundException {
         String[] parts = postInfo.split("_");
         Profile writer = new Profile(parts[0]);
         String msg = parts[1];
@@ -77,7 +75,13 @@ public class Post implements IPost, Serializable {
             Comment c = new Comment(commenter, message, commentUpvotes, commentDownvotes);
             commentList.add(c);
         }
-        return new Post(writer, msg, upvotes, downvotes, commentList);
+        Post post = null;
+        for (Profile user : users) {
+            if (parts[0].equals(user.getUsername())) {
+                post = new Post(user, msg, upvotes, downvotes, commentList);
+            }
+        }
+        return post;
     }
 
     public boolean equals(Post post) {

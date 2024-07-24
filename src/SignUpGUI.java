@@ -2,13 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
 
 public class SignUpGUI extends JComponent implements Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private Socket clientSocket;
     private String user;
     private String pass;
     private String age;
@@ -33,21 +34,9 @@ public class SignUpGUI extends JComponent implements Runnable {
 
     public void run() {
 
-//        try {
-//
-//
-//
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(frame, "Error occurred in server!",
-//                    "Error", JOptionPane.ERROR_MESSAGE);
-//
-//        }
-
         frame = new JFrame();
         frame.setTitle("Sign Up Menu");
-        Container content = frame.getContentPane();
-        content.setLayout(new GridLayout(4, 2, 5, 5));
-
+        frame.setLayout(new GridLayout(8, 2, 5, 5));
 
         userField = new JTextField(10);
         userLabel = new JLabel("Enter a Username: ");
@@ -55,42 +44,35 @@ public class SignUpGUI extends JComponent implements Runnable {
         passwordLabel = new JLabel("Enter a Password: ");
         passField = new JTextField(10);
 
-        ageLabel = new JLabel("Enter your Age:       ");
+        ageLabel = new JLabel("Enter your Age: ");
         ageField = new JTextField(10);
 
-        genderLabel = new JLabel("Gender");
-        genderLabel.setText("Enter your Gender: ");
+        genderLabel = new JLabel("Enter your Gender: ");
         genderField = new JTextField(10);
 
 
-        makeAccountButton = new JButton("Make Account");
-        cancelButton = new JButton("Log In");
+        makeAccountButton = new JButton("Sign Up");
+        cancelButton = new JButton("Back To Login");
 
-        JPanel userPanel = new JPanel();
-        JPanel passPanel = new JPanel();
-        JPanel agePanel = new JPanel();
-        JPanel genderPanel = new JPanel();
-        JPanel accPanel = new JPanel();
 
-        userPanel.add(userLabel);
-        userPanel.add(userField);
-        frame.add(userPanel);
+        frame.add(userLabel);
+        frame.add(userField);
 
-        passPanel.add(passwordLabel);
-        passPanel.add(passField);
-        frame.add(passPanel);
 
-        agePanel.add(ageLabel);
-        agePanel.add(ageField);
-        frame.add(agePanel);
+        frame.add(passwordLabel);
+        frame.add(passField);
 
-        genderPanel.add(genderLabel);
-        genderPanel.add(genderField);
-        frame.add(genderPanel);
 
-        accPanel.add(makeAccountButton);
-        accPanel.add(cancelButton);
-        frame.add(accPanel);
+        frame.add(ageLabel);
+        frame.add(ageField);
+
+        frame.add(genderLabel);
+        frame.add(genderField);
+
+
+        frame.add(makeAccountButton);
+        frame.add(cancelButton);
+
 
         makeAccountButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -112,17 +94,30 @@ public class SignUpGUI extends JComponent implements Runnable {
         });
 
         frame.setSize(800, 450);
-        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
 
+                try {
+                    oos.writeObject("Exit");
+                    oos.flush();
+                    oos.close();
+                    ois.close();
+                    frame.dispose();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
     }
 
     public void signUpUser() {
         user = userField.getText();
-        pass = userField.getText();
-        age = userField.getText();
+        pass = passField.getText();
+        age = ageField.getText();
         gender = genderField.getText();
         try {
             writeObject();
