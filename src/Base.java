@@ -29,19 +29,6 @@ public class Base implements IBase {
         }
     }
 
-    public Post searchPost(String poster, String message) {
-        synchronized(obj) {
-            Post p = null;
-            for (Post post: allPosts) {
-                if (poster.equals(post.getPoster()) && message.equals(post.getMessage())) {
-                    p = post;
-
-                }
-            }
-
-            return p;
-        }
-    }
 
     public ArrayList<String> getUserInfo(Profile toGet) {
         ArrayList<String> retrievedUserInfo = new ArrayList<>();
@@ -228,16 +215,6 @@ public class Base implements IBase {
                 pw.close();
             } catch (IOException e) {
                 throw new IOException("Error occurred when writing a file");
-            }
-        }
-    }
-
-    public void readUpvoteDownvote() throws IOException {
-        synchronized(obj) {
-            BufferedReader bfr = new BufferedReader(new FileReader("upvoteDownvote.txt"));
-            String line;
-            while ((line = bfr.readLine()) != null) {
-                this.upvoteDownvote.add(line);
             }
         }
     }

@@ -335,7 +335,4 @@ public class Profile implements IProfile, Serializable {
         this.password = password;
     }
 
-    public boolean upvotes(Post p) {
-        return false;
-    }
 }
