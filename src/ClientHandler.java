@@ -41,9 +41,17 @@ public class ClientHandler implements IClientHandler {
                         String password = (String) ois.readObject();
                         int age = 0;
                         String gender = "";
+
                         try {
                             String temp = (String) ois.readObject();
                             gender = (String) ois.readObject();
+
+                            if (username.contains("_")) {
+                                oos.writeObject("_");
+                                oos.flush();
+                                break;
+                            }
+
                             if (username == null || username.isEmpty() || password == null || password.isEmpty() ||
                                     temp == null || temp.isEmpty() || gender == null || gender.isEmpty()) {
                                 oos.writeObject("Empty");

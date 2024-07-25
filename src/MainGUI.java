@@ -302,7 +302,6 @@ public class MainGUI extends JComponent implements Runnable {
 
     public void generatePostPanel() {
         for (Post upPost : posts) {
-
             postPanel = new JPanel(new BorderLayout());
             JPanel topPanel = new JPanel(new BorderLayout());
             JLabel nameLabel = new JLabel(upPost.getPoster().getUsername());
@@ -348,6 +347,7 @@ public class MainGUI extends JComponent implements Runnable {
             upvoteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
                     try {
                         oos.writeObject("upvotePost");
                         oos.writeObject(upPost);

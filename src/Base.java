@@ -16,6 +16,7 @@ public class Base implements IBase {
     private Post post = new Post();
     private static Object obj = new Object();
     private ArrayList<Post> userHidePosts = new ArrayList<>();
+    private static ArrayList<String> upvoteDownvote = new ArrayList<>();
 
     public Profile searchUser(String username) throws UserNotFoundException {
         synchronized (obj) {
@@ -25,6 +26,20 @@ public class Base implements IBase {
                 }
             }
             throw new UserNotFoundException("We can't find the user with " + username);
+        }
+    }
+
+    public Post searchPost(String poster, String message) {
+        synchronized(obj) {
+            Post p = null;
+            for (Post post: allPosts) {
+                if (poster.equals(post.getPoster()) && message.equals(post.getMessage())) {
+                    p = post;
+
+                }
+            }
+
+            return p;
         }
     }
 
@@ -213,6 +228,16 @@ public class Base implements IBase {
                 pw.close();
             } catch (IOException e) {
                 throw new IOException("Error occurred when writing a file");
+            }
+        }
+    }
+
+    public void readUpvoteDownvote() throws IOException {
+        synchronized(obj) {
+            BufferedReader bfr = new BufferedReader(new FileReader("upvoteDownvote.txt"));
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                this.upvoteDownvote.add(line);
             }
         }
     }
