@@ -179,7 +179,7 @@ public class Base implements IBase {
         }
     }
 
-    private void readPostListFile() throws IOException {
+    public void readPostListFile() throws IOException {
         synchronized (obj) {
             clearAllPosts();
             try {
