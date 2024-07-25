@@ -148,6 +148,9 @@ public class SignUpGUI extends JComponent implements Runnable {
             } else if (response.equals("Empty")) {
                 JOptionPane.showMessageDialog(frame, "One of the fields is empty, please fill them all in.",
                         "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equals("_")) {
+                JOptionPane.showMessageDialog(frame, "You cannot include an underscore in your name.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (IOException | ClassNotFoundException e) {
