@@ -2,17 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.*;
 
 public class SearchGUI extends JFrame {
     private JTextField searchBar;
     private JButton searchButton;
     private JPanel resultsPanel;
     private List<Profile> profilesList;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
 
     public SearchGUI() {
         setTitle("User Profile Search");

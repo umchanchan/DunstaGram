@@ -311,6 +311,36 @@ public class ClientHandler implements IClientHandler {
                         oos.writeObject("Success");
                     }
 
+                    case "search" -> {
+                        Base b = new Base();
+                        String search = (String) ois.readObject();
+                        if (search.isEmpty() || search == null) {
+                            oos.writeObject("No");
+                            oos.flush();
+                            break;
+                        }
+                        ArrayList<Profile> users = b.getUsers();
+                        ArrayList<ArrayList<String>> userInfo = new ArrayList<>();
+
+                        for(Profile p: users) {
+                            if(p.getUsername().toLowerCase().contains(search)) {
+                                userInfo.add(b.getUserInfo(p));
+                            }
+                        }
+
+                        if (userInfo.isEmpty()) {
+                            oos.writeObject("No");
+                            oos.flush();
+                            break;
+                        }
+
+                        oos.writeObject(userInfo);
+
+
+
+
+                    }
+
 
                     default -> {
                         System.out.println("Invalid message...why are you here");
