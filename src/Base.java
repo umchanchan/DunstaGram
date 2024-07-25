@@ -81,15 +81,18 @@ public class Base implements IBase {
     public boolean follow(Profile profile, Profile toAdd) throws IOException {
         synchronized (obj) {
             boolean worked = false;
+            int index = 0;
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
                     user.follow(toAdd);
                     profile.follow(toAdd);
+                    users.set(index, user);
                     worked = true;
                     writeUserListFile();
                     readAllListFile();
                     break;
                 }
+                index++;
             }
             return worked;
         }

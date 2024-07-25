@@ -205,7 +205,12 @@ public class SearchGUI extends JFrame implements Runnable {
         profilePanel.add(new JLabel("Age: " + profile.getAge()));
         profilePanel.add(new JLabel("Gender: " + profile.getGender()));
         profilePanel.add(new JLabel("Following: " + getFriendsList(profile)));
-        profilePanel.add(followButton);
+        if (!profile.equals(user)) {
+            profilePanel.add(followButton);
+        } else {
+            Label label = new Label("This is you!");
+            profilePanel.add(label);
+        }
 
         JOptionPane.showMessageDialog(this, profilePanel, "Profile View",
                 JOptionPane.INFORMATION_MESSAGE);
