@@ -14,10 +14,12 @@ public class NewSearchGUI implements Runnable{
     private ObjectOutputStream oos;
     private JFrame frame;
     private ArrayList<ArrayList<String>> allUserInfo;
+    private Profile viewer;
 
-    public NewSearchGUI(ObjectInputStream ois, ObjectOutputStream oos) {
+    public NewSearchGUI(ObjectInputStream ois, ObjectOutputStream oos, Profile viewer) {
         this.ois = ois;
         this.oos = oos;
+        this.viewer = viewer;
     }
     public void run() {
         frame = new JFrame("User Profile Search");
@@ -147,10 +149,47 @@ public class NewSearchGUI implements Runnable{
         profilePanel.add(new JLabel("Posts: " + posts));
 
 
+        if (!(viewer.getUsername().equals(username))) {
+            JButton followButton = new JButton("Follow");
+            followButton.setSize(100, 50);
+            profilePanel.add(followButton);
+            followButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        oos.writeObject("follow");
+                        oos.writeObject(username);
+                        oos.writeObject(viewer.getUsername());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
 
+                    try {
+                        String outcome = (String) ois.readObject();
+                        if (outcome.equals("Success")) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Successfully followed " + username + "!");
+                        } else {
+                            JOptionPane.showMessageDialog(null,
+                                    "Error: You are already following " + username + "!");
+                        }
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+
+                }
+            });
+
+        } else {
+            JLabel label = new JLabel("This is you!");
+            profilePanel.add(label);
+        }
 
         JOptionPane.showMessageDialog(null, profilePanel, "Profile View",
                 JOptionPane.INFORMATION_MESSAGE);
+
     }
 
 

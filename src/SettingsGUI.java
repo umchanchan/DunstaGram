@@ -13,12 +13,14 @@ public class SettingsGUI implements Runnable {
     private Profile profile;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private MainGUI main;
 
 
-    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p) {
+    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p, MainGUI obj) {
         profile = p;
         this.in = in;
         this.out = out;
+        main = obj;
     }
 
 
@@ -102,6 +104,7 @@ public class SettingsGUI implements Runnable {
                 if (option == JOptionPane.YES_OPTION) {
                     try {
                         frame.dispose();
+                        main.closeAll();
                         SwingUtilities.invokeLater(new LoginGUI(in, out));
 
                     } catch (IOException ex) {

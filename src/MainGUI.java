@@ -40,12 +40,15 @@ public class MainGUI extends JComponent implements Runnable {
     private JFrame commentFrame;
     private JTextField textPart;
     private ArrayList<Comment> comments = new ArrayList<>();
+    private MainGUI main;
 
     public MainGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) {
         this.user = user;
         this.ois = ois;
         this.oos = oos;
+        this.main = this;
     }
+
 
     private ActionListener actionListener = new ActionListener() {
         @Override
@@ -54,11 +57,11 @@ public class MainGUI extends JComponent implements Runnable {
             if (e.getSource() == settingButton) {
 
                 mainFrame.dispose();
-                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user));
+                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user, main));
 
             } else if (e.getSource() == searchButton) {
 
-                SwingUtilities.invokeLater(new NewSearchGUI (ois, oos));
+                SwingUtilities.invokeLater(new NewSearchGUI (ois, oos, user));
 
             } else if (e.getSource() == followingButton) {
 //                SwingUtilities.invokeLater(new FollowingGUI (ois, oos));
@@ -299,7 +302,6 @@ public class MainGUI extends JComponent implements Runnable {
 
     public void generatePostPanel() {
         for (Post upPost : posts) {
-
             postPanel = new JPanel(new BorderLayout());
             JPanel topPanel = new JPanel(new BorderLayout());
             JLabel nameLabel = new JLabel(upPost.getPoster().getUsername());
@@ -345,6 +347,7 @@ public class MainGUI extends JComponent implements Runnable {
             upvoteButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
                     try {
                         oos.writeObject("upvotePost");
                         oos.writeObject(upPost);
@@ -406,6 +409,17 @@ public class MainGUI extends JComponent implements Runnable {
         SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
     }
 
+    public void closeAll() {
+        mainFrame.dispose();
+        if (postFrame != null) {
+            postFrame.dispose();
+        }
+
+        if (commentFrame != null) {
+            commentFrame.dispose();
+        }
+
+    }
 
     public void receivePostList() {
         try {

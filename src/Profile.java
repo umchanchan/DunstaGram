@@ -340,4 +340,5 @@ public class Profile implements IProfile, Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

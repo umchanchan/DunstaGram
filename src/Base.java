@@ -16,6 +16,7 @@ public class Base implements IBase {
     private Post post = new Post();
     private static Object obj = new Object();
     private ArrayList<Post> userHidePosts = new ArrayList<>();
+    private static ArrayList<String> upvoteDownvote = new ArrayList<>();
 
     public Profile searchUser(String username) throws UserNotFoundException {
         synchronized (obj) {
@@ -27,6 +28,7 @@ public class Base implements IBase {
             throw new UserNotFoundException("We can't find the user with " + username);
         }
     }
+
 
     public ArrayList<String> getUserInfo(Profile toGet) {
         ArrayList<String> retrievedUserInfo = new ArrayList<>();
@@ -179,7 +181,7 @@ public class Base implements IBase {
         }
     }
 
-    private void readPostListFile() throws IOException {
+    public void readPostListFile() throws IOException {
         synchronized (obj) {
             clearAllPosts();
             try {

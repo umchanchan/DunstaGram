@@ -41,9 +41,17 @@ public class ClientHandler implements IClientHandler {
                         String password = (String) ois.readObject();
                         int age = 0;
                         String gender = "";
+
                         try {
                             String temp = (String) ois.readObject();
                             gender = (String) ois.readObject();
+
+                            if (username.contains("_")) {
+                                oos.writeObject("_");
+                                oos.flush();
+                                break;
+                            }
+
                             if (username == null || username.isEmpty() || password == null || password.isEmpty() ||
                                     temp == null || temp.isEmpty() || gender == null || gender.isEmpty()) {
                                 oos.writeObject("Empty");
@@ -92,8 +100,17 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "follow" -> {
-                        Profile toFollow = (Profile) ois.readObject();
-                        if (base.follow(profile, toFollow)) {
+                        String toFollow = (String) ois.readObject();
+                        String follower = (String) ois.readObject();
+                        Profile p = base.searchUser(toFollow);
+                        Profile p1 = base.searchUser(follower);
+
+                        if (p1.isFollowing(p)) {
+                            oos.writeObject("Fail");
+                            oos.flush();
+                            break;
+                        }
+                        if (base.follow(p1, p)) {
                             oos.writeObject("Success");
                             oos.flush();
                         } else {
@@ -268,6 +285,7 @@ public class ClientHandler implements IClientHandler {
                         Base b = new Base();
                         Profile p = (Profile) ois.readObject();
                         b.readUserListFile();
+                        b.readPostListFile();
                         Profile newProfile = b.searchUser(p.getUsername());
                         ArrayList<String> list = b.getUserInfo(newProfile);
                         oos.writeObject(list);
