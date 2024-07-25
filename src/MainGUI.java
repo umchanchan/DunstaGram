@@ -40,12 +40,15 @@ public class MainGUI extends JComponent implements Runnable {
     private JFrame commentFrame;
     private JTextField textPart;
     private ArrayList<Comment> comments = new ArrayList<>();
+    private MainGUI main;
 
     public MainGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) {
         this.user = user;
         this.ois = ois;
         this.oos = oos;
+        this.main = this;
     }
+
 
     private ActionListener actionListener = new ActionListener() {
         @Override
@@ -54,7 +57,7 @@ public class MainGUI extends JComponent implements Runnable {
             if (e.getSource() == settingButton) {
 
                 mainFrame.dispose();
-                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user));
+                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user, main));
 
             } else if (e.getSource() == searchButton) {
 
@@ -406,6 +409,17 @@ public class MainGUI extends JComponent implements Runnable {
         SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
     }
 
+    public void closeAll() {
+        mainFrame.dispose();
+        if (postFrame != null) {
+            postFrame.dispose();
+        }
+
+        if (commentFrame != null) {
+            commentFrame.dispose();
+        }
+
+    }
 
     public void receivePostList() {
         try {
