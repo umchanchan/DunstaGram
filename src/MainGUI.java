@@ -40,13 +40,11 @@ public class MainGUI extends JComponent implements Runnable {
     private JFrame commentFrame;
     private JTextField textPart;
     private ArrayList<Comment> comments = new ArrayList<>();
-    private MainGUI main;
 
     public MainGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) {
         this.user = user;
         this.ois = ois;
         this.oos = oos;
-        this.main = this;
     }
 
 
@@ -57,14 +55,14 @@ public class MainGUI extends JComponent implements Runnable {
             if (e.getSource() == settingButton) {
 
                 mainFrame.dispose();
-                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user, main));
+                SwingUtilities.invokeLater(new SettingsGUI(user, ois, oos));
 
             } else if (e.getSource() == searchButton) {
 
-                SwingUtilities.invokeLater(new NewSearchGUI (ois, oos, user));
+                SwingUtilities.invokeLater(new NewSearchGUI(ois, oos, user));
 
             } else if (e.getSource() == followingButton) {
-//                SwingUtilities.invokeLater(new FollowingGUI (ois, oos));
+                SwingUtilities.invokeLater(new FollowingGUI(user, ois, oos));
 
             } else if (e.getSource() == makePostButton) {
                 displayPostGUI();

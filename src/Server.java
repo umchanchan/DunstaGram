@@ -79,12 +79,4 @@ public class Server implements IServer {
         return base.unBlock(profile, unBlock);
     }
 
-    public boolean block(Profile profile, Profile toBlock) throws IOException {
-        return base.block(profile, toBlock);
-    }
-
-    public boolean unFollow(Profile profile, Profile toUnfollow) throws IOException {
-        return base.unFollow(profile, toUnfollow);
-    }
-
 }

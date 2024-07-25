@@ -332,31 +332,28 @@ public class ClientHandler implements IClientHandler {
                     case "search" -> {
                         Base b = new Base();
                         String search = (String) ois.readObject();
-                        if (search.isEmpty() || search == null) {
+
+                        Profile profileSearch = b.searchUser(search);
+                        oos.writeObject(profileSearch);
+                        oos.flush();
+
+                    }
+
+                    case "getUserInfo" -> {
+                        Base b = new Base();
+                        String search = (String) ois.readObject();
+                        if (search == null || search.isEmpty()) {
                             oos.writeObject("No");
                             oos.flush();
                             break;
                         }
-                        ArrayList<Profile> users = b.getUsers();
+
+                        Profile profileSearch = b.searchUser(search);
                         ArrayList<ArrayList<String>> userInfo = new ArrayList<>();
-
-                        for(Profile p: users) {
-                            if(p.getUsername().toLowerCase().contains(search)) {
-                                userInfo.add(b.getUserInfo(p));
-                            }
-                        }
-
-                        if (userInfo.isEmpty()) {
-                            oos.writeObject("No");
-                            oos.flush();
-                            break;
-                        }
+                        userInfo.add(b.getUserInfo(profileSearch));
 
                         oos.writeObject(userInfo);
-
-
-
-
+                        oos.flush();
                     }
 
 

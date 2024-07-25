@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,14 +15,12 @@ public class SettingsGUI implements Runnable {
     private Profile profile;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private MainGUI main;
 
 
-    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p, MainGUI obj) {
+    public SettingsGUI(Profile p, ObjectInputStream in, ObjectOutputStream out) {
         profile = p;
         this.in = in;
         this.out = out;
-        main = obj;
     }
 
 
@@ -30,9 +30,27 @@ public class SettingsGUI implements Runnable {
         frame.setLayout(new FlowLayout());
         frame.setTitle("Settings");
         frame.setSize(400, 350);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            /**
+             * Window listener that closes the window
+             * @param e the event to be processed
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    out.writeObject("Exit");
+                    out.flush();
+                    out.close();
+                    in.close();
+                    frame.dispose();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
 
         JButton viewProfile = new JButton("View My Profile");
         viewProfile.setFont(new Font("Arial", Font.PLAIN, 24));
@@ -85,9 +103,7 @@ public class SettingsGUI implements Runnable {
 
                 try {
                     userInfo = (ArrayList<String>) in.readObject();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
                 System.out.println(userInfo);
@@ -104,7 +120,6 @@ public class SettingsGUI implements Runnable {
                 if (option == JOptionPane.YES_OPTION) {
                     try {
                         frame.dispose();
-                        main.closeAll();
                         SwingUtilities.invokeLater(new LoginGUI(in, out));
 
                     } catch (IOException ex) {
@@ -126,6 +141,14 @@ public class SettingsGUI implements Runnable {
         editProfile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(new EditProfileGUI(profile, in, out));
+            }
+        });
+
+        blockList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new BlockListGUI(profile, in, out));
+
             }
         });
 
