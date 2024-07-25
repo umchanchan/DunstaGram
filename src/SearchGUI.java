@@ -2,26 +2,53 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
 
-public class SearchGUI extends JFrame {
+public class SearchGUI extends JFrame implements Runnable {
     private JTextField searchBar;
     private JButton searchButton;
+    private Profile user;
     private JPanel resultsPanel;
     private List<Profile> profilesList;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-    public SearchGUI() {
+
+    public SearchGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) {
+        this.user = user;
+        this.ois = ois;
+        this.oos = oos;
+    }
+
+
+    public void run() {
+        initializeGUI();
+        setVisible(true);
+        setLocationRelativeTo(null);
+    }
+
+    public void initializeGUI() {
         setTitle("User Profile Search");
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            /**
+             * Window listener that closes the window
+             * @param e the event to be processed
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
+
 
         profilesList = new ArrayList<>();
-        loadProfiles("userList.txt");
+        loadProfiles();
 
         setLayout(new BorderLayout());
 
@@ -57,17 +84,30 @@ public class SearchGUI extends JFrame {
                 searchProfiles();
             }
         });
+
     }
 
-    private void loadProfiles(String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Profile profile = new Profile().makeProfile(line);
-                profilesList.add(profile);
+    private void loadProfiles() {
+        try {
+            oos.writeObject("getAllUser");
+            oos.flush();
+
+            Object response = ois.readObject();
+
+            if (response instanceof ArrayList<?>) {
+                ArrayList<?> list = (ArrayList<?>) response;
+
+                if (!list.isEmpty() && list.get(0) instanceof Profile) {
+                    profilesList = (ArrayList<Profile>) list;
+                }
+            } else {
+                JOptionPane.showMessageDialog(SearchGUI.this, "Received data is not a list.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(SearchGUI.this,
+                    "An error occurred while reading the user.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -113,6 +153,45 @@ public class SearchGUI extends JFrame {
         profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
         profilePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        JButton followButton = new JButton("Follow");
+        followButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean followed = false;
+                for (String friend : user.getFollowing()) {
+                    if (friend.equals(profile.getUsername())) {
+                        followed = true;
+                        break;
+                    }
+                }
+                if (followed) {
+                    JOptionPane.showMessageDialog(profilePanel, "You already follow this user",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    try {
+                        oos.writeObject("follow");
+                        oos.writeObject(profile);
+                        oos.flush();
+
+
+                        String response = (String) ois.readObject();
+                        if (response.equals("Success")) {
+                            JOptionPane.showMessageDialog(profilePanel, "Follow success!",
+                                    "Follow", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(profilePanel, "Failed to follow user.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (IOException | ClassNotFoundException ex) {
+                        JOptionPane.showMessageDialog(profilePanel,
+                                "An error occurred while following the user.", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                }
+            }
+        });
+
         ImageIcon profilePicIcon = new ImageIcon("default_profile_pic.png");
         Image image = profilePicIcon.getImage();
         Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
@@ -125,7 +204,8 @@ public class SearchGUI extends JFrame {
         profilePanel.add(new JLabel("Username: " + profile.getUsername()));
         profilePanel.add(new JLabel("Age: " + profile.getAge()));
         profilePanel.add(new JLabel("Gender: " + profile.getGender()));
-        profilePanel.add(new JLabel("Friends: " + getFriendsList(profile)));
+        profilePanel.add(new JLabel("Following: " + getFriendsList(profile)));
+        profilePanel.add(followButton);
 
         JOptionPane.showMessageDialog(this, profilePanel, "Profile View",
                 JOptionPane.INFORMATION_MESSAGE);
@@ -137,13 +217,5 @@ public class SearchGUI extends JFrame {
             friendsUsernames.add(friend);
         }
         return String.join(", ", friendsUsernames);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new SearchGUI().setVisible(true);
-            }
-        });
     }
 }

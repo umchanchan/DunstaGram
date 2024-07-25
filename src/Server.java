@@ -70,13 +70,4 @@ public class Server implements IServer {
             }
         }
     }
-
-    public List<Profile> getUsers() {
-        return base.getUsers();
-    }
-
-    public boolean unBlock(Profile profile, Profile unBlock) throws IOException {
-        return base.unBlock(profile, unBlock);
-    }
-
 }
