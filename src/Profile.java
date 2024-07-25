@@ -136,7 +136,7 @@ public class Profile implements IProfile, Serializable {
         String gender = parts[3];
         Profile newProfile = new Profile(username, password, age, gender);
         for (int i = 4; i < parts.length; i++) {
-            newProfile.following.add(parts[i]);
+            newProfile.getFollowing().add(parts[i]);
         }
 
         if (!blockList.isEmpty()) {
@@ -216,7 +216,7 @@ public class Profile implements IProfile, Serializable {
 
     public void unfollow(Profile p) {
         for (String username : following) {
-            if (username.equals(p.username)) {
+            if (username.equals(p.getUsername())) {
                 following.remove(username);
                 break;
             }
@@ -244,19 +244,19 @@ public class Profile implements IProfile, Serializable {
         boolean isFollow = false;
         boolean isBlock = false;
         for (String username : following) {
-            if (username.equals(user.username)) {
+            if (username.equals(user.getUsername())) {
                 isFollow = true;
                 break;
             }
         }
         for (String block : blockedList) {
-            if (block.equals(user.username)) {
+            if (block.equals(user.getUsername())) {
                 isBlock = true;
                 break;
             }
         }
         if (!isBlock) {
-            blockedList.add(user.username);
+            blockedList.add(user.getUsername());
         } else {
             return false;
         }
@@ -268,7 +268,7 @@ public class Profile implements IProfile, Serializable {
 
     public void unblockUser(Profile unblock) {
         for (String block : blockedList) {
-            if (block.equals(unblock.username)) {
+            if (block.equals(unblock.getUsername())) {
                 blockedList.remove(block);
                 break;
             }
