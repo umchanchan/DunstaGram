@@ -72,8 +72,6 @@ public class ClientHandler implements IClientHandler {
                     case "login" -> {
                         String username = (String) ois.readObject();
                         String password = (String) ois.readObject();
-                        System.out.println(username);
-                        System.out.println(password);
                         String result;
                         try {
                             if ((profile = base.login(username, password)) != null) {
@@ -139,6 +137,7 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "viewPosts" -> {
+                        base.readAllListFile();
                         ArrayList<Post> postList = profile.getFollowingPosts(base);
                         oos.writeObject(postList);
                         oos.flush();
@@ -154,7 +153,7 @@ public class ClientHandler implements IClientHandler {
                         String message = (String) ois.readObject();
                         Post post;
                         if ((post = base.makeNewPost(profile, message)) != null) {
-                            oos.writeObject(post);
+                            oos.writeObject("Success");
                             oos.flush();
                         } else {
                             oos.writeObject("Fail");
@@ -163,7 +162,6 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "removePost" -> {
-
                         Post post = (Post) ois.readObject();
                         if (base.removePost(profile, post)) {
                             oos.writeObject("Success");
@@ -180,13 +178,19 @@ public class ClientHandler implements IClientHandler {
                         base.hidePost(profile, post);
                     }
 
+                    case "viewHidePost" -> {
+                        base.readAllListFile();
+                        ArrayList<Post> postList = profile.getHidePosts();
+                        oos.writeObject(postList);
+                        oos.flush();
+                    }
+
                     case "makeComment" -> {
-                        profile = new Profile("Chan", "1123", 23, "Male");
                         Post post = (Post) ois.readObject();
                         String message = (String) ois.readObject();
                         Comment comment;
                         if ((comment = base.makeComment(post, profile, message)) != null) {
-                            oos.writeObject(comment);
+                            oos.writeObject("Success");
                             oos.flush();
                         } else {
                             //this is unlikely to happen because user will choose pick one poster in GUI

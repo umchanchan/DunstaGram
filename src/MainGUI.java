@@ -1,8 +1,5 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -17,11 +14,15 @@ public class MainGUI extends JComponent implements Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private JFrame mainFrame;
+    private JFrame postFrame;
     private JPanel centerPanel;
     private JPanel newsFeedPanel;
     private JPanel bottomPanel;
     private JPanel postPanel;
     private JPanel rightPanel;
+    private JPanel rightTopPanel;
+    private JPanel allCommentPanel;
+    private JPanel allPostPanel;
     private JButton searchButton;
     private JButton followingButton;
     private JButton settingButton;
@@ -30,16 +31,20 @@ public class MainGUI extends JComponent implements Runnable {
     private JButton hidePostButton;
     private JButton viewCommentButton;
     private JButton upvoteButton;
+    private JLabel upvoteCount;
     private JButton downvoteButton;
+    private JLabel downvoteCount;
+    private JButton refreshButton;
+    private JButton postButton;
     private ArrayList<Post> posts = new ArrayList<>();
-    private DefaultListModel<Post> postModel;
-    private JList<Post> postList;
-    private MainGUI obj;
+    private JFrame commentFrame;
+    private JTextField textPart;
+    private ArrayList<Comment> comments = new ArrayList<>();
+
     public MainGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) {
         this.user = user;
         this.ois = ois;
         this.oos = oos;
-        obj = this;
     }
 
     private ActionListener actionListener = new ActionListener() {
@@ -50,74 +55,71 @@ public class MainGUI extends JComponent implements Runnable {
 
                     SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user, obj));
 
+
                 }
+            } else if (e.getSource() == searchButton) {
+
+//                SwingUtilities.invokeLater(new SearchGUI (ois, oos));
+
+            } else if (e.getSource() == followingButton) {
+//                SwingUtilities.invokeLater(new FollowingGUI (ois, oos));
+
+            } else if (e.getSource() == makePostButton) {
+                displayPostGUI();
+
+            } else if (e.getSource() == managePostButton) {
+
+
+            } else if (e.getSource() == postButton) {
+                String message = textPart.getText();
+                try {
+                    oos.writeObject("makePost");
+                    oos.writeObject(message);
+                    oos.flush();
+
+                    Object response = ois.readObject();
+
+                    if (response instanceof String) {
+                        if (response.equals("Success")) {
+                            postFrame.dispose();
+                            refresh();
+                        } else {
+                            JOptionPane.showMessageDialog(postFrame, "You have already made the same post!",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (IOException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(postFrame, "Error occurred while communicating with server",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else if (e.getSource() == refreshButton) {
+                refresh();
             }
-
-
-
         }
     };
 
     @Override
     public void run() {
-//        temp();
-//        temp2();
-
 
         mainFrame = new JFrame("DunstaGram");
-        mainFrame.setSize(800, 450);
+        mainFrame.setSize(1200, 800);
         mainFrame.setLayout(new BorderLayout());
 
-        postModel = new DefaultListModel<>();
+
         receivePostList();
 
-        postList = new JList<>(postModel);
-        postList.setCellRenderer(new ListCellRenderer<Post>() {
-            @Override
-            public Component getListCellRendererComponent(JList<? extends Post> list, Post value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                postPanel = new JPanel(new BorderLayout());
-                JPanel topPanel = new JPanel(new BorderLayout());
-                JLabel nameLabel = new JLabel(value.getPoster().getUsername());
-                hidePostButton = new JButton("Hide");
-                topPanel.add(nameLabel, BorderLayout.WEST);
-                topPanel.add(hidePostButton, BorderLayout.EAST);
 
-                JTextArea contentArea = new JTextArea(value.getMessage());
-                contentArea.setEditable(false);
-                contentArea.setLineWrap(true);
-                contentArea.setWrapStyleWord(true);
-
-                JPanel downPanel = new JPanel(new GridLayout(1, 3));
-                upvoteButton = new JButton("Upvote");
-                downvoteButton = new JButton("Downvote");
-                viewCommentButton = new JButton("Comments");
-                downPanel.add(upvoteButton);
-                downPanel.add(downvoteButton);
-                downPanel.add(viewCommentButton);
-                hidePostButton.addActionListener(actionListener);
-//                hidePostButton.setEnabled(false);
-                upvoteButton.addActionListener(actionListener);
-                downvoteButton.addActionListener(actionListener);
-                viewCommentButton.addActionListener(actionListener);
-
-                postPanel.add(topPanel, BorderLayout.NORTH);
-                postPanel.add(new JScrollPane(contentArea), BorderLayout.CENTER);
-                postPanel.add(downPanel, BorderLayout.SOUTH);
-
-                postPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                return postPanel;
-            }
-        });
+        allPostPanel = new JPanel();
+        allPostPanel.setLayout(new BoxLayout(allPostPanel, BoxLayout.Y_AXIS));
+        generatePostPanel();
 
         centerPanel = new JPanel(new GridLayout(1, 2));
 
 
         newsFeedPanel = new JPanel(new BorderLayout());
-        newsFeedPanel.add(new JScrollPane(postList), BorderLayout.CENTER);
+        newsFeedPanel.add(new JScrollPane(allPostPanel), BorderLayout.CENTER);
 
-        centerPanel.add(newsFeedPanel);
-
+        centerPanel.add(new JScrollPane(newsFeedPanel));
 
 
         bottomPanel = new JPanel(new GridLayout(1, 3));
@@ -132,15 +134,23 @@ public class MainGUI extends JComponent implements Runnable {
         bottomPanel.add(settingButton);
 
         rightPanel = new JPanel(new BorderLayout());
+        rightTopPanel = new JPanel(new GridLayout(0, 2));
         makePostButton = new JButton("Post");
         managePostButton = new JButton("Manage Post");
+        refreshButton = new JButton("Refresh");
         makePostButton.addActionListener(actionListener);
         managePostButton.addActionListener(actionListener);
-        rightPanel.add(makePostButton, BorderLayout.NORTH);
+        refreshButton.addActionListener(actionListener);
+        rightTopPanel.add(makePostButton);
+        rightTopPanel.add(refreshButton);
+
+        JLabel picLabel = showDunstaLogo();
+
+        rightPanel.add(rightTopPanel, BorderLayout.NORTH);
+        rightPanel.add(picLabel, BorderLayout.CENTER);
         rightPanel.add(managePostButton, BorderLayout.SOUTH);
 
         centerPanel.add(rightPanel);
-
 
 
         mainFrame.add(bottomPanel, BorderLayout.SOUTH);
@@ -169,51 +179,232 @@ public class MainGUI extends JComponent implements Runnable {
         mainFrame.setLocationRelativeTo(null);
     }
 
-    public void logout() {
-        this.mainFrame.dispose();
+    private void displayCommentGUI(Post post) {
+        commentFrame = new JFrame("Comment");
+        commentFrame.setSize(600, 400);
+        commentFrame.setLayout(new BorderLayout());
+
+        allCommentPanel = new JPanel();
+        allCommentPanel.setLayout(new BoxLayout(allCommentPanel, BoxLayout.Y_AXIS));
+        refreshComments(post);
+
+        JPanel commentInput = new JPanel();
+        commentInput.setLayout(new BoxLayout(commentInput, BoxLayout.X_AXIS));
+        JTextField commentField = getjTextField();
+        commentField.setMaximumSize(new Dimension(550, 50));
+        JButton makeComment = new JButton("Comment");
+
+        makeComment.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String commentText = commentField.getText();
+                try {
+                    oos.writeObject("makeComment");
+                    oos.writeObject(post);
+                    oos.writeObject(commentText);
+                    oos.flush();
+
+                    String response = (String) ois.readObject();
+                    if (response.equals("Success")) {
+                        JOptionPane.showMessageDialog(commentFrame, "You made the comment successfully! Returning to the main menu",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                        commentFrame.dispose();
+                        refresh();
+                    } else {
+                        JOptionPane.showMessageDialog(commentFrame, "You have already made the same comment!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+
+                } catch (IOException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(commentFrame, "Error occurred while communicating with server",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+
+            }
+        });
+
+        commentInput.add(commentField);
+        commentInput.add(makeComment);
+
+        commentFrame.add(new JScrollPane(allCommentPanel), BorderLayout.CENTER);
+        commentFrame.add(commentInput, BorderLayout.SOUTH);
+        commentFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        commentFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                commentFrame.dispose();
+            }
+        });
+        commentFrame.setVisible(true);
+        commentFrame.setLocationRelativeTo(mainFrame);
+
     }
 
-    public void listToModel(ArrayList<Post> postList) {
-        for (Post post : postList) {
-            postModel.addElement(post);
-        }
+    private void displayPostGUI() {
+        postFrame = new JFrame("Create Post");
+        postFrame.setSize(600, 400);
+        postFrame.setLayout(new BorderLayout());
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+
+        JLabel username = new JLabel(user.getUsername());
+        textPart = getjTextField();
+
+        postButton = new JButton("Post");
+        postButton.addActionListener(actionListener);
+
+        topPanel.add(postButton, BorderLayout.EAST);
+        topPanel.add(username, BorderLayout.WEST);
+        postFrame.add(topPanel, BorderLayout.NORTH);
+        postFrame.add(textPart, BorderLayout.CENTER);
+
+        postFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        postFrame.addWindowListener(new WindowAdapter() {
+            /**
+             * Window listener that closes the window
+             * @param e the event to be processed
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                postFrame.dispose();
+            }
+        });
+        postFrame.setVisible(true);
+        postFrame.setLocationRelativeTo(mainFrame);
     }
 
-    public void temp() {
-        try {
-            Profile chris = new Profile("Chan", "1123", 23, "Male");
-            oos.writeObject("follow");
-            oos.writeObject(chris);
-            oos.flush();
-
-            String result = (String) ois.readObject();
-            System.out.println(result);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void temp2() {
-        try {
-            Profile chris = new Profile("Chris", "11233", 23, "Male");
-            Post post = new Post(chris, "Hey");
-            oos.writeObject("makePost");
-            oos.writeObject("Hey");
-            oos.flush();
-
-
-            Object obj = ois.readObject();
-            if (obj instanceof Post) {
-                System.out.println(((Post) obj).getPoster());
-                System.out.println(((Post) obj).getMessage());
-            } else {
-                System.out.println(obj);
+    private static JTextField getjTextField() {
+        JTextField textPart = new JTextField("What's on your mind?");
+        textPart.setForeground(Color.GRAY);
+        textPart.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textPart.getText().equals("What's on your mind?")) {
+                    textPart.setText("");
+                    textPart.setForeground(Color.BLACK);
+                }
             }
 
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textPart.getText().isEmpty()) {
+                    textPart.setForeground(Color.GRAY);
+                    textPart.setText("What's on your mind?");
+                }
+            }
+        });
+        return textPart;
+    }
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+    public void generatePostPanel() {
+        for (Post upPost : posts) {
+
+            postPanel = new JPanel(new BorderLayout());
+            JPanel topPanel = new JPanel(new BorderLayout());
+            JLabel nameLabel = new JLabel(upPost.getPoster().getUsername());
+            hidePostButton = new JButton("Hide");
+            topPanel.add(nameLabel, BorderLayout.WEST);
+            topPanel.add(hidePostButton, BorderLayout.EAST);
+
+            JTextArea contentArea = new JTextArea(upPost.getMessage());
+            contentArea.setEditable(false);
+            contentArea.setLineWrap(true);
+            contentArea.setWrapStyleWord(true);
+
+            JPanel downPanel = new JPanel(new GridLayout(1, 5));
+            upvoteButton = new JButton("Upvote");
+            upvoteCount = new JLabel(String.valueOf(upPost.getUpvotes()), SwingConstants.CENTER);
+            downvoteButton = new JButton("Downvote");
+            downvoteCount = new JLabel(String.valueOf(upPost.getDownvotes()), SwingConstants.CENTER);
+            viewCommentButton = new JButton(upPost.getComments().size() + "    Comments");
+            downPanel.add(upvoteButton);
+            downPanel.add(upvoteCount);
+            downPanel.add(downvoteButton);
+            downPanel.add(downvoteCount);
+            downPanel.add(viewCommentButton);
+            hidePostButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int ans = JOptionPane.showConfirmDialog(mainFrame, "Are you sure you want to hide this post?",
+                            "Hide Post", JOptionPane.YES_NO_OPTION);
+                    if (ans == JOptionPane.YES_OPTION) {
+                        try {
+                            oos.writeObject("hidePost");
+                            oos.writeObject(upPost);
+                            oos.flush();
+
+                            refresh();
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            });
+            upvoteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        oos.writeObject("upvotePost");
+                        oos.writeObject(upPost);
+                        oos.flush();
+
+                        refresh();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
+
+                }
+            });
+            downvoteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        oos.writeObject("downvotePost");
+                        oos.writeObject(upPost);
+                        oos.flush();
+
+                        refresh();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+            viewCommentButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    comments = upPost.getComments();
+                    displayCommentGUI(upPost);
+                }
+            });
+
+            postPanel.add(topPanel, BorderLayout.NORTH);
+            postPanel.add(new JScrollPane(contentArea), BorderLayout.CENTER);
+            postPanel.add(downPanel, BorderLayout.SOUTH);
+
+            postPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            allPostPanel.add(postPanel);
         }
+    }
+
+    public JLabel showDunstaLogo() {
+        ImageIcon profilePicIcon = new ImageIcon("dunsta.png");
+        Image image = profilePicIcon.getImage();
+        Image scaledImage = image.getScaledInstance(400, 400, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        JLabel profilePic = new JLabel(scaledIcon);
+        profilePic.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        return profilePic;
+    }
+
+    public void refresh() {
+        mainFrame.dispose();
+        SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
     }
 
 
@@ -229,7 +420,6 @@ public class MainGUI extends JComponent implements Runnable {
 
                 if (!list.isEmpty() && list.get(0) instanceof Post) {
                     posts = (ArrayList<Post>) list;
-                    listToModel(posts);
                 }
             } else {
                 JOptionPane.showMessageDialog(mainFrame, "Received data is not a list.",
@@ -240,6 +430,112 @@ public class MainGUI extends JComponent implements Runnable {
             JOptionPane.showMessageDialog(mainFrame, "Error communicating with the server.",
                     "Error", JOptionPane.ERROR_MESSAGE);
 
+        }
+    }
+
+    private void refreshComments(Post post) {
+        for (Comment comment : comments) {
+            JPanel commentPanel = new JPanel(new BorderLayout());
+            JPanel topPanel = new JPanel(new BorderLayout());
+
+            JLabel commenterPanel = new JLabel(comment.getCommenter().getUsername());
+            JButton deleteCommentButton = new JButton("Delete Comment");
+            topPanel.add(commenterPanel, BorderLayout.WEST);
+            topPanel.add(deleteCommentButton, BorderLayout.EAST);
+
+            JTextArea commentText = new JTextArea(comment.getCommentContents());
+            commentText.setEditable(false);
+            commentText.setLineWrap(true);
+            commentText.setWrapStyleWord(true);
+
+            JPanel downPanel = new JPanel(new GridLayout(1, 4));
+
+            JButton upvoteCommentButton = new JButton("Upvote");
+            JLabel upvoteCountLabel = new JLabel(String.valueOf(comment.getUpvote()), SwingConstants.CENTER);
+            JButton downvoteCommentButton = new JButton("Downvote");
+            JLabel downvoteCountLabel = new JLabel(String.valueOf(comment.getDownvote()), SwingConstants.CENTER);
+
+            downPanel.add(upvoteCommentButton);
+            downPanel.add(upvoteCountLabel);
+            downPanel.add(downvoteCommentButton);
+            downPanel.add(downvoteCountLabel);
+
+            upvoteCommentButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        oos.writeObject("upvoteComment");
+                        oos.writeObject(post);
+                        oos.writeObject(comment);
+                        oos.flush();
+
+                        JOptionPane.showMessageDialog(commentFrame, "Upvote Successfully! Returning to main menu!",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                        commentFrame.dispose();
+                        refresh();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(commentFrame, "Error occurred while communicating with server",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+
+            downvoteCommentButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        oos.writeObject("downvoteComment");
+                        oos.writeObject(post);
+                        oos.writeObject(comment);
+                        oos.flush();
+
+                        JOptionPane.showMessageDialog(commentFrame, "Downvote Successfully! Returning to main menu!",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                        commentFrame.dispose();
+                        refresh();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(commentFrame, "Error occurred while communicating with server",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+
+
+            if (comment.getCommenter().getUsername().equals(user.getUsername())) {
+                deleteCommentButton.setVisible(true);
+                deleteCommentButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            oos.writeObject("deleteComment");
+                            oos.writeObject(post);
+                            oos.writeObject(comment);
+                            oos.flush();
+
+                            String response = (String) ois.readObject();
+                            if (response.equals("Success")) {
+                                JOptionPane.showMessageDialog(commentFrame, "Removed Successfully! Returning to main menu!",
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                                refresh();
+                            } else {
+                                JOptionPane.showMessageDialog(commentFrame, "Failed to delete comment",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (IOException | ClassNotFoundException ex) {
+                            JOptionPane.showMessageDialog(commentFrame, "Error occurred while communicating with server",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                });
+            } else {
+                deleteCommentButton.setVisible(false);
+            }
+
+            commentPanel.add(topPanel, BorderLayout.NORTH);
+            commentPanel.add(commentText, BorderLayout.CENTER);
+            commentPanel.add(downPanel, BorderLayout.SOUTH);
+
+            allCommentPanel.add(commentPanel);
         }
     }
 }

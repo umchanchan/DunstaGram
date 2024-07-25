@@ -15,6 +15,7 @@ public class Base implements IBase {
     private Profile profile = new Profile();
     private Post post = new Post();
     private static Object obj = new Object();
+    private ArrayList<Post> userHidePosts = new ArrayList<>();
 
     public Profile searchUser(String username) throws UserNotFoundException {
         synchronized (obj) {
@@ -84,6 +85,7 @@ public class Base implements IBase {
                     profile.follow(toAdd);
                     worked = true;
                     writeUserListFile();
+                    readAllListFile();
                     break;
                 }
             }
@@ -100,6 +102,7 @@ public class Base implements IBase {
                     profile.unfollow(toUnfollow);
                     worked = true;
                     writeUserListFile();
+                    readAllListFile();
                     break;
                 }
             }
@@ -115,6 +118,7 @@ public class Base implements IBase {
                     if (user.blockUser(toBlock)) {
                         worked = true;
                         writeUserListFile();
+                        readAllListFile();
                     }
                     break;
                 }
@@ -131,6 +135,7 @@ public class Base implements IBase {
                     user.unblockUser(unBlock);
                     worked = true;
                     writeUserListFile();
+                    readAllListFile();
                     break;
                 }
             }
@@ -212,13 +217,16 @@ public class Base implements IBase {
         }
     }
 
+
     private void readHidePostListFile() throws IOException {
         synchronized (obj) {
             try {
                 BufferedReader bfr = new BufferedReader(new FileReader("hidePostList.txt"));
                 String line;
                 while ((line = bfr.readLine()) != null) {
-                    profile.startHidePostList(line);
+                    for (Profile user : users) {
+                        userHidePosts = user.startHidePostList(line);
+                    }
                 }
             } catch (IOException e) {
                 throw new IOException("Error occurred when reading a file");
@@ -251,6 +259,7 @@ public class Base implements IBase {
     public void clearUsers() {
         users.clear();
     }
+
     public void clearAllPosts() {
         allPosts.clear();
     }
@@ -286,9 +295,9 @@ public class Base implements IBase {
                     }
                     Post post = new Post(user, message);
                     user.addMyPost(post);
-//                    poster.addMyPost(post);
                     allPosts.add(post);
                     writePostListFile();
+                    readAllListFile();
                     return post;
                 }
             }
@@ -311,6 +320,7 @@ public class Base implements IBase {
                     }
                 }
                 writePostListFile();
+                readAllListFile();
                 return true;
             }
             return false;
@@ -319,13 +329,38 @@ public class Base implements IBase {
 
     public void hidePost(Profile profile, Post post) throws IOException {
         synchronized (obj) {
+            for (Profile user : users) {
+                if (user.getUsername().equals(profile.getUsername())) {
+                    profile = user;
+                    if (!(user.getUsername().equals(post.getPoster().getUsername()))) {
+                        for (Post post1 : allPosts) {
+                            if (post.equals(post1)) {
+
+                                System.out.println(user.getFollowingPosts(this).size());
+                                user.getFollowingPosts(this).remove(post1);
+                                user.hidePost(post1);
+                                writeHidePostListFile();
+                                readAllListFile();
+                                return;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    public void unHidePost(Profile profile, Post post) throws IOException {
+        synchronized (obj) {
             if (!(profile.getUsername().equals(post.getPoster().getUsername()))) {
                 for (Post post1 : allPosts) {
                     if (post.equals(post1)) {
-                        profile.hidePost(post1);
+                        profile.unHidePost(post1);
                     }
                 }
                 writeHidePostListFile();
+                readAllListFile();
             }
         }
     }
@@ -338,6 +373,7 @@ public class Base implements IBase {
                 }
             }
             writePostListFile();
+            readAllListFile();
         }
     }
 
@@ -349,27 +385,40 @@ public class Base implements IBase {
                 }
             }
             writePostListFile();
+            readAllListFile();
         }
     }
     //we will add cancel addUpvote and addDownvote if we could implement this in GUI
 
-    public void addUpvote(Post post, Comment comment) {
+    public void addUpvote(Post post, Comment comment) throws IOException {
         synchronized (obj) {
-            for (Comment comment1 : post.getComments()) {
-                if (comment.equals(comment1)) {
-                    comment.addUpvote();
+            for (Post post1 : allPosts) {
+                if (post1.equals(post)) {
+                    for (Comment comment1 : post1.getComments()) {
+                        if (comment1.equals(comment)) {
+                            comment1.addUpvote();
+                        }
+                    }
                 }
             }
+            writePostListFile();
+            readAllListFile();
         }
     }
 
-    public void addDownvote(Post post, Comment comment) {
+    public void addDownvote(Post post, Comment comment) throws IOException {
         synchronized (obj) {
-            for (Comment comment1 : post.getComments()) {
-                if (comment.equals(comment1)) {
-                    comment.addDownvote();
+            for (Post post1 : allPosts) {
+                if (post1.equals(post)) {
+                    for (Comment comment1 : post1.getComments()) {
+                        if (comment.equals(comment1)) {
+                            comment1.addDownvote();
+                        }
+                    }
                 }
             }
+            writePostListFile();
+            readAllListFile();
         }
     }
 
@@ -383,12 +432,13 @@ public class Base implements IBase {
                     ArrayList<Comment> comments = samePost.getComments();
                     for (Comment comment1 : comments) {
                         if (comment1.getCommenter().getUsername().equals(commenter.getUsername()) &&
-                        comment1.getCommentContents().equals(message)) {
+                                comment1.getCommentContents().equals(message)) {
                             return null;
                         }
                     }
                     Comment comment = samePost.addComment(commenter, message);
                     writePostListFile();
+                    readAllListFile();
                     return comment;
                 }
             }
@@ -408,12 +458,13 @@ public class Base implements IBase {
                         ArrayList<Comment> comments = samePost.getComments();
                         for (Comment comment1 : comments) {
                             if (comment1.getCommenter().getUsername().equals(comment.getCommenter().getUsername()) &&
-                            comment1.getCommentContents().equals(comment.getCommentContents())) {
+                                    comment1.getCommentContents().equals(comment.getCommentContents())) {
                                 samePost.deleteComment(comment1);
                                 break;
                             }
                         }
                         writePostListFile();
+                        readAllListFile();
                         return true;
                     }
                 }

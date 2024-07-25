@@ -13,15 +13,12 @@ public class SettingsGUI implements Runnable {
     private Profile profile;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private MainGUI obj;
-    private static boolean isOpened;
 
-    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p, MainGUI obj) {
+
+    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p) {
         profile = p;
         this.in = in;
         this.out = out;
-        this.obj = obj;
-        isOpened = true;
     }
 
 
@@ -104,11 +101,12 @@ public class SettingsGUI implements Runnable {
                         "Logout", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     try {
-                        isOpened = false;
+                        out.writeObject("Exit");
                         out.flush();
                         frame.dispose();
-                        obj.logout();
                         SwingUtilities.invokeLater(new LoginGUI(in, out));
+
+
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }

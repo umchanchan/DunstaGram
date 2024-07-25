@@ -16,15 +16,13 @@ public class PostTest {
         poster = new Profile("posterUser");
         commenter = new Profile("commenterUser");
         post = new Post(poster, "This is a test post");
-        comment = new Comment(commenter, "This is a test comment");
+        comment = new Comment(commenter, "This is a test comment", 0, 0);
     }
 
     @Test
     public void temp() {
         Profile chris = new Profile("Chris", "11233", 23, "Male");
         Post post = new Post(chris, "Hey");
-
-
 
 
     }
@@ -51,8 +49,6 @@ public class PostTest {
         assertEquals(2, fullPost.getDownvotes());
         assertEquals(1, fullPost.getComments().size());
     }
-
-
 
 
     @Test

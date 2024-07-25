@@ -9,7 +9,7 @@ public class CommentTest {
     @BeforeEach
     public void setUp() {
         commenter = new Profile("commenterUser");
-        comment = new Comment(commenter, "This is a test comment");
+        comment = new Comment(commenter, "This is a test comment", 0, 0);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class CommentTest {
 
     @Test
     public void testEquality() {
-        Comment anotherComment = new Comment(commenter, "This is a test comment");
+        Comment anotherComment = new Comment(commenter, "This is a test comment", 0, 0);
         assertEquals(comment, anotherComment);
 
         anotherComment.addUpvote();

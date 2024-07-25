@@ -17,6 +17,12 @@ public class BaseTest {
     }
 
     @Test
+    void temp2() throws IOException {
+        base.readAllListFile();
+
+    }
+
+    @Test
     void temp() throws IOException, UserNotFoundException {
         Profile chris = new Profile("Chris", "11233", 23, "Male");
 
@@ -61,7 +67,7 @@ public class BaseTest {
             Profile newprofile = new Profile("Chan", "1123", 23, "Male");
             Profile profile = new Profile("Chris", "11233");
             Post post = new Post(profile, "I don't like you");
-            Comment comment = new Comment(newprofile, "I dont like you too");
+            Comment comment = new Comment(newprofile, "I dont like you too", 0, 0);
 
             if (base.deleteComment(post, newprofile, comment)) {
                 System.out.println("Noice");
