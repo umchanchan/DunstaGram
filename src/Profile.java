@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -306,6 +307,11 @@ public class Profile implements IProfile, Serializable {
         NewsFeed myNewsFeed = new NewsFeed(this);
         for (String friend : following) {
             followingPosts = myNewsFeed.filterPost(friend, base);
+        }
+        try {
+            base.readAllListFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         followingPosts = myNewsFeed.filterHidePost(hidePosts);
         return followingPosts;

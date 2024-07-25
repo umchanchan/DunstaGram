@@ -234,16 +234,27 @@ public class Base implements IBase {
         }
     }
 
-    public void writeHidePostListFile() throws IOException {
+    public void writeHidePostListFile(Profile user, Post post) throws IOException {
         synchronized (obj) {
-            try (PrintWriter pw = new PrintWriter(new FileOutputStream("hidePostList.txt", false), true)) {
-                for (Profile user : users) {
-                    ArrayList<String> hideString = user.hidePostToString();
-                    for (String line : hideString) {
-                        pw.println(line);
-                        pw.flush();
-                    }
-                }
+            try (PrintWriter pw = new PrintWriter(new FileOutputStream("hidePostList.txt", true), true)) {
+
+                String username = post.getPoster().getUsername();
+                String content = post.getMessage();
+                int upvote = post.getUpvotes();
+                int downvote = post.getDownvotes();
+
+                String result = user.getUsername() + "_" + username + "_" + content + "_" + upvote + "_" + downvote;
+                pw.println(result);
+                pw.flush();
+
+
+//                for (Profile user : users) {
+//                    ArrayList<String> hideString = user.hidePostToString();
+//                    for (String line : hideString) {
+//                        pw.println(line);
+//                        pw.flush();
+//                    }
+//                }
             } catch (IOException e) {
                 throw new IOException("Error occurred when writing a file");
             }
@@ -335,7 +346,6 @@ public class Base implements IBase {
         synchronized (obj) {
             for (Profile user : users) {
                 if (user.getUsername().equals(profile.getUsername())) {
-                    profile = user;
                     if (!(user.getUsername().equals(post.getPoster().getUsername()))) {
                         for (Post post1 : allPosts) {
                             if (post.equals(post1)) {
@@ -343,7 +353,7 @@ public class Base implements IBase {
                                 System.out.println(user.getFollowingPosts(this).size());
                                 user.getFollowingPosts(this).remove(post1);
                                 user.hidePost(post1);
-                                writeHidePostListFile();
+                                writeHidePostListFile(user, post1);
                                 readAllListFile();
                                 return;
                             }
@@ -361,9 +371,10 @@ public class Base implements IBase {
                 for (Post post1 : allPosts) {
                     if (post.equals(post1)) {
                         profile.unHidePost(post1);
+                        writeHidePostListFile(profile , post);
                     }
                 }
-                writeHidePostListFile();
+
                 readAllListFile();
             }
         }
