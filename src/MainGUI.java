@@ -59,7 +59,7 @@ public class MainGUI extends JComponent implements Runnable {
 
             } else if (e.getSource() == searchButton) {
 
-                SwingUtilities.invokeLater(new NewSearchGUI(ois, oos, user));
+                SwingUtilities.invokeLater(new SearchGUI(user, ois, oos));
 
             } else if (e.getSource() == followingButton) {
                 SwingUtilities.invokeLater(new FollowingGUI(user, ois, oos));

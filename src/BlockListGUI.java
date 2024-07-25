@@ -11,8 +11,6 @@ import java.util.List;
 
 public class BlockListGUI extends JFrame implements Runnable {
     private Profile currentUser;
-    private Server server;
-    private JFrame settingsFrame;
     private JList<String> blockList;
     private DefaultListModel<String> blockListModel;
     private ObjectInputStream ois;
@@ -22,8 +20,6 @@ public class BlockListGUI extends JFrame implements Runnable {
         this.currentUser = currentUser;
         this.ois = ois;
         this.oos = oos;
-        this.server = server;
-        this.settingsFrame = settingsFrame;
     }
 
     @Override
