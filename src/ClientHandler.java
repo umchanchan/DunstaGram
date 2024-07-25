@@ -263,7 +263,9 @@ public class ClientHandler implements IClientHandler {
                     case "viewProfile" -> {
                         Base b = new Base();
                         Profile p = (Profile) ois.readObject();
-                        ArrayList<String> list = b.getUserInfo(p);
+                        b.readUserListFile();
+                        Profile newProfile = b.searchUser(p.getUsername());
+                        ArrayList<String> list = b.getUserInfo(newProfile);
                         oos.writeObject(list);
                     }
 
