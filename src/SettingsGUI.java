@@ -101,16 +101,12 @@ public class SettingsGUI implements Runnable {
                         "Logout", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     try {
-                        out.writeObject("Exit");
-                        out.flush();
                         frame.dispose();
                         SwingUtilities.invokeLater(new LoginGUI(in, out));
-
 
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-
                 }
 
 
@@ -120,7 +116,7 @@ public class SettingsGUI implements Runnable {
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                isOpened = false;
+                SwingUtilities.invokeLater(new MainGUI(profile, in, out));
             }
         });
 
@@ -131,9 +127,5 @@ public class SettingsGUI implements Runnable {
         });
 
 
-    }
-
-    public static boolean findOpened() {
-        return isOpened;
     }
 }

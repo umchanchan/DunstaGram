@@ -44,7 +44,7 @@ public class EditProfileGUI implements Runnable {
         fields.add(age);
         fields.add(genderLabel);
         fields.add(gender);
-        fields.setVisible(true);
+
 
         JButton done = new JButton("Submit");
         done.setFont(new Font("Arial", Font.BOLD, 18));
@@ -54,7 +54,8 @@ public class EditProfileGUI implements Runnable {
 
 
         fields.add(done);
-
+        fields.setVisible(true);
+        fields.setLocationRelativeTo(null);
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String outcome;
