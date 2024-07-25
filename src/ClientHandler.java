@@ -268,6 +268,9 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "editProfile" -> {
+                        Base b = new Base();
+                        String user = (String) ois.readObject();
+                        Profile p = b.searchUser(user);
                         String temp = (String) ois.readObject();
                         String gender = (String) ois.readObject();
                         if (temp.isEmpty() || temp == null) {
@@ -295,6 +298,8 @@ public class ClientHandler implements IClientHandler {
                             oos.flush();
                         }
 
+                        b.editUserInfo(p, age, gender, "");
+                        b.writeUserListFile();
                         oos.writeObject("Success");
                     }
 
@@ -313,7 +318,9 @@ public class ClientHandler implements IClientHandler {
             System.err.print("Caught");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        }  finally {
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        } finally {
             try {
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();

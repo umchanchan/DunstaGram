@@ -60,6 +60,7 @@ public class EditProfileGUI implements Runnable {
                 String outcome;
                 try {
                     oos.writeObject("editProfile");
+                    oos.writeObject(p.getUsername());
                     oos.writeObject(age.getText());
                     oos.writeObject(gender.getText());
                     outcome = (String) ois.readObject();
@@ -75,16 +76,12 @@ public class EditProfileGUI implements Runnable {
                 }
 
                 if (outcome.equals("Success")) {
+
                     p.setAge(Integer.parseInt(age.getText()));
                     p.setGender(gender.getText());
                     JOptionPane.showMessageDialog(null, "Successfully changed fields!", "Success",
                             JOptionPane.INFORMATION_MESSAGE);
-                    Base b = new Base();
-                    try {
-                        b.writeUserListFile();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
+
                     fields.dispose();
                 }
 

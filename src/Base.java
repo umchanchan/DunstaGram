@@ -10,7 +10,7 @@ import java.util.stream.DoubleStream;
  */
 
 public class Base implements IBase {
-    private ArrayList<Profile> users = new ArrayList<>();
+    private static ArrayList<Profile> users = new ArrayList<>();
     private ArrayList<Post> allPosts = new ArrayList<>();
     private Profile profile = new Profile();
     private Post post = new Post();
@@ -138,7 +138,7 @@ public class Base implements IBase {
         }
     }
 
-    private void readUserListFile() throws IOException {
+    public void readUserListFile() throws IOException {
         synchronized (obj) {
             clearUsers();
             try {
@@ -257,6 +257,17 @@ public class Base implements IBase {
 
     public ArrayList<Profile> getUsers() {
         return users;
+    }
+
+    public void editUserInfo(Profile p, int age, String gender, String password) {
+        int index = users.indexOf(p);
+        Profile copiedProfile = users.get(index);
+        copiedProfile.setAge(age);
+        copiedProfile.setGender(gender);
+        if (!password.isEmpty()) {
+            copiedProfile.setPassword(password);
+        }
+        users.set(index, copiedProfile);
     }
 
     public ArrayList<Post> getAllPosts() {
