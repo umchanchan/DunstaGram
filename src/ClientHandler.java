@@ -267,9 +267,48 @@ public class ClientHandler implements IClientHandler {
                     case "viewProfile" -> {
                         Base b = new Base();
                         Profile p = (Profile) ois.readObject();
-                        ArrayList<String> list = b.getUserInfo(p);
+                        b.readUserListFile();
+                        Profile newProfile = b.searchUser(p.getUsername());
+                        ArrayList<String> list = b.getUserInfo(newProfile);
                         oos.writeObject(list);
                     }
+
+                    case "editProfile" -> {
+                        Base b = new Base();
+                        String user = (String) ois.readObject();
+                        Profile p = b.searchUser(user);
+                        String temp = (String) ois.readObject();
+                        String gender = (String) ois.readObject();
+                        if (temp.isEmpty() || temp == null) {
+                            oos.writeObject("Invalid");
+                            oos.flush();
+                            break;
+                        }
+                        int age;
+                        try {
+                            age = Integer.parseInt(temp);
+                        } catch (NumberFormatException e) {
+                            oos.writeObject("Invalid");
+                            oos.flush();
+                            break;
+                        }
+                        System.out.println(age);
+                        if (age < 0) {
+                            oos.writeObject("Invalid");
+                            oos.flush();
+                            break;
+                        }
+
+                        if (gender == null) {
+                            oos.writeObject("Invalid");
+                            oos.flush();
+                        }
+
+                        b.editUserInfo(p, age, gender, "");
+                        b.writeUserListFile();
+                        oos.writeObject("Success");
+                    }
+
 
                     default -> {
                         System.out.println("Invalid message...why are you here");
@@ -285,7 +324,9 @@ public class ClientHandler implements IClientHandler {
             System.err.print("Caught");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        }  finally {
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        } finally {
             try {
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();

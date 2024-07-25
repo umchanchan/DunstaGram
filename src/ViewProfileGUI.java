@@ -7,69 +7,42 @@ import java.util.ArrayList;
 
 public class ViewProfileGUI implements Runnable {
     private ArrayList<String> userInfo;
-    private boolean myProfile;
-    private static boolean isOpen;
-    public ViewProfileGUI(ArrayList<String> userInfo, boolean myProfile) {
+
+    public ViewProfileGUI(ArrayList<String> userInfo) {
         this.userInfo = userInfo;
-        this.myProfile = myProfile;
-        this.isOpen = true;
+
     }
     public void run() {
-        JFrame frame = new JFrame();
-        if (myProfile) {
-            frame.setTitle("My Profile");
-        } else {
-            frame.setTitle("Viewing Profile");
-        }
-        frame.setLayout(new FlowLayout());
-        int usernameLength = userInfo.get(0).length();
-        if (usernameLength >= 7) {
-            int frameWidth = usernameLength * 61;
-            frame.setSize(frameWidth, 480);
-        } else {
-            frame.setSize(360, 480);
-        }
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
 
-        JLabel label1 = new JLabel(userInfo.get(0));
-        label1.setFont(new Font("Sans Serif", Font.BOLD, 96));
-        frame.add(label1);
+        showProfile();
 
-        JLabel label2 = new JLabel("Age: " + userInfo.get(1));
-        label2.setFont(new Font("Arial", Font.BOLD, 48));
-        frame.add(label2);
-
-        JLabel label3 = new JLabel("Gender: " + userInfo.get(2));
-        label3.setFont(new Font("Arial", Font.BOLD, 48));
-        frame.add(label3);
-
-        JLabel label4 = new JLabel("Following: " + userInfo.get(3));
-        label4.setFont(new Font("Arial", Font.BOLD, 48));
-        frame.add(label4);
-
-        JLabel label5 = new JLabel("Posts: " + userInfo.get(4));
-        label5.setFont(new Font("Arial", Font.BOLD, 48));
-        frame.add(label5);
-
-        JButton backButton = new JButton("Back");
-        Dimension d = new Dimension(240, 60);
-        backButton.setSize(d);
-        frame.add(backButton);
-
-        backButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                isOpen = false;
-                frame.dispose();
-
-
-            }
-        });
     }
 
-    public static boolean checkOpen() {
-        return isOpen;
+    private void showProfile() {
+        //Credits (for GUI): Utkarsh Bali
+        JPanel profilePanel = new JPanel();
+        profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
+        profilePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        ImageIcon profilePicIcon = new ImageIcon("default_profile_pic.png");
+        Image image = profilePicIcon.getImage();
+        Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        JLabel profilePic = new JLabel(scaledIcon);
+        profilePic.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        profilePanel.add(profilePic);
+        profilePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        profilePanel.add(new JLabel("Username: " + userInfo.get(0)));
+        profilePanel.add(new JLabel("Age: " + userInfo.get(1)));
+        profilePanel.add(new JLabel("Gender: " + userInfo.get(2)));
+        profilePanel.add(new JLabel("Following: " + userInfo.get(3)));
+        profilePanel.add(new JLabel("Posts: " + userInfo.get(4)));
+
+        JOptionPane.showMessageDialog(null, profilePanel, "My Profile",
+                JOptionPane.INFORMATION_MESSAGE);
     }
+
+
 
 }

@@ -330,4 +330,8 @@ public class Profile implements IProfile, Serializable {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

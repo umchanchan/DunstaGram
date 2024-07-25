@@ -14,6 +14,7 @@ public class SettingsGUI implements Runnable {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
+
     public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p) {
         profile = p;
         this.in = in;
@@ -27,7 +28,7 @@ public class SettingsGUI implements Runnable {
         frame.setLayout(new FlowLayout());
         frame.setTitle("Settings");
         frame.setSize(400, 350);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -59,6 +60,14 @@ public class SettingsGUI implements Runnable {
         logout.setPreferredSize(log);
         frame.add(logout);
 
+        JButton back = new JButton("Back");
+        back.setFont(new Font("Arial", Font.PLAIN, 24));
+        Dimension back2 = new Dimension(180, 40);
+        back.setSize(back2);
+        back.setPreferredSize(back2);
+        frame.add(back);
+
+
         viewProfile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -80,7 +89,7 @@ public class SettingsGUI implements Runnable {
                     throw new RuntimeException(ex);
                 }
                 System.out.println(userInfo);
-                SwingUtilities.invokeLater(new ViewProfileGUI(userInfo, true));
+                SwingUtilities.invokeLater(new ViewProfileGUI(userInfo));
 
 
             }
@@ -97,6 +106,7 @@ public class SettingsGUI implements Runnable {
                         frame.dispose();
                         SwingUtilities.invokeLater(new LoginGUI(in, out));
 
+
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -107,6 +117,23 @@ public class SettingsGUI implements Runnable {
             }
         });
 
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                isOpened = false;
+            }
+        });
 
+        editProfile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new EditProfileGUI(profile, in, out));
+            }
+        });
+
+
+    }
+
+    public static boolean findOpened() {
+        return isOpened;
     }
 }
