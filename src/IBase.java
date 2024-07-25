@@ -22,7 +22,7 @@ public interface IBase {
 
     void writePostListFile() throws IOException;
 
-    void writeHidePostListFile() throws IOException;
+    void writeHidePostListFile(Profile user, Post post) throws IOException;
 
     void clearUsers();
 
