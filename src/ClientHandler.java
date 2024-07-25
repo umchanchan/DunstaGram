@@ -102,6 +102,12 @@ public class ClientHandler implements IClientHandler {
                     case "follow" -> {
                         Profile toFollow = (Profile) ois.readObject();
 
+                        if (profile.isFollowing(toFollow)) {
+                            oos.writeObject("Fail");
+                            oos.flush();
+                            break;
+                        }
+
                         if (base.follow(profile, toFollow)) {
                             oos.writeObject("Success");
                             oos.flush();
