@@ -50,13 +50,12 @@ public class MainGUI extends JComponent implements Runnable {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!SettingsGUI.findOpened()) {
-                if (e.getSource() == settingButton) {
 
-                    SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user, obj));
+            if (e.getSource() == settingButton) {
 
+                mainFrame.dispose();
+                SwingUtilities.invokeLater(new SettingsGUI(ois, oos, user));
 
-                }
             } else if (e.getSource() == searchButton) {
 
 //                SwingUtilities.invokeLater(new SearchGUI (ois, oos));
