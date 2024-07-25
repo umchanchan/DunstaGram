@@ -2,7 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 public class BlockListGUI extends JFrame implements Runnable {
@@ -11,9 +15,13 @@ public class BlockListGUI extends JFrame implements Runnable {
     private JFrame settingsFrame;
     private JList<String> blockList;
     private DefaultListModel<String> blockListModel;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
 
-    public BlockListGUI(Profile currentUser, Server server, JFrame settingsFrame) {
+    public BlockListGUI(Profile currentUser, ObjectInputStream ois, ObjectOutputStream oos) {
         this.currentUser = currentUser;
+        this.ois = ois;
+        this.oos = oos;
         this.server = server;
         this.settingsFrame = settingsFrame;
     }
@@ -22,12 +30,23 @@ public class BlockListGUI extends JFrame implements Runnable {
     public void run() {
         initializeGUI();
         setVisible(true);
+        setLocationRelativeTo(null);
     }
 
     private void initializeGUI() {
         setTitle("Block List");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            /**
+             * Window listener that closes the window
+             * @param e the event to be processed
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
         setLayout(new BorderLayout());
 
         // Back button (trying to connect to the settings
@@ -35,8 +54,9 @@ public class BlockListGUI extends JFrame implements Runnable {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                settingsFrame.setVisible(true);
                 dispose();
+                SwingUtilities.invokeLater(new SettingsGUI(currentUser, ois, oos));
+
             }
         });
 
@@ -61,13 +81,19 @@ public class BlockListGUI extends JFrame implements Runnable {
                     String username = blockListModel.getElementAt(selectedIndex);
                     try {
                         Profile unBlockProfile = getUserByUsername(username);
-                        if (unBlockProfile != null && server.unBlock(currentUser, unBlockProfile)) {
+                        oos.writeObject("unblock");
+                        oos.writeObject(unBlockProfile);
+                        oos.flush();
+
+                        String response = (String) ois.readObject();
+                        if (unBlockProfile != null && response.equals("Success")) {
+
                             blockListModel.remove(selectedIndex);
                         } else {
                             JOptionPane.showMessageDialog(BlockListGUI.this,
                                     "Failed to unblock user.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (IOException ex) {
+                    } catch (IOException | ClassNotFoundException ex) {
                         JOptionPane.showMessageDialog(BlockListGUI.this,
                                 "An error occurred while unblocking the user.", "Error",
                                 JOptionPane.ERROR_MESSAGE);
@@ -82,17 +108,25 @@ public class BlockListGUI extends JFrame implements Runnable {
     }
 
     private void loadBlockList() {
-        List<Profile> blockedUsers = currentUser.getBlockedList();
-        for (Profile user : blockedUsers) {
-            blockListModel.addElement(user.getUsername());
+        List<String> blockedUsers = currentUser.getBlockedList();
+        for (String user : blockedUsers) {
+            blockListModel.addElement(user);
         }
     }
 
     private Profile getUserByUsername(String username) {
-        for (Profile user : server.getUsers()) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
+        try {
+            oos.writeObject("search");
+            oos.writeObject(username);
+            oos.flush();
+
+            Profile userObj = (Profile) ois.readObject();
+
+            return userObj;
+
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(BlockListGUI.this, "An error occurred while reading the user.", "Error", JOptionPane.ERROR_MESSAGE);
+
         }
         return null;
     }

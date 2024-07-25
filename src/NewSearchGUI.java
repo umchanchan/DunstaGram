@@ -63,6 +63,7 @@ public class NewSearchGUI implements Runnable{
             public void actionPerformed(ActionEvent e) {
                 try {
                     oos.writeObject("search");
+                    oos.flush();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -71,9 +72,7 @@ public class NewSearchGUI implements Runnable{
 
                 try {
                     b = searchProfile();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
                 System.out.println(b);
@@ -113,6 +112,7 @@ public class NewSearchGUI implements Runnable{
         }
         String query = searchBar.getText().trim().toLowerCase();
         oos.writeObject(query);
+        oos.flush();
         Object obj = ois.readObject();
         if (obj instanceof String) {
             JOptionPane.showMessageDialog(null, "No such user found!",

@@ -2,32 +2,48 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FollowingGUI extends JFrame implements Runnable {
     private Profile currentUser;
-    private Server server;
-    private MainGUI mainGUI;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private JList<String> followingList;
     private DefaultListModel<String> followingListModel;
 
-    public FollowingGUI(Profile currentUser, Server server, MainGUI mainGUI) {
+    public FollowingGUI(Profile currentUser, ObjectInputStream ois, ObjectOutputStream oos) {
         this.currentUser = currentUser;
-        this.server = server;
-        this.mainGUI = mainGUI;
+        this.ois = ois;
+        this.oos = oos;
     }
 
     @Override
     public void run() {
         initializeGUI();
         setVisible(true);
+        setLocationRelativeTo(null);
     }
 
     private void initializeGUI() {
         setTitle("Following List");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            /**
+             * Window listener that closes the window
+             * @param e the event to be processed
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
         setLayout(new BorderLayout());
 
         // Back button
@@ -35,7 +51,6 @@ public class FollowingGUI extends JFrame implements Runnable {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainGUI.setVisible(true);
                 dispose();
             }
         });
@@ -64,12 +79,18 @@ public class FollowingGUI extends JFrame implements Runnable {
                     String username = followingListModel.getElementAt(selectedIndex);
                     try {
                         Profile userToUnfollow = getUserByUsername(username);
-                        if (userToUnfollow != null && server.unFollow(currentUser, userToUnfollow)) {
+                        oos.writeObject("unfollow");
+                        oos.writeObject(userToUnfollow);
+                        oos.flush();
+
+                        String response = (String) ois.readObject();
+                        if (userToUnfollow != null && response.equals("Success")) {
+
                             followingListModel.remove(selectedIndex);
                         } else {
                             JOptionPane.showMessageDialog(FollowingGUI.this, "Failed to unfollow user.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (IOException ex) {
+                    } catch (IOException | ClassNotFoundException ex) {
                         JOptionPane.showMessageDialog(FollowingGUI.this, "An error occurred while unfollowing the user.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -84,12 +105,19 @@ public class FollowingGUI extends JFrame implements Runnable {
                     String username = followingListModel.getElementAt(selectedIndex);
                     try {
                         Profile userToBlock = getUserByUsername(username);
-                        if (userToBlock != null && server.block(currentUser, userToBlock)) {
+                        oos.writeObject("block");
+                        oos.writeObject(userToBlock);
+                        oos.flush();
+
+
+                        String response = (String) ois.readObject();
+                        if (userToBlock != null && response.equals("Success")) {
+
                             followingListModel.remove(selectedIndex);
                         } else {
                             JOptionPane.showMessageDialog(FollowingGUI.this, "Failed to block user.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (IOException ex) {
+                    } catch (IOException | ClassNotFoundException ex) {
                         JOptionPane.showMessageDialog(FollowingGUI.this, "An error occurred while blocking the user.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -109,10 +137,18 @@ public class FollowingGUI extends JFrame implements Runnable {
     }
 
     private Profile getUserByUsername(String username) {
-        for (Profile user : server.getUsers()) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
+        try {
+            oos.writeObject("search");
+            oos.writeObject(username);
+            oos.flush();
+
+            Profile userObj = (Profile) ois.readObject();
+
+            return userObj;
+
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(FollowingGUI.this, "An error occurred while reading the user.", "Error", JOptionPane.ERROR_MESSAGE);
+
         }
         return null;
     }
