@@ -167,10 +167,10 @@ public class NewSearchGUI implements Runnable{
                         String outcome = (String) ois.readObject();
                         if (outcome.equals("Success")) {
                             JOptionPane.showMessageDialog(null,
-                                    "Successfully followed " + username);
+                                    "Successfully followed " + username + "!");
                         } else {
                             JOptionPane.showMessageDialog(null,
-                                    "Error: unable to follow " + username);
+                                    "Error: You are already following " + username + "!");
                         }
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
