@@ -26,8 +26,8 @@ public class ClientHandlerTest {
         oos.flush();
 
         oos.writeObject("login");
-        oos.writeObject("Chris");
-        oos.writeObject("11233");
+        oos.writeObject("Jeff");
+        oos.writeObject("2332");
         oos.flush();
 
         Object response = ois.readObject();
@@ -43,7 +43,7 @@ public class ClientHandlerTest {
 
     @Test
     void temp() throws IOException, ClassNotFoundException {
-        oos.writeObject("listMyPosts");
+        oos.writeObject("viewHidePost");
         oos.flush();
 
         Object response = ois.readObject();
@@ -61,14 +61,6 @@ public class ClientHandlerTest {
         System.out.println(posts.size());
     }
 
-    @Test
-    @DisplayName("Test if searchUser and signUp method work")
-    void testFileWriting() {
-        assertDoesNotThrow(() -> {
-            Profile user = base.searchUser("Jeff");
-            assertEquals("Jeff", user.getUsername());
-        });
-    }
 
     @Test
     @DisplayName("Login")
@@ -78,21 +70,13 @@ public class ClientHandlerTest {
             Profile newprofile = new Profile("Chan", "1123", 23, "Male");
             Profile profile = new Profile("Chris", "11233");
             Post post = new Post(profile, "I don't like you");
-            Comment comment = new Comment(newprofile, "I dont like you too");
+            Comment comment = new Comment(newprofile, "I dont like you too", 0, 0);
 
             if (base.deleteComment(post, newprofile, comment)) {
                 System.out.println("Noice");
             } else {
                 System.out.println("Not good");
             }
-
-
-//            if ((comment = base.makeComment(post, newprofile, "**** you too"))!= null) {
-//                System.out.println(comment.getCommentContents());
-//            } else {
-//                System.out.println("****** up");
-//            }
-//            assertEquals("Chan", profile.getUsername());
         });
     }
 

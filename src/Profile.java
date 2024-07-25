@@ -18,7 +18,7 @@ public class Profile implements IProfile, Serializable {
     private ArrayList<Post> userPosts;
     private ArrayList<Post> followingPosts;
     private ArrayList<Post> hidePosts;
-    private ArrayList<Profile> blockedList;
+    private ArrayList<String> blockedList;
 
     /**
      * Profile constructor
@@ -35,7 +35,7 @@ public class Profile implements IProfile, Serializable {
         this.followingPosts = new ArrayList<>();
         this.hidePosts = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
-        this.blockedList = new ArrayList<Profile>();
+        this.blockedList = new ArrayList<>();
     }
 
     /**
@@ -55,7 +55,7 @@ public class Profile implements IProfile, Serializable {
         this.followingPosts = new ArrayList<>();
         this.hidePosts = new ArrayList<>();
         this.userPosts = new ArrayList<Post>();
-        this.blockedList = new ArrayList<Profile>();
+        this.blockedList = new ArrayList<>();
     }
 
     /**
@@ -105,7 +105,7 @@ public class Profile implements IProfile, Serializable {
         if (!blockedList.isEmpty()) {
             result.append("===="); //String that splits friend list and blocked list
             for (int i = 0; i < blockedList.size(); i++) {
-                result.append(blockedList.get(i).username).append("_");
+                result.append(blockedList.get(i)).append("_");
             }
 
         }
@@ -142,7 +142,7 @@ public class Profile implements IProfile, Serializable {
             String[] parts2 = blockList.split("_");
 
             for (String blockName : parts2) {
-                newProfile.blockedList.add(new Profile(blockName));
+                newProfile.blockedList.add(blockName);
             }
         }
 
@@ -162,10 +162,10 @@ public class Profile implements IProfile, Serializable {
                 age == toCompare.getAge();
     }
 
-    public void startHidePostList(String info) {
+    public ArrayList<Post> startHidePostList(String info) {
         String[] parts = info.split("_");
         if (!(username.equals(parts[0]))) {
-            return;
+            return null;
         }
         for (Post post : followingPosts) {
             if (post.getPoster().getUsername().equals(parts[1]) && post.getMessage().equals(parts[2])) {
@@ -175,12 +175,14 @@ public class Profile implements IProfile, Serializable {
                 followingPosts.remove(post);
             }
         }
+        return hidePosts;
     }
 
     public ArrayList<String> hidePostToString() {
         ArrayList<String> hideString = new ArrayList<>();
         for (Post post : hidePosts) {
-            hideString.add(username + "_" + post.getPoster() + "_" + post.getMessage());
+            hideString.add(username + "_" + post.getPoster().getUsername() + "_" + post.getMessage() +
+                    "_" + post.getUpvotes() + "_" + post.getDownvotes());
         }
         return hideString;
     }
@@ -198,6 +200,13 @@ public class Profile implements IProfile, Serializable {
         newsFeed.hidePost(post);
         followingPosts.remove(post);
         hidePosts.add(post);
+    }
+
+    public void unHidePost(Post post) {
+        NewsFeed newsFeed = new NewsFeed(this);
+        newsFeed.hidePost(post);
+        followingPosts.add(post);
+        hidePosts.remove(post);
     }
 
     public void follow(Profile p) {
@@ -239,14 +248,14 @@ public class Profile implements IProfile, Serializable {
                 break;
             }
         }
-        for (Profile profile : blockedList) {
-            if (profile.username.equals(user.username)) {
+        for (String block : blockedList) {
+            if (block.equals(user.username)) {
                 isBlock = true;
                 break;
             }
         }
         if (!isBlock) {
-            blockedList.add(user);
+            blockedList.add(user.username);
         } else {
             return false;
         }
@@ -257,9 +266,9 @@ public class Profile implements IProfile, Serializable {
     }
 
     public void unblockUser(Profile unblock) {
-        for (Profile profile : blockedList) {
-            if (profile.username.equals(unblock.username)) {
-                blockedList.remove(profile);
+        for (String block : blockedList) {
+            if (block.equals(unblock.username)) {
+                blockedList.remove(block);
                 break;
             }
         }
@@ -298,10 +307,15 @@ public class Profile implements IProfile, Serializable {
         for (String friend : following) {
             followingPosts = myNewsFeed.filterPost(friend, base);
         }
+        followingPosts = myNewsFeed.filterHidePost(hidePosts);
         return followingPosts;
     }
 
-    public ArrayList<Profile> getBlockedList() {
+    public ArrayList<Post> getHidePosts() {
+        return hidePosts;
+    }
+
+    public ArrayList<String> getBlockedList() {
         return this.blockedList;
     }
 

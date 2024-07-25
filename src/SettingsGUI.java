@@ -13,13 +13,11 @@ public class SettingsGUI implements Runnable {
     private Profile profile;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private MainGUI obj;
 
-    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p, MainGUI obj) {
+    public SettingsGUI(ObjectInputStream in, ObjectOutputStream out, Profile p) {
         profile = p;
         this.in = in;
         this.out = out;
-        this.obj = obj;
     }
 
 
@@ -93,10 +91,12 @@ public class SettingsGUI implements Runnable {
                 int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?",
                         "Logout", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
-                    frame.dispose();
-                    obj.logout();
                     try {
                         out.writeObject("Exit");
+                        out.flush();
+                        frame.dispose();
+                        SwingUtilities.invokeLater(new LoginGUI(in, out));
+
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }

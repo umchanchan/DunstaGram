@@ -13,14 +13,6 @@ public class Comment extends Post implements IComment, Serializable {
     private int upvote;
     private int downvote;
 
-    public Comment(Profile commenter, String contents) {
-        super();
-        this.commenter = commenter;
-        this.contents = contents;
-        this.upvote = 0;
-        this.downvote = 0;
-    }
-
     public Comment(Profile commenter, String contents, int upvotes, int downvotes) {
         this.commenter = commenter;
         this.contents = contents;
@@ -30,7 +22,7 @@ public class Comment extends Post implements IComment, Serializable {
 
     public String toString() {
         String str = commenter.getUsername() + "_" + contents + "_";
-        str += upvote + "_" + downvote;
+        str += upvote + "_" + downvote + "_";
         return str;
     }
 

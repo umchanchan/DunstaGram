@@ -5,7 +5,7 @@ public interface IProfile {
 
     Profile makeProfile(String userInfo);
     boolean equals(Profile toCompare);
-    void startHidePostList(String info);
+    ArrayList<Post> startHidePostList(String info);
     ArrayList<String> hidePostToString();
     void hidePost(Post post);
 
@@ -36,7 +36,7 @@ public interface IProfile {
 
     ArrayList<Post> getMyPosts();
 
-    ArrayList<Profile> getBlockedList();
+    ArrayList<String> getBlockedList();
 
     void setUsername(String username);
 

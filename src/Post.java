@@ -64,15 +64,19 @@ public class Post implements IPost, Serializable {
         String msg = parts[1];
         int upvotes = Integer.parseInt(parts[2]);
         int downvotes = Integer.parseInt(parts[3]);
-        ArrayList<Comment> commentList = new ArrayList<Comment>();
+        ArrayList<Comment> commentList = new ArrayList<>();
 
         for (int i = 4; i < parts.length; i += 4) {
-            Profile commenter = new Profile(parts[i]);
+
             String message = parts[i + 1];
             int commentUpvotes = Integer.parseInt(parts[i + 2]);
             int commentDownvotes = Integer.parseInt(parts[i + 3]);
-
-            Comment c = new Comment(commenter, message, commentUpvotes, commentDownvotes);
+            Comment c = null;
+            for (Profile user : users) {
+                if (user.getUsername().equals(parts[i])) {
+                    c = new Comment(user, message, commentUpvotes, commentDownvotes);
+                }
+            }
             commentList.add(c);
         }
         Post post = null;
@@ -90,7 +94,7 @@ public class Post implements IPost, Serializable {
     }
 
     public Comment addComment(Profile commenter, String content) {
-        Comment comment = new Comment(commenter, content);
+        Comment comment = new Comment(commenter, content, 0, 0);
         comments.add(comment);
         numComments++;
         commenter.addMyPost(comment);

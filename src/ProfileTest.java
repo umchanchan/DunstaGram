@@ -60,7 +60,7 @@ class ProfileTest {
         assertEquals("2222", p.getPassword());
         assertEquals(30, p.getAge());
         assertEquals("Male", p.getGender());
-        assertEquals(blockList.get(0).getUsername(), p.getBlockedList().get(0).getUsername());
+        assertEquals(blockList.get(0).getUsername(), p.getBlockedList().get(0));
         assertFalse(p.equals(profile1));
         assertTrue(p.equals(p));
 

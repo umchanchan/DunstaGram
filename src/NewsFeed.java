@@ -10,6 +10,7 @@ import java.util.*;
 public class NewsFeed implements INewsFeed {
     private Profile profile;
     private ArrayList<Post> allPost = new ArrayList<>();
+    private ArrayList<Post> hidePost = new ArrayList<>();
 
     public NewsFeed(Profile profile) {
         this.profile = profile;
@@ -20,8 +21,21 @@ public class NewsFeed implements INewsFeed {
             try {
                 Profile p = base.searchUser(follow);
                 allPost.addAll(p.getMyPosts());
+
             } catch (UserNotFoundException e) {
                 return allPost;
+            }
+        }
+        return allPost;
+    }
+
+    public ArrayList<Post> filterHidePost(ArrayList<Post> hidePost) {
+        for (Post post : hidePost) {
+            for (Post post1 : allPost) {
+                if (post.equals(post1)) {
+                    allPost.remove(post1);
+                    break;
+                }
             }
         }
         return allPost;
@@ -45,6 +59,10 @@ public class NewsFeed implements INewsFeed {
 
     public void hidePost(Post post) { //assumes allPost is different for each specific user
         allPost.remove(post);
+    }
+
+    public void unHidePost(Post post) {
+        allPost.add(post);
     }
 
     public void comment(Post post, String msg) {

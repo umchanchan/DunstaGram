@@ -36,8 +36,15 @@ public class SignUpGUI extends JComponent implements Runnable {
 
         frame = new JFrame();
         frame.setTitle("Sign Up Menu");
-        frame.setLayout(new GridLayout(8, 2, 5, 5));
+        frame.setLayout(new BorderLayout());
 
+        JPanel topPanel = new JPanel();
+        JLabel instructionLabel = new JLabel("Do not put \"_\" in your username");
+        instructionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        topPanel.add(instructionLabel);
+
+        JPanel centerPanel = new JPanel(new GridLayout(8, 2, 5, 5));
         userField = new JTextField(10);
         userLabel = new JLabel("Enter a Username: ");
 
@@ -54,25 +61,26 @@ public class SignUpGUI extends JComponent implements Runnable {
         makeAccountButton = new JButton("Sign Up");
         cancelButton = new JButton("Back To Login");
 
-
-        frame.add(userLabel);
-        frame.add(userField);
-
-
-        frame.add(passwordLabel);
-        frame.add(passField);
+        centerPanel.add(userLabel);
+        centerPanel.add(userField);
 
 
-        frame.add(ageLabel);
-        frame.add(ageField);
-
-        frame.add(genderLabel);
-        frame.add(genderField);
+        centerPanel.add(passwordLabel);
+        centerPanel.add(passField);
 
 
-        frame.add(makeAccountButton);
-        frame.add(cancelButton);
+        centerPanel.add(ageLabel);
+        centerPanel.add(ageField);
 
+        centerPanel.add(genderLabel);
+        centerPanel.add(genderField);
+
+
+        centerPanel.add(makeAccountButton);
+        centerPanel.add(cancelButton);
+
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(centerPanel, BorderLayout.CENTER);
 
         makeAccountButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
