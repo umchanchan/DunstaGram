@@ -271,8 +271,12 @@ public class Base implements IBase {
     public void editUserInfo(Profile p, int age, String gender, String password) {
         int index = users.indexOf(p);
         Profile copiedProfile = users.get(index);
+
         copiedProfile.setAge(age);
+
+
         copiedProfile.setGender(gender);
+
         if (!password.isEmpty()) {
             copiedProfile.setPassword(password);
         }

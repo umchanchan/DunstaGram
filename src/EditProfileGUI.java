@@ -10,7 +10,7 @@ public class EditProfileGUI implements Runnable {
     private Profile p;
     private JTextField age;
     private JTextField gender;
-    private JTextField password;
+    private String password;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
@@ -18,12 +18,13 @@ public class EditProfileGUI implements Runnable {
         this.p = p;
         this.oos = oos;
         this.ois = ois;
+        password = "";
     }
 
 
     public void run() {
         JFrame fields = new JFrame("Editing my Profile");
-        fields.setSize(340, 200);
+        fields.setSize(340, 340);
         fields.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         JLabel ageLabel = new JLabel("Enter your age: ");
@@ -52,7 +53,18 @@ public class EditProfileGUI implements Runnable {
         done.setSize(d1);
         done.setPreferredSize(d1);
 
+        JButton changePassword = new JButton("Change Password");
+        changePassword.setFont(new Font("Arial", Font.BOLD, 18));
+        changePassword.setSize(d1);
+        changePassword.setPreferredSize(d1);
 
+        JButton back = new JButton("Back");
+        back.setFont(new Font("Arial", Font.BOLD, 18));
+        back.setSize(d1);
+        back.setPreferredSize(d1);
+
+        fields.add(changePassword);
+        fields.add(back);
         fields.add(done);
         fields.setVisible(true);
         fields.setLocationRelativeTo(null);
@@ -64,6 +76,8 @@ public class EditProfileGUI implements Runnable {
                     oos.writeObject(p.getUsername());
                     oos.writeObject(age.getText());
                     oos.writeObject(gender.getText());
+                    oos.writeObject(password);
+
                     outcome = (String) ois.readObject();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -72,15 +86,20 @@ public class EditProfileGUI implements Runnable {
                 }
 
                 if (outcome.equals("Invalid")) {
-                    JOptionPane.showMessageDialog(null, "Invalid inputs!", "Error",
+                    JOptionPane.showMessageDialog(null, "Please check your inputs!", "Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
 
                 if (outcome.equals("Success")) {
 
-                    p.setAge(Integer.parseInt(age.getText()));
-                    p.setGender(gender.getText());
-                    JOptionPane.showMessageDialog(null, "Successfully changed fields!", "Success",
+                    if (!(age.getText() == null || age.getText().isEmpty())) {
+                        p.setAge(Integer.parseInt(age.getText()));
+                    }
+
+                    if (!(gender.getText() == null || gender.getText().isEmpty())) {
+                        p.setGender(gender.getText());
+                    }
+                    JOptionPane.showMessageDialog(null, "Successfully changed edited fields!", "Success",
                             JOptionPane.INFORMATION_MESSAGE);
 
                     fields.dispose();
@@ -90,8 +109,50 @@ public class EditProfileGUI implements Runnable {
 
         });
 
+        changePassword.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String pass = changePasswordGUI();
+                if (pass == null || pass.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Invalid; no password entered");
+                } else {
+                    boolean correct;
+                    try {
+                        correct = confirmPasswordGUI(pass);
+                    } catch (NullPointerException nul) {
+                        correct = false;
+                    }
+                    if (!correct) {
+                        JOptionPane.showMessageDialog(null, "Password does not match.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Successfully entered!");
+                        password = pass;
+                    }
+                }
+
+            }
+
+        });
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                fields.dispose();
+
+            }
+
+        });
 
 
+
+    }
+
+    public String changePasswordGUI() {
+        return JOptionPane.showInputDialog(null, "Enter your new password", "Changing Password",
+                JOptionPane.QUESTION_MESSAGE);
+    }
+
+    public boolean confirmPasswordGUI(String pass) {
+        String newPass = JOptionPane.showInputDialog(null, "Please confirm your new password",
+                "Changing Password", JOptionPane.QUESTION_MESSAGE);
+        return newPass.equals(pass);
     }
 
 }

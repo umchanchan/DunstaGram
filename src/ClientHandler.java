@@ -279,32 +279,34 @@ public class ClientHandler implements IClientHandler {
                         Profile p = b.searchUser(user);
                         String temp = (String) ois.readObject();
                         String gender = (String) ois.readObject();
-                        if (temp.isEmpty() || temp == null) {
-                            oos.writeObject("Invalid");
-                            oos.flush();
-                            break;
-                        }
+                        String password = (String) ois.readObject();
                         int age;
-                        try {
-                            age = Integer.parseInt(temp);
-                        } catch (NumberFormatException e) {
-                            oos.writeObject("Invalid");
+                        if (temp.isEmpty() || temp == null) {
+                            age = p.getAge();
                             oos.flush();
-                            break;
-                        }
-                        System.out.println(age);
-                        if (age < 0) {
-                            oos.writeObject("Invalid");
-                            oos.flush();
-                            break;
+                        } else {
+
+                            try {
+                                age = Integer.parseInt(temp);
+                            } catch (NumberFormatException e) {
+                                oos.writeObject("Invalid");
+                                oos.flush();
+                                break;
+                            }
+                            System.out.println(age);
+                            if (age < 0) {
+                                oos.writeObject("Invalid");
+                                oos.flush();
+                                break;
+                            }
                         }
 
-                        if (gender == null) {
-                            oos.writeObject("Invalid");
+                        if (gender.isEmpty() || gender == null) {
+                            gender = p.getGender();
                             oos.flush();
                         }
 
-                        b.editUserInfo(p, age, gender, "");
+                        b.editUserInfo(p, age, gender, password);
                         b.writeUserListFile();
                         oos.writeObject("Success");
                     }
