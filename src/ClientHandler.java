@@ -92,8 +92,17 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "follow" -> {
-                        Profile toFollow = (Profile) ois.readObject();
-                        if (base.follow(profile, toFollow)) {
+                        String toFollow = (String) ois.readObject();
+                        String follower = (String) ois.readObject();
+                        Profile p = base.searchUser(toFollow);
+                        Profile p1 = base.searchUser(follower);
+
+                        if (p1.isFollowing(p)) {
+                            oos.writeObject("Fail");
+                            oos.flush();
+                            break;
+                        }
+                        if (base.follow(p1, p)) {
                             oos.writeObject("Success");
                             oos.flush();
                         } else {
@@ -268,6 +277,7 @@ public class ClientHandler implements IClientHandler {
                         Base b = new Base();
                         Profile p = (Profile) ois.readObject();
                         b.readUserListFile();
+                        b.readPostListFile();
                         Profile newProfile = b.searchUser(p.getUsername());
                         ArrayList<String> list = b.getUserInfo(newProfile);
                         oos.writeObject(list);
