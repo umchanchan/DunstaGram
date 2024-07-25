@@ -7,11 +7,9 @@ import java.util.ArrayList;
 
 public class ViewProfileGUI implements Runnable {
     private ArrayList<String> userInfo;
-    private boolean myProfile;
 
-    public ViewProfileGUI(ArrayList<String> userInfo, boolean myProfile) {
+    public ViewProfileGUI(ArrayList<String> userInfo) {
         this.userInfo = userInfo;
-        this.myProfile = myProfile;
 
     }
     public void run() {

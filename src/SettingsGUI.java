@@ -92,7 +92,7 @@ public class SettingsGUI implements Runnable {
                     throw new RuntimeException(ex);
                 }
                 System.out.println(userInfo);
-                SwingUtilities.invokeLater(new ViewProfileGUI(userInfo, true));
+                SwingUtilities.invokeLater(new ViewProfileGUI(userInfo));
 
 
             }
@@ -104,6 +104,7 @@ public class SettingsGUI implements Runnable {
                         "Logout", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     try {
+                        isOpened = false;
                         out.flush();
                         frame.dispose();
                         obj.logout();
@@ -122,6 +123,12 @@ public class SettingsGUI implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 isOpened = false;
+            }
+        });
+
+        editProfile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new EditProfileGUI(profile, in, out));
             }
         });
 
