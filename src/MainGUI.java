@@ -343,10 +343,14 @@ public class MainGUI extends JComponent implements IMainGUI, Runnable {
                             oos.writeObject(upPost);
                             oos.flush();
 
+                            user = (Profile) ois.readObject();
+
                             refresh();
                         } catch (IOException ex) {
                             JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
                                     "Error", JOptionPane.ERROR_MESSAGE);
+                        } catch (ClassNotFoundException ex) {
+                            throw new RuntimeException(ex);
                         }
                     }
                 }
