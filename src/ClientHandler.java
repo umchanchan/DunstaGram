@@ -225,6 +225,7 @@ public class ClientHandler implements IClientHandler {
                         Post post = (Post) ois.readObject();
                         Comment comment = (Comment) ois.readObject();
                         if (base.deleteComment(post, profile, comment)) {
+                            profile = base.searchUser(profile.getUsername());
                             oos.writeObject("Success");
                             oos.flush();
                         } else {
