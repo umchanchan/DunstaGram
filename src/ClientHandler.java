@@ -151,6 +151,9 @@ public class ClientHandler implements IClientHandler {
                         }
                     }
 
+
+
+
                     case "viewPosts" -> {
                         base.readAllListFile();
                         ArrayList<Post> postList = profile.getFollowingPosts(base);

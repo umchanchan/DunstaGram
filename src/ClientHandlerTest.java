@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClientHandlerTest {
+
+
     private static Server server;
     private static Thread serverThread;
     private Base base;

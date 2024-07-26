@@ -12,6 +12,8 @@ public class CommentTest {
         comment = new Comment(commenter, "This is a test comment", 0, 0);
     }
 
+
+
     @Test
     public void testCreateCommentWithMinimalConstructor() {
         assertEquals("commenterUser", comment.getCommenter());

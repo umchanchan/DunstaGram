@@ -26,6 +26,8 @@ public class Comment extends Post implements IComment, Serializable {
         return str;
     }
 
+
+
     public boolean equals(Comment comment) {
         return comment.commenter.equals(commenter) && comment.contents.equals(contents);
     }
