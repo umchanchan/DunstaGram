@@ -161,6 +161,7 @@ public class ClientHandler implements IClientHandler {
                     case "listMyPosts" -> {
                         base.readUserListFile();
                         ArrayList<Post> postList = profile.getMyPosts();
+                        System.out.println(postList);
                         Profile p = (Profile) ois.readUnshared();
                         oos.writeUnshared(postList);
                         oos.flush();
@@ -170,6 +171,8 @@ public class ClientHandler implements IClientHandler {
                         String message = (String) ois.readObject();
                         Post post;
                         if ((post = base.makeNewPost(profile, message)) != null) {
+                            profile = base.searchUser(profile.getUsername());
+
                             oos.writeObject("Success");
                             oos.flush();
                         } else {
@@ -181,6 +184,7 @@ public class ClientHandler implements IClientHandler {
                     case "removePost" -> {
                         Post post = (Post) ois.readUnshared();
                         if (base.removePost(profile, post)) {
+                            profile = base.searchUser(profile.getUsername());
                             oos.writeObject("Success");
                             oos.flush();
                         } else {
