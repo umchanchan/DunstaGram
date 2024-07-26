@@ -350,8 +350,6 @@ public class MainGUI extends JComponent implements IMainGUI, Runnable {
                         } catch (IOException | ClassNotFoundException ex) {
                             JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
                                     "Error", JOptionPane.ERROR_MESSAGE);
-                        } catch (ClassNotFoundException ex) {
-                            throw new RuntimeException(ex);
                         }
                     }
                 }
