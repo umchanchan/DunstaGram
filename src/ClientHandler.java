@@ -108,6 +108,12 @@ public class ClientHandler implements IClientHandler {
                             break;
                         }
 
+                        if (toFollow.getBlockedList().contains(profile.getUsername())) {
+                            oos.writeObject("Fail");
+                            oos.flush();
+                            break;
+                        }
+
                         if (base.follow(profile, toFollow)) {
                             oos.writeObject("Success");
                             oos.flush();
