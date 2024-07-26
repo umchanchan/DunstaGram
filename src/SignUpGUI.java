@@ -7,7 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
 
-public class SignUpGUI extends JComponent implements Runnable {
+public class SignUpGUI extends JComponent implements ISignUpGUI, Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private String user;

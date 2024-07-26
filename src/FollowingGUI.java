@@ -10,15 +10,13 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FollowingGUI extends JFrame implements Runnable {
-    private Profile currentUser;
+public class FollowingGUI extends JFrame implements IFollowingGUI, Runnable {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private JList<String> followingList;
     private DefaultListModel<String> followingListModel;
 
-    public FollowingGUI(Profile currentUser, ObjectInputStream ois, ObjectOutputStream oos) {
-        this.currentUser = currentUser;
+    public FollowingGUI(ObjectInputStream ois, ObjectOutputStream oos) {
         this.ois = ois;
         this.oos = oos;
     }
@@ -160,7 +158,6 @@ public class FollowingGUI extends JFrame implements Runnable {
             oos.flush();
 
             Profile userObj = (Profile) ois.readObject();
-
 
 
             return userObj;

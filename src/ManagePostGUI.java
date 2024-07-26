@@ -9,18 +9,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class ManagePostGUI implements Runnable {
-    private Profile user;
+public class ManagePostGUI implements IManagePostGUI, Runnable {
     private ArrayList<Post> myPosts;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private boolean remove = false;
+
     private JFrame frame;
     private JPanel allPosts;
 
     public ManagePostGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) throws IOException,
             ClassNotFoundException {
-        this.user = user;
         this.ois = ois;
         this.oos = oos;
 
@@ -103,7 +101,7 @@ public class ManagePostGUI implements Runnable {
 
     }
 
-    public boolean showOption(Post p) throws IOException, ClassNotFoundException {
+    private boolean showOption(Post p) throws IOException, ClassNotFoundException {
 
         String[] options = new String[] {"Delete Post", "Review Comments"};
         String selection = (String) JOptionPane.showInputDialog(null, "Enter your action",
@@ -183,7 +181,7 @@ public class ManagePostGUI implements Runnable {
 
     }
 
-    public void inspectComment(Post p, Comment c) {
+    private void inspectComment(Post p, Comment c) {
         JFrame inspectArea = new JFrame();
         inspectArea.setLayout(new FlowLayout());
         inspectArea.setSize(600, 400);

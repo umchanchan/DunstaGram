@@ -38,7 +38,7 @@ public class Base implements IBase {
     public Post searchPost(Post post) {
         synchronized (obj) {
             for (Post p : allPosts) {
-                if (post.equals(p)) {
+                if (post.getPoster().getUsername().equals(p.getPoster().getUsername()) && post.getMessage().equals(p.getMessage())) {
                     return p;
                 }
             }
@@ -166,7 +166,7 @@ public class Base implements IBase {
         }
     }
 
-    public void readUserListFile() throws IOException {
+    private void readUserListFile() throws IOException {
         synchronized (obj) {
             clearUsers();
             try {
@@ -258,7 +258,7 @@ public class Base implements IBase {
         }
     }
 
-    public void readPostListFile() throws IOException {
+    private void readPostListFile() throws IOException {
         synchronized (obj) {
             clearAllPosts();
             try {
@@ -280,7 +280,7 @@ public class Base implements IBase {
         }
     }
 
-    public void updatePostFile() throws IOException {
+    private void updatePostFile() throws IOException {
         synchronized (obj) {
             try {
                 File f = new File("postList.txt");
@@ -386,14 +386,6 @@ public class Base implements IBase {
                 pw.println(result);
                 pw.flush();
 
-
-//                for (Profile user : users) {
-//                    ArrayList<String> hideString = user.hidePostToString();
-//                    for (String line : hideString) {
-//                        pw.println(line);
-//                        pw.flush();
-//                    }
-//                }
             } catch (IOException e) {
                 throw new IOException("Error occurred when writing a file");
             }
@@ -522,7 +514,6 @@ public class Base implements IBase {
 
     public void addUpvote(Post post) throws IOException {
         synchronized (obj) {
-            //int index = 0;
             for (Post post1 : allPosts) {
                 if (post1.getPoster().getUsername().equals(post.getPoster().getUsername())
                         && post1.getMessage().equals(post.getMessage())) {
@@ -533,7 +524,6 @@ public class Base implements IBase {
                     //allPosts.set(index, post1);
                     break;
                 }
-                //index++;
             }
             writePostListFile();
             updateFiles();
@@ -555,7 +545,6 @@ public class Base implements IBase {
             updateFiles();
         }
     }
-    //we will add cancel addUpvote and addDownvote if we could implement this in GUI
 
     public void addUpvote(Post post, Comment comment) throws IOException {
         synchronized (obj) {

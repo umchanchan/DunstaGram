@@ -59,7 +59,6 @@ public class ClientHandler implements IClientHandler {
                                 break;
                             }
                             age = Integer.parseInt(temp);
-                            System.out.println(age);
                             if (age < 0) {
                                 oos.writeObject("Invalid");
                                 oos.flush();
@@ -171,7 +170,6 @@ public class ClientHandler implements IClientHandler {
                         base.updateFiles();
                         profile = base.searchUser(profile.getUsername());
                         ArrayList<Post> postList = profile.getMyPosts();
-                        System.out.println(postList);
                         Profile p = (Profile) ois.readUnshared();
 
 
@@ -259,8 +257,6 @@ public class ClientHandler implements IClientHandler {
                         base.readAllListFile();
                         post = base.searchPost(post);
                         oos.writeObject(post);
-
-                        System.out.println(post.getUpvotes());
                     }
 
                     case "downvotePost" -> {
@@ -340,7 +336,6 @@ public class ClientHandler implements IClientHandler {
                                 oos.flush();
                                 break;
                             }
-                            System.out.println(age);
                             if (age < 0) {
                                 oos.writeObject("Invalid");
                                 oos.flush();

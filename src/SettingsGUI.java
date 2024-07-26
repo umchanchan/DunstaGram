@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import static java.awt.Window.getWindows;
 
-public class SettingsGUI implements Runnable {
+public class SettingsGUI implements ISettingsGUI, Runnable {
     private Profile profile;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -147,7 +147,7 @@ public class SettingsGUI implements Runnable {
         blockList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(new BlockListGUI(profile, in, out));
+                SwingUtilities.invokeLater(new BlockListGUI(in, out));
 
             }
         });
