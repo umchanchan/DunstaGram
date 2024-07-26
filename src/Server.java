@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
  */
 public class Server implements IServer {
 
+
+
     private boolean running = false;
     private ServerSocket serverSocket;
     private final int port;
@@ -57,6 +59,7 @@ public class Server implements IServer {
         }
 
     }
+
 
     //stop the server method
     public void stopServer() {

@@ -151,6 +151,9 @@ public class ClientHandler implements IClientHandler {
                         }
                     }
 
+
+
+
                     case "viewPosts" -> {
                         ArrayList<Post> postList = profile.getFollowingPosts();
                         oos.writeUnshared(postList);

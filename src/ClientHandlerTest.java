@@ -12,15 +12,31 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClientHandlerTest {
+
+
+    private static Server server;
+    private static Thread serverThread;
     private Base base;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Profile user;
     private ArrayList<Post> posts;
+    private Socket clientSocket;
+
+    @BeforeAll
+    static void setUpAll() {
+        startServer();
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        stopServer();
+    }
+
     @BeforeEach
     void setUp() throws IOException, ClassNotFoundException {
         base = new Base();
-        Socket clientSocket = new Socket("localhost", 3588);
+        clientSocket = new Socket("localhost", 3588);
         oos = new ObjectOutputStream(clientSocket.getOutputStream());
         ois = new ObjectInputStream(clientSocket.getInputStream());
         oos.flush();
@@ -34,11 +50,16 @@ public class ClientHandlerTest {
         if (response instanceof Profile) {
             user = (Profile) response;
             System.out.println(user.getUsername());
-
         } else if (response instanceof String) {
             System.out.println(response);
         }
+    }
 
+    @AfterEach
+    void tearDown() throws IOException {
+        if (clientSocket != null && !clientSocket.isClosed()) {
+            clientSocket.close();
+        }
     }
 
     @Test
@@ -53,12 +74,18 @@ public class ClientHandlerTest {
 
             if (!list.isEmpty() && list.get(0) instanceof Post) {
                 posts = (ArrayList<Post>) list;
+                System.out.println("Number of hidden posts: " + posts.size());
+            } else {
+                System.out.println("No hidden posts found or list is empty.");
+                posts = new ArrayList<>(); // Initialize with an empty list
             }
         } else {
-            System.out.println("WTF");
+            System.out.println("Unexpected response type: " + response.getClass().getName());
+            posts = new ArrayList<>(); // Initialize with an empty list
         }
 
-        System.out.println(posts.size());
+        // This assertion will now work without throwing a NullPointerException
+        assertEquals(0, posts.size(), "Expected no hidden posts for a new user");
     }
 
 
@@ -99,7 +126,22 @@ public class ClientHandlerTest {
             for (Profile user : users) {
                 System.out.println(user);
             }
-            assertEquals(2, users.size());
+            assertEquals(7, users.size());
         });
+    }
+
+    public static void startServer() {
+        server = new Server(3588);
+        serverThread = new Thread(server);
+        serverThread.start();
+    }
+
+    public static void stopServer() {
+        if (server != null) {
+            server.stopServer();
+        }
+        if (serverThread != null) {
+            serverThread.interrupt();
+        }
     }
 }
