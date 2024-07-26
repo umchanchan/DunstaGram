@@ -212,6 +212,11 @@ public class ClientHandler implements IClientHandler {
                         String content = post.getMessage();
 
                         base.hidePost(username, poster, content);
+                        base.readAllListFile();
+
+                        profile = base.searchUser(username);
+                        oos.writeObject(profile);
+                        oos.flush();
                     }
 
                     case "viewHidePost" -> {
