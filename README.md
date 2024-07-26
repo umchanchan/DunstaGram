@@ -457,11 +457,11 @@ The `MainGUI` class provides the main user interface for our DunstaGram applicat
 
 ## Methods
 
-### `public ManagePostGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) throws IOException, ClassNotFoundException`: Constructor that initializes the `ManagePostGUI` with the given user, input, and output streams. Fetches the user's posts from the server.
-### `public void run()`: Initializes and displays the main frame for managing posts. Populates it with the user's posts and sets up action listeners.
-### `public boolean showOption(Post p) throws IOException, ClassNotFoundException`: Shows options to delete the post or review its comments. Executes the chosen action and returns whether the post was removed.
-### `private void showComments(Post post)`: Displays a new window with comments on the selected post. Allows the user to select and inspect individual comments.
-### `public void inspectComment(Post p, Comment c)`: Opens a window to inspect a specific comment. Provides an option to delete the comment.
+- `public ManagePostGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) throws IOException, ClassNotFoundException`: Constructor that initializes the `ManagePostGUI` with the given user, input, and output streams. Fetches the user's posts from the server.
+- `public void run()`: Initializes and displays the main frame for managing posts. Populates it with the user's posts and sets up action listeners.
+- `public boolean showOption(Post p) throws IOException, ClassNotFoundException`: Shows options to delete the post or review its comments. Executes the chosen action and returns whether the post was removed.
+- `private void showComments(Post post)`: Displays a new window with comments on the selected post. Allows the user to select and inspect individual comments.
+- `public void inspectComment(Post p, Comment c)`: Opens a window to inspect a specific comment. Provides an option to delete the comment.
 
 ## Testing
 - Verified that the `ManagePostGUI` initializes properly and retrieves the user's posts.
