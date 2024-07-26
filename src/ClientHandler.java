@@ -155,13 +155,14 @@ public class ClientHandler implements IClientHandler {
 
 
                     case "viewPosts" -> {
+                        base.updateFiles();
                         ArrayList<Post> postList = profile.getFollowingPosts();
                         oos.writeUnshared(postList);
                         oos.flush();
                     }
 
                     case "listMyPosts" -> {
-                        base.readUserListFile();
+                        base.updateFiles();
                         ArrayList<Post> postList = profile.getMyPosts();
                         System.out.println(postList);
                         Profile p = (Profile) ois.readUnshared();
@@ -207,7 +208,7 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "viewHidePost" -> {
-                        base.readAllListFile();
+                        base.updateFiles();
                         ArrayList<Post> postList = profile.getHidePosts();
                         oos.writeUnshared(postList);
                         oos.flush();
@@ -245,6 +246,8 @@ public class ClientHandler implements IClientHandler {
                     case "upvotePost" -> {
                         Post post = (Post) ois.readObject();
                         base.addUpvote(post);
+
+                        System.out.println(post.getUpvotes());
                     }
 
                     case "downvotePost" -> {
@@ -294,20 +297,17 @@ public class ClientHandler implements IClientHandler {
                     }
 
                     case "viewProfile" -> {
-                        Base b = new Base();
                         Profile p = (Profile) ois.readObject();
-                        b.readUserListFile();
-                        b.readPostListFile();
-                        Profile newProfile = b.searchUser(p.getUsername());
-                        ArrayList<String> list = b.getUserInfo(newProfile);
+                        base.updateFiles();
+                        Profile newProfile = base.searchUser(p.getUsername());
+                        ArrayList<String> list = base.getUserInfo(newProfile);
                         oos.writeObject(list);
                         oos.flush();
                     }
 
                     case "editProfile" -> {
-                        Base b = new Base();
                         String user = (String) ois.readObject();
-                        Profile p = b.searchUser(user);
+                        Profile p = base.searchUser(user);
                         String temp = (String) ois.readObject();
                         String gender = (String) ois.readObject();
                         String password = (String) ois.readObject();
@@ -337,25 +337,23 @@ public class ClientHandler implements IClientHandler {
                             oos.flush();
                         }
 
-                        b.editUserInfo(p, age, gender, password);
-                        b.writeUserListFile();
+                        base.editUserInfo(p, age, gender, password);
+                        base.writeUserListFile();
                         oos.writeObject("Success");
                         oos.flush();
                     }
 
                     case "search" -> {
-                        Base b = new Base();
                         String search = (String) ois.readObject();
 
 
-                        Profile profileSearch = b.searchUser(search);
+                        Profile profileSearch = base.searchUser(search);
                         oos.writeObject(profileSearch);
                         oos.flush();
 
                     }
 
                     case "getUserInfo" -> {
-                        Base b = new Base();
                         String search = (String) ois.readObject();
                         if (search == null || search.isEmpty()) {
                             oos.writeObject("No");
@@ -363,9 +361,9 @@ public class ClientHandler implements IClientHandler {
                             break;
                         }
 
-                        Profile profileSearch = b.searchUser(search);
+                        Profile profileSearch = base.searchUser(search);
                         ArrayList<ArrayList<String>> userInfo = new ArrayList<>();
-                        userInfo.add(b.getUserInfo(profileSearch));
+                        userInfo.add(base.getUserInfo(profileSearch));
 
                         oos.writeObject(userInfo);
                         oos.flush();
@@ -395,6 +393,13 @@ public class ClientHandler implements IClientHandler {
                         oos.writeUnshared(followings);
                         oos.flush();
 
+                    }
+
+                    case "getBlockList" -> {
+                        ArrayList<String> blockList = profile.getBlockedList();
+
+                        oos.writeUnshared(blockList);
+                        oos.flush();
                     }
 
 

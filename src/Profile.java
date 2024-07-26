@@ -165,6 +165,11 @@ public class Profile implements IProfile, Serializable {
 
     public void startHidePostList(String info, Base base) {
         String[] parts = info.split("_");
+//        if (!(username.equals(parts[0])) && hidePosts.isEmpty()) {
+//            fillFollowingPosts(base);
+//            return;
+//        }
+
         if (!(username.equals(parts[0]))) {
             return;
         }
@@ -270,7 +275,7 @@ public class Profile implements IProfile, Serializable {
             return false;
         }
         if (isFollow) {
-            user.unfollow(this);
+            this.unfollow(user);
         }
         return true;
     }
