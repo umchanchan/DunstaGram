@@ -41,11 +41,15 @@ public class MainGUI extends JComponent implements Runnable {
     private JTextField textPart;
     private ArrayList<Comment> comments = new ArrayList<>();
 
+
     public MainGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) {
         this.user = user;
         this.ois = ois;
         this.oos = oos;
+
+
     }
+
 
 
     private ActionListener actionListener = new ActionListener() {
@@ -68,6 +72,14 @@ public class MainGUI extends JComponent implements Runnable {
                 displayPostGUI();
 
             } else if (e.getSource() == managePostButton) {
+
+                try {
+                    SwingUtilities.invokeLater(new ManagePostGUI(user, ois, oos));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
 
 
             } else if (e.getSource() == postButton) {
