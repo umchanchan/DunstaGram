@@ -152,5 +152,9 @@ public class Post implements IPost, Serializable {
         this.upvote = upvote;
     }
 
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
+    }
+
 
 }
