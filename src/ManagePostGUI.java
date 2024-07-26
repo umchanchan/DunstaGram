@@ -81,6 +81,7 @@ public class ManagePostGUI implements Runnable {
 
                     if (removePost) {
                         frame.remove(postPanel);
+                        frame.remove(postButton);
                     }
 
 

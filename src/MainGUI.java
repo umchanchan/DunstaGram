@@ -75,6 +75,7 @@ public class MainGUI extends JComponent implements Runnable {
 
                 try {
                     SwingUtilities.invokeLater(new ManagePostGUI(user, ois, oos));
+
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 } catch (ClassNotFoundException ex) {
