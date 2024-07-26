@@ -438,24 +438,24 @@ The `MainGUI` class provides the main user interface for our DunstaGram applicat
 - Ensured that commenting, upvoting, and downvoting functionality works as expected, including error handling for server communication issues.
 - Checked that the GUI refreshes properly to show the latest posts and comments.
 
-# 16. ManagePostGUI
+### 16. ManagePostGUI
 
-## Description
+#### Description
 `ManagePostGUI` is the GUI that allows users to manage their posts on the DunstaGram platform. Users can view, delete posts, and review comments associated with their posts.
 
-## Functionality
+#### Functionality
 - Displays a window where users can see a list of their posts.
 - Provides options to delete posts or review comments on individual posts.
 - Allows users to inspect and delete individual comments on their posts.
 
-## Contribution
+#### Contribution
 - **Constructor**: Initializes the GUI, retrieves the user's posts, and sets up the main frame.
 - **run()**: Sets up the main frame and populates it with the user's posts.
 - **showOption(Post p)**: Presents options to delete the post or review its comments. Executes the selected action.
 - **showComments(Post post)**: Displays a new window with a list of comments on the selected post.
 - **inspectComment(Post p, Comment c)**: Opens a window to inspect and possibly delete a specific comment.
 
-## Methods
+#### Methods
 
 - `public ManagePostGUI(Profile user, ObjectInputStream ois, ObjectOutputStream oos) throws IOException, ClassNotFoundException`: Constructor that initializes the `ManagePostGUI` with the given user, input, and output streams. Fetches the user's posts from the server.
 - `public void run()`: Initializes and displays the main frame for managing posts. Populates it with the user's posts and sets up action listeners.
@@ -463,7 +463,7 @@ The `MainGUI` class provides the main user interface for our DunstaGram applicat
 - `private void showComments(Post post)`: Displays a new window with comments on the selected post. Allows the user to select and inspect individual comments.
 - `public void inspectComment(Post p, Comment c)`: Opens a window to inspect a specific comment. Provides an option to delete the comment.
 
-## Testing
+#### Testing
 - Verified that the `ManagePostGUI` initializes properly and retrieves the user's posts.
 - Checked that the GUI is correctly populated with posts and that action listeners function as expected.
 - Ensured that options for deleting posts and reviewing comments work correctly and that actions are performed as intended.
