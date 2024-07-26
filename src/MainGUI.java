@@ -222,6 +222,8 @@ public class MainGUI extends JComponent implements Runnable {
                         JOptionPane.showMessageDialog(commentFrame, "You made the comment successfully! Returning to the main menu",
                                 "Success", JOptionPane.INFORMATION_MESSAGE);
                         commentFrame.dispose();
+                        Post newPost = (Post) ois.readObject();
+                        post.setComments(newPost.getComments());
                         refresh();
                     } else {
                         JOptionPane.showMessageDialog(commentFrame, "You have already made the same comment!",
@@ -400,6 +402,18 @@ public class MainGUI extends JComponent implements Runnable {
             viewCommentButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    Post newPost;
+                    try {
+                        oos.writeObject("updatePost");
+                        oos.writeObject(upPost);
+                        newPost = (Post) ois.readObject();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+                    upPost.setComments(newPost.getComments());
                     comments = upPost.getComments();
                     displayCommentGUI(upPost);
                 }
