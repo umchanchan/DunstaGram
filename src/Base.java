@@ -35,6 +35,15 @@ public class Base implements IBase {
         }
     }
 
+    public Post searchPost(Post post) {
+        for(Post p: allPosts) {
+            if (post.equals(p)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
 
     public ArrayList<String> getUserInfo(Profile toGet) {
         ArrayList<String> retrievedUserInfo = new ArrayList<>();
@@ -511,14 +520,16 @@ public class Base implements IBase {
 
     public void addUpvote(Post post) throws IOException {
         synchronized (obj) {
+            int index = 0;
             for (Post post1 : allPosts) {
                 if (post1.getPoster().getUsername().equals(post.getPoster().getUsername())
                         && post1.getMessage().equals(post.getMessage())) {
                     post1.addUpvote();
                     post.addUpvote();
-                    post1 = post;
+                    allPosts.set(index, post);
                     break;
                 }
+                index++;
             }
             writePostListFile();
             updateFiles();
