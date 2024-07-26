@@ -202,7 +202,7 @@ public class ClientHandler implements IClientHandler {
                     case "viewHidePost" -> {
                         base.readAllListFile();
                         ArrayList<Post> postList = profile.getHidePosts();
-                        oos.writeObject(postList);
+                        oos.writeObject(postList);  // This will send an empty list if there are no hidden posts
                         oos.flush();
                     }
 

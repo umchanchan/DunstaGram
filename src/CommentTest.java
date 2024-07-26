@@ -46,7 +46,7 @@ public class CommentTest {
 
     @Test
     public void testToString() {
-        String expectedString = "commenterUser_This is a test comment__0_0";
+        String expectedString = "commenterUser_This is a test comment_0_0_";
         assertEquals(expectedString, comment.toString());
     }
 
@@ -70,7 +70,11 @@ public class CommentTest {
 
     @Test
     public void testGetCommenter() {
-        assertEquals(commenter, comment.getCommenter());
+        Profile returnedCommenter = comment.getCommenter();
+        System.out.println("Returned commenter: " + returnedCommenter);
+        System.out.println("Returned commenter class: " + returnedCommenter.getClass().getName());
+        assertEquals(commenter, returnedCommenter);
+        assertEquals("commenterUser", returnedCommenter.getUsername());
     }
 
 

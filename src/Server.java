@@ -58,6 +58,7 @@ public class Server implements IServer {
 
     }
 
+
     //stop the server method
     public void stopServer() {
         running = false;
