@@ -483,7 +483,6 @@ public class Base implements IBase {
                         for (Post post1 : allPosts) {
                             if (post1.getPoster().getUsername().equals(poster) && post1.getMessage().equals(message)) {
 
-                                System.out.println(user.getFollowingPosts().size());
                                 user.hidePost(poster, message);
                                 writeHidePostListFile(user, post1);
                                 updateFiles();

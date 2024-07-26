@@ -331,6 +331,7 @@ public class MainGUI extends JComponent implements IMainGUI, Runnable {
             downPanel.add(downvoteCount);
             downPanel.add(viewCommentButton);
             hidePostButton.addActionListener(new ActionListener() {
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int ans = JOptionPane.showConfirmDialog(mainFrame, "Are you sure you want to hide this post?",
@@ -341,8 +342,14 @@ public class MainGUI extends JComponent implements IMainGUI, Runnable {
                             oos.writeObject(upPost);
                             oos.flush();
 
+                            Post p = (Post) ois.readObject();
+                            posts.remove(upPost);
+                            posts.add(p);
+
+
+
                             refresh();
-                        } catch (IOException ex) {
+                        } catch (IOException | ClassNotFoundException ex) {
                             JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         }
@@ -356,10 +363,11 @@ public class MainGUI extends JComponent implements IMainGUI, Runnable {
                     try {
                         oos.writeObject("upvotePost");
                         oos.writeObject(upPost);
+                        oos.flush();
                         // upPost.addUpvote(); //temporary fix to update client screen (correct way: server should sent info)
                         Post p = (Post) ois.readObject();
                         upPost.setUpvotes(p.getUpvotes());
-                        oos.flush();
+
 
                         refresh();
                     } catch (IOException ex) {

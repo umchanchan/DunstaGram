@@ -92,13 +92,6 @@ public class ManagePostGUI implements IManagePostGUI, Runnable {
 
 
         }
-
-
-
-
-
-
-
     }
 
     private boolean showOption(Post p) throws IOException, ClassNotFoundException {
@@ -112,8 +105,6 @@ public class ManagePostGUI implements IManagePostGUI, Runnable {
             return false;
         }
         if (selection.equals("Delete Post")) {
-            System.out.println("Hello wordl");
-
             oos.flush();
 
             oos.writeObject("removePost");
@@ -155,11 +146,9 @@ public class ManagePostGUI implements IManagePostGUI, Runnable {
         commentPanel.setLayout(new FlowLayout());
         commentPanel.setSize(800, 800);
         ArrayList<Comment> commentList = post.getComments();
-        System.out.println(commentList);
         for(Comment c: commentList) {
             JPanel panel = new JPanel();
             JButton commentButton = new JButton();
-            System.out.println(c.getCommentContents());
             JLabel label = new JLabel(c.getCommentContents());
             label.setFont(new Font("Arial", Font.PLAIN, 24));
             commentButton.add(label);
@@ -178,6 +167,7 @@ public class ManagePostGUI implements IManagePostGUI, Runnable {
         }
 
         commentPanel.setVisible(true);
+        commentPanel.setLocationRelativeTo(null);
 
     }
 
@@ -228,6 +218,7 @@ public class ManagePostGUI implements IManagePostGUI, Runnable {
         });
         inspectArea.add(deleteButton);
         inspectArea.setVisible(true);
+        inspectArea.setLocationRelativeTo(null);
 
     }
 }

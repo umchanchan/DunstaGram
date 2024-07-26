@@ -136,9 +136,6 @@ public class FollowingGUI extends JFrame implements IFollowingGUI, Runnable {
             List<String> response = (ArrayList<String>) ois.readObject();
             followingUsers = response;
 
-            for (String str : response) {
-                System.out.println(str);
-            }
         } catch (IOException | ClassNotFoundException e) {
             JOptionPane.showMessageDialog(FollowingGUI.this,
                     "An error occurred while reading the user.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -152,7 +149,6 @@ public class FollowingGUI extends JFrame implements IFollowingGUI, Runnable {
 
     private Profile getUserByUsername(String username) {
         try {
-            System.out.println(username);
             oos.writeObject("search");
             oos.writeObject(username);
             oos.flush();
