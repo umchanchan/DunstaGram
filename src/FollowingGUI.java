@@ -161,10 +161,12 @@ public class FollowingGUI extends JFrame implements Runnable {
 
             Profile userObj = (Profile) ois.readObject();
 
+
+
             return userObj;
 
         } catch (IOException | ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(FollowingGUI.this, "An error occurred while reading the user.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(FollowingGUI.this, "An error occurred while parsing the user.", "Error", JOptionPane.ERROR_MESSAGE);
 
         }
         return null;

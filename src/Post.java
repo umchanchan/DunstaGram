@@ -97,13 +97,11 @@ public class Post implements IPost, Serializable {
         Comment comment = new Comment(commenter, content, 0, 0);
         comments.add(comment);
         numComments++;
-        commenter.addMyPost(comment);
         return comment;
     }
 
     public void deleteComment(Comment comment) {
         comments.remove(comment);
-        comment.getCommenter().removeMyPost(comment);
         this.numComments--;
     }
 

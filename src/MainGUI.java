@@ -419,35 +419,12 @@ public class MainGUI extends JComponent implements Runnable {
         SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
     }
 
-    public void closeAll() {
-        mainFrame.dispose();
-        if (postFrame != null) {
-            postFrame.dispose();
-        }
-
-        if (commentFrame != null) {
-            commentFrame.dispose();
-        }
-
-    }
-
     public void receivePostList() {
         try {
             oos.writeObject("viewPosts");
             oos.flush();
 
-            Object response = ois.readObject();
-
-            if (response instanceof ArrayList<?>) {
-                ArrayList<?> list = (ArrayList<?>) response;
-
-                if (!list.isEmpty() && list.get(0) instanceof Post) {
-                    posts = (ArrayList<Post>) list;
-                }
-            } else {
-                JOptionPane.showMessageDialog(mainFrame, "Received data is not a list.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            posts = (ArrayList<Post>) ois.readUnshared();
 
         } catch (IOException | ClassNotFoundException e) {
             JOptionPane.showMessageDialog(mainFrame, "Error communicating with the server.",

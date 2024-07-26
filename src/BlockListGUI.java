@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockListGUI extends JFrame implements Runnable {
@@ -102,9 +103,18 @@ public class BlockListGUI extends JFrame implements Runnable {
     }
 
     private void loadBlockList() {
-        List<String> blockedUsers = currentUser.getBlockedList();
-        for (String user : blockedUsers) {
-            blockListModel.addElement(user);
+        try {
+            oos.writeUnshared("getBlockList");
+            oos.flush();
+
+            List<String> blockedUsers = (ArrayList<String>) ois.readObject();
+
+            for (String user : blockedUsers) {
+                blockListModel.addElement(user);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(BlockListGUI.this, "An error occurred while reading the user.", "Error", JOptionPane.ERROR_MESSAGE);
+
         }
     }
 

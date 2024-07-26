@@ -10,13 +10,19 @@ import java.util.stream.DoubleStream;
  */
 
 public class Base implements IBase {
-    private static ArrayList<Profile> users = new ArrayList<>();
+    private ArrayList<Profile> users = new ArrayList<>();
     private ArrayList<Post> allPosts = new ArrayList<>();
     private Profile profile = new Profile();
     private Post post = new Post();
     private static Object obj = new Object();
     private ArrayList<Post> userHidePosts = new ArrayList<>();
     private static ArrayList<String> upvoteDownvote = new ArrayList<>();
+
+    public void updateFiles() throws IOException {
+        updateUserListFile();
+        updatePostFile();
+        readHidePostListFile();
+    }
 
     public Profile searchUser(String username) throws UserNotFoundException {
         synchronized (obj) {
@@ -46,7 +52,7 @@ public class Base implements IBase {
             if (username.isEmpty() || password.isEmpty() || gender.isEmpty()) {
                 return false;
             }
-            readAllListFile();
+            updateFiles();
             for (Profile user : users) {
                 if (user.getUsername().equals(username)) {
                     return false;
@@ -64,7 +70,7 @@ public class Base implements IBase {
             if (username.isEmpty() || password.isEmpty()) {
                 return null;
             }
-            readAllListFile();
+            updateFiles();
             boolean found = false;
             for (Profile user : users) {
                 if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
@@ -85,13 +91,12 @@ public class Base implements IBase {
             for (Profile user : users) {
                 if (user.equals(profile)) {
                     user.follow(toAdd);
-                    System.out.println(user.getFollowing().size());
-                    profile.follow(toAdd);
-                    System.out.println(profile.getFollowing().size());
                     users.set(index, user);
                     worked = true;
                     writeUserListFile();
-                    readAllListFile();
+
+                    //changed
+                    updateFiles();
                     break;
                 }
                 index++;
@@ -109,7 +114,7 @@ public class Base implements IBase {
                     profile.unfollow(toUnfollow);
                     worked = true;
                     writeUserListFile();
-                    readAllListFile();
+                    updateFiles();
                     break;
                 }
             }
@@ -125,7 +130,7 @@ public class Base implements IBase {
                     if (user.blockUser(toBlock)) {
                         worked = true;
                         writeUserListFile();
-                        readAllListFile();
+                        updateFiles();
                     }
                     break;
                 }
@@ -142,7 +147,7 @@ public class Base implements IBase {
                     user.unblockUser(unBlock);
                     worked = true;
                     writeUserListFile();
-                    readAllListFile();
+                    updateFiles();
                     break;
                 }
             }
@@ -166,6 +171,62 @@ public class Base implements IBase {
                 bfr.close();
             } catch (IOException e) {
                 throw new IOException("Error occurred when reading a file");
+            }
+        }
+    }
+
+    private void updateUserListFile() throws IOException {
+        synchronized (obj) {
+            try {
+                File f = new File("userList.txt");
+                FileReader fr = new FileReader(f);
+                BufferedReader bfr = new BufferedReader(fr);
+
+                String line;
+                while ((line = bfr.readLine()) != null) {
+                    updateProfile(line);
+                }
+                bfr.close();
+            } catch (IOException e) {
+                throw new IOException("Error occurred when reading a file");
+            }
+        }
+    }
+
+    private void updateProfile(String userInfo) {
+        String[] firstParse = userInfo.split("====");
+        String basicInfo = firstParse[0];
+        String blockList = "";
+        if (firstParse.length > 1) {
+            blockList = firstParse[1];
+        }
+
+        String[] parts = basicInfo.split("_");
+        String username = parts[0];
+        String password = parts[1];
+        int age = Integer.parseInt(parts[2]);
+        String gender = parts[3];
+
+        for (Profile user : users) {
+            if (user.getUsername().equals(username)) {
+                user.setPassword(password);
+                user.setAge(age);
+                user.setGender(gender);
+
+                user.getFollowing().clear();
+                user.getBlockedList().clear();
+                for (int i = 4; i < parts.length; i++) {
+                    user.getFollowing().add(parts[i]);
+                }
+
+                if (!blockList.isEmpty()) {
+                    String[] parts2 = blockList.split("_");
+
+                    for (String blockName : parts2) {
+                        user.getBlockedList().add(blockName);
+                    }
+                }
+                break;
             }
         }
     }
@@ -208,6 +269,60 @@ public class Base implements IBase {
         }
     }
 
+    public void updatePostFile() throws IOException {
+        synchronized (obj) {
+            try {
+                File f = new File("postList.txt");
+                FileReader fr = new FileReader(f);
+                BufferedReader bfr = new BufferedReader(fr);
+
+                String line;
+                while ((line = bfr.readLine()) != null) {
+                    updatePost(line);
+                }
+                bfr.close();
+            } catch (IOException e) {
+                throw new IOException("Error occurred when reading a file");
+            }
+        }
+
+    }
+
+    private void updatePost(String postInfo) {
+        String[] parts = postInfo.split("_");
+        String msg = parts[1];
+        int upvotes = Integer.parseInt(parts[2]);
+        int downvotes = Integer.parseInt(parts[3]);
+
+        for (Post simPost : allPosts) {
+            if (simPost.getPoster().getUsername().equals(parts[0]) && simPost.getMessage().equals(parts[1])) {
+
+                simPost.setUpvotes(upvotes);
+                simPost.setDownvotes(downvotes);
+
+                for (int i = 4; i < parts.length; i += 4) {
+
+                    String commenter = parts[i];
+                    String message = parts[i + 1];
+                    int commentUpvotes = Integer.parseInt(parts[i + 2]);
+                    int commentDownvotes = Integer.parseInt(parts[i + 3]);
+
+                    for (Comment simComment : simPost.getComments()) {
+                        if (simComment.getCommenter().getUsername().equals(commenter) &&
+                                simComment.getCommentContents().equals(message)) {
+
+                            simComment.setUpvotes(commentUpvotes);
+                            simComment.setDownvotes(commentDownvotes);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+    }
+
     public void writePostListFile() throws IOException {
         synchronized (obj) {
             try (PrintWriter pw = new PrintWriter(new FileOutputStream("postList.txt", false), true)) {
@@ -231,8 +346,14 @@ public class Base implements IBase {
                 BufferedReader bfr = new BufferedReader(new FileReader("hidePostList.txt"));
                 String line;
                 while ((line = bfr.readLine()) != null) {
+                    String[] parts = line.split("_");
+
                     for (Profile user : users) {
-                        user.startHidePostList(line, this);
+                        if (user.getUsername().equals(parts[0])) {
+                            user.startHidePostList(line, this);
+                        } else  {
+                            user.fillFollowingPosts(this);
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -319,7 +440,7 @@ public class Base implements IBase {
                     user.addMyPost(post);
                     allPosts.add(post);
                     writePostListFile();
-                    readAllListFile();
+                    updateFiles();
                     return post;
                 }
             }
@@ -344,7 +465,7 @@ public class Base implements IBase {
                     }
                 }
                 writePostListFile();
-                readAllListFile();
+                updateFiles();
                 return change;
             }
             return false;
@@ -362,7 +483,7 @@ public class Base implements IBase {
                                 System.out.println(user.getFollowingPosts().size());
                                 user.hidePost(poster, message);
                                 writeHidePostListFile(user, post1);
-                                readAllListFile();
+                                updateFiles();
                                 return;
                             }
                         }
@@ -379,11 +500,11 @@ public class Base implements IBase {
                 for (Post post1 : allPosts) {
                     if (post.equals(post1)) {
                         profile.unHidePost(post1);
-                        writeHidePostListFile(profile , post);
+                        writeHidePostListFile(profile, post);
                     }
                 }
 
-                readAllListFile();
+                updateFiles();
             }
         }
     }
@@ -391,12 +512,16 @@ public class Base implements IBase {
     public void addUpvote(Post post) throws IOException {
         synchronized (obj) {
             for (Post post1 : allPosts) {
-                if (post1.equals(post)) {
+                if (post1.getPoster().getUsername().equals(post.getPoster().getUsername())
+                        && post1.getMessage().equals(post.getMessage())) {
                     post1.addUpvote();
+                    post.addUpvote();
+                    post1 = post;
+                    break;
                 }
             }
             writePostListFile();
-            readAllListFile();
+            updateFiles();
         }
     }
 
@@ -408,7 +533,7 @@ public class Base implements IBase {
                 }
             }
             writePostListFile();
-            readAllListFile();
+            updateFiles();
         }
     }
     //we will add cancel addUpvote and addDownvote if we could implement this in GUI
@@ -425,7 +550,7 @@ public class Base implements IBase {
                 }
             }
             writePostListFile();
-            readAllListFile();
+            updateFiles();
         }
     }
 
@@ -441,14 +566,13 @@ public class Base implements IBase {
                 }
             }
             writePostListFile();
-            readAllListFile();
+            updateFiles();
         }
     }
 
 
     public Comment makeComment(Post post, Profile commenter, String message) throws IOException {
         synchronized (obj) {
-            readAllListFile();
             for (Post samePost : allPosts) {
                 if ((post.getPoster().getUsername().equals(samePost.getPoster().getUsername())) &&
                         (post.getMessage().equals(samePost.getMessage()))) {
@@ -461,7 +585,7 @@ public class Base implements IBase {
                     }
                     Comment comment = samePost.addComment(commenter, message);
                     writePostListFile();
-                    readAllListFile();
+                    updateFiles();
                     return comment;
                 }
             }
@@ -471,7 +595,7 @@ public class Base implements IBase {
 
     public boolean deleteComment(Post post, Profile profile, Comment comment) throws IOException {
         synchronized (obj) {
-            readAllListFile();
+            updateFiles();
             for (Post samePost : allPosts) {
                 if ((post.getPoster().getUsername().equals(samePost.getPoster().getUsername())) &&
                         (post.getMessage().equals(samePost.getMessage()))) {
@@ -487,7 +611,7 @@ public class Base implements IBase {
                             }
                         }
                         writePostListFile();
-                        readAllListFile();
+                        updateFiles();
                         return true;
                     }
                 }

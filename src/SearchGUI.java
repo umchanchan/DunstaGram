@@ -144,6 +144,7 @@ public class SearchGUI extends JFrame implements Runnable {
         profilePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JButton followButton = new JButton("Follow");
+        JButton blockButton = new JButton("Block");
         followButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -190,6 +191,51 @@ public class SearchGUI extends JFrame implements Runnable {
             }
         });
 
+        blockButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    boolean blocked = false;
+                    ArrayList<String> blocking = new ArrayList<>();
+                    oos.writeObject("getBlockList");
+                    oos.flush();
+
+                    blocking = (ArrayList<String>) ois.readObject();
+
+                    for (String blockedUser : blocking) {
+                        if (blockedUser.equals(profile.getUsername())) {
+                            blocked = true;
+                            break;
+                        }
+                    }
+
+                    if (blocked) {
+                        JOptionPane.showMessageDialog(profilePanel, "This user is already blocked",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+
+                        oos.writeUnshared("block");
+                        oos.writeUnshared(profile);
+                        oos.flush();
+
+
+                        String response = (String) ois.readObject();
+                        if (response.equals("Success")) {
+                            JOptionPane.showMessageDialog(profilePanel, "Blocked successful!",
+                                    "Follow", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(profilePanel, "Failed to block user.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (IOException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(profilePanel,
+                            "An error occurred while blocking the user.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         ImageIcon profilePicIcon = new ImageIcon("default_profile_pic.png");
         Image image = profilePicIcon.getImage();
         Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
@@ -205,8 +251,10 @@ public class SearchGUI extends JFrame implements Runnable {
         profilePanel.add(new JLabel("Following: " + getFriendsList(profile)));
         if (!profile.equals(user)) {
             profilePanel.add(followButton);
+            profilePanel.add(blockButton);
         } else {
             Label label = new Label("This is you!");
+            label.setAlignment(Label.CENTER);
             profilePanel.add(label);
         }
 
