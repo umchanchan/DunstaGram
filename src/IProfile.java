@@ -5,9 +5,9 @@ public interface IProfile {
 
     Profile makeProfile(String userInfo);
     boolean equals(Profile toCompare);
-    ArrayList<Post> startHidePostList(String info);
+    void startHidePostList(String info, Base base);
     ArrayList<String> hidePostToString();
-    void hidePost(Post post);
+    void hidePost(String poster, String message);
 
     void addMyPost(Post post);
 

@@ -32,7 +32,7 @@ public interface IBase {
 
     boolean removePost(Profile poster, Post post) throws IOException;
 
-    void hidePost(Profile profile, Post post) throws IOException;
+    void hidePost(String profile, String poster, String contents) throws IOException;
 
     void addUpvote(Post post) throws IOException;
 

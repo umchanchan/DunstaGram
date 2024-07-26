@@ -51,8 +51,6 @@ public class BlockListGUI extends JFrame implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                SwingUtilities.invokeLater(new SettingsGUI(currentUser, ois, oos));
-
             }
         });
 
