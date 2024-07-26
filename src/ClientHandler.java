@@ -233,6 +233,9 @@ public class ClientHandler implements IClientHandler {
                             oos.writeObject("Fail");
                             oos.flush();
                         }
+                        base.readAllListFile();
+                        post = base.searchPost(post);
+                        oos.writeObject(post);
 
                     }
 
@@ -413,6 +416,14 @@ public class ClientHandler implements IClientHandler {
                         oos.flush();
                     }
 
+                    case "updatePost" -> {
+                        base.readAllListFile();
+                        Post p = (Post) ois.readObject();
+                        p = base.searchPost(p);
+                        System.out.println(p.getComments());
+                        oos.writeObject(p);
+                        oos.flush();
+                    }
 
                     default -> {
                         System.out.println("Invalid message...why are you here");
