@@ -163,20 +163,22 @@ public class Profile implements IProfile, Serializable {
                 age == toCompare.getAge();
     }
 
-    public ArrayList<Post> startHidePostList(String info) {
+    public void startHidePostList(String info, Base base) {
         String[] parts = info.split("_");
         if (!(username.equals(parts[0]))) {
-            return null;
+            return;
         }
+        fillFollowingPosts(base);
+
         for (Post post : followingPosts) {
             if (post.getPoster().getUsername().equals(parts[1]) && post.getMessage().equals(parts[2])) {
                 NewsFeed newsFeed = new NewsFeed(this);
                 newsFeed.hidePost(post);
                 hidePosts.add(post);
                 followingPosts.remove(post);
+                break;
             }
         }
-        return hidePosts;
     }
 
     public ArrayList<String> hidePostToString() {
@@ -196,11 +198,18 @@ public class Profile implements IProfile, Serializable {
         userPosts.remove(post);
     }
 
-    public void hidePost(Post post) {
-        NewsFeed newsFeed = new NewsFeed(this);
-        newsFeed.hidePost(post);
-        followingPosts.remove(post);
-        hidePosts.add(post);
+    public void hidePost(String poster, String message) {
+
+        System.out.println(followingPosts.size());
+        for (Post post2 : followingPosts) {
+            if (post2.getPoster().getUsername().equals(poster) && post2.getMessage().equals(message)) {
+                followingPosts.remove(post2);
+                hidePosts.add(post2);
+                break;
+            }
+        }
+        System.out.println(followingPosts.size());
+
     }
 
     public void unHidePost(Post post) {
@@ -303,17 +312,14 @@ public class Profile implements IProfile, Serializable {
         return this.userPosts;
     }
 
-    public ArrayList<Post> getFollowingPosts(Base base) {
+    public void fillFollowingPosts(Base base) {
         NewsFeed myNewsFeed = new NewsFeed(this);
         for (String friend : following) {
-            followingPosts = myNewsFeed.filterPost(friend, base);
+            followingPosts = myNewsFeed.filterPost(friend, base, hidePosts);
         }
-        try {
-            base.readAllListFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        followingPosts = myNewsFeed.filterHidePost(hidePosts);
+    }
+
+    public ArrayList<Post> getFollowingPosts() {
         return followingPosts;
     }
 

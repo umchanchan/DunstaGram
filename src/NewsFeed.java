@@ -16,12 +16,21 @@ public class NewsFeed implements INewsFeed {
         this.profile = profile;
     }
 
-    public ArrayList<Post> filterPost(String follow, Base base) {
+    public ArrayList<Post> filterPost(String follow, Base base, ArrayList<Post> hidePost) {
         if (profile.isFollowing(follow)) {
             try {
                 Profile p = base.searchUser(follow);
                 allPost.addAll(p.getMyPosts());
-
+                if (!(hidePost.isEmpty())) {
+                    for (Post post : hidePost) {
+                        for (Post post1 : allPost) {
+                            if (post.equals(post1)) {
+                                allPost.remove(post1);
+                                break;
+                            }
+                        }
+                    }
+                }
             } catch (UserNotFoundException e) {
                 return allPost;
             }
@@ -30,14 +39,7 @@ public class NewsFeed implements INewsFeed {
     }
 
     public ArrayList<Post> filterHidePost(ArrayList<Post> hidePost) {
-        for (Post post : hidePost) {
-            for (Post post1 : allPost) {
-                if (post.equals(post1)) {
-                    allPost.remove(post1);
-                    break;
-                }
-            }
-        }
+
         return allPost;
     }
 

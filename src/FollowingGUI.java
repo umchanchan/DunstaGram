@@ -130,7 +130,23 @@ public class FollowingGUI extends JFrame implements Runnable {
     }
 
     private void loadFollowingList() {
-        List<String> followingUsers = currentUser.getFollowing();
+        List<String> followingUsers = new ArrayList<>();
+        try {
+            oos.writeObject("getFollowing");
+            oos.flush();
+
+            List<String> response = (ArrayList<String>) ois.readObject();
+            followingUsers = response;
+
+            for (String str : response) {
+                System.out.println(str);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(FollowingGUI.this,
+                    "An error occurred while reading the user.", "Error", JOptionPane.ERROR_MESSAGE);
+
+        }
+
         for (String username : followingUsers) {
             followingListModel.addElement(username);
         }
@@ -138,6 +154,7 @@ public class FollowingGUI extends JFrame implements Runnable {
 
     private Profile getUserByUsername(String username) {
         try {
+            System.out.println(username);
             oos.writeObject("search");
             oos.writeObject(username);
             oos.flush();
