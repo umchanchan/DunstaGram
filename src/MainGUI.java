@@ -7,10 +7,9 @@ import java.util.Arrays;
 import javax.swing.*;
 
 
-public class MainGUI extends JComponent implements Runnable {
+public class MainGUI extends JComponent implements IMainGUI, Runnable {
 
     private Profile user;
-    private Socket clientSocket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private JFrame mainFrame;
@@ -46,10 +45,7 @@ public class MainGUI extends JComponent implements Runnable {
         this.user = user;
         this.ois = ois;
         this.oos = oos;
-
-
     }
-
 
 
     private ActionListener actionListener = new ActionListener() {
@@ -66,19 +62,17 @@ public class MainGUI extends JComponent implements Runnable {
                 SwingUtilities.invokeLater(new SearchGUI(user, ois, oos));
 
             } else if (e.getSource() == followingButton) {
-                SwingUtilities.invokeLater(new FollowingGUI(user, ois, oos));
+                SwingUtilities.invokeLater(new FollowingGUI(ois, oos));
 
             } else if (e.getSource() == makePostButton) {
                 displayPostGUI();
 
             } else if (e.getSource() == managePostButton) {
 
+
                 try {
                     SwingUtilities.invokeLater(new ManagePostGUI(user, ois, oos));
-
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
 
@@ -115,7 +109,7 @@ public class MainGUI extends JComponent implements Runnable {
     public void run() {
 
         mainFrame = new JFrame("DunstaGram");
-        mainFrame.setSize(1200, 800);
+        mainFrame.setSize(1300, 800);
         mainFrame.setLayout(new BorderLayout());
 
 
@@ -311,7 +305,7 @@ public class MainGUI extends JComponent implements Runnable {
         return textPart;
     }
 
-    public void generatePostPanel() {
+    private void generatePostPanel() {
         for (Post upPost : posts) {
             postPanel = new JPanel(new BorderLayout());
             JPanel topPanel = new JPanel(new BorderLayout());
@@ -362,7 +356,7 @@ public class MainGUI extends JComponent implements Runnable {
                     try {
                         oos.writeObject("upvotePost");
                         oos.writeObject(upPost);
-                       // upPost.addUpvote(); //temporary fix to update client screen (correct way: server should sent info)
+                        // upPost.addUpvote(); //temporary fix to update client screen (correct way: server should sent info)
                         Post p = (Post) ois.readObject();
                         upPost.setUpvotes(p.getUpvotes());
                         oos.flush();
@@ -429,7 +423,7 @@ public class MainGUI extends JComponent implements Runnable {
         SwingUtilities.invokeLater(new MainGUI(user, ois, oos));
     }
 
-    public void receivePostList() {
+    private void receivePostList() {
         try {
             oos.writeObject("viewPosts");
             oos.flush();

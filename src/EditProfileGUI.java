@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class EditProfileGUI implements Runnable {
+public class EditProfileGUI implements IBlockListGUI, Runnable {
     private Profile p;
     private JTextField age;
     private JTextField gender;

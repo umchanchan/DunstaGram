@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ViewProfileGUI implements Runnable {
+public class ViewProfileGUI implements IViewProfileGUI, Runnable {
     private ArrayList<String> userInfo;
 
     public ViewProfileGUI(ArrayList<String> userInfo) {
@@ -13,9 +13,7 @@ public class ViewProfileGUI implements Runnable {
 
     }
     public void run() {
-
         showProfile();
-
     }
 
     private void showProfile() {

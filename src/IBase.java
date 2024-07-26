@@ -2,8 +2,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public interface IBase {
+    void updateFiles() throws IOException;
     Profile searchUser(String username) throws UserNotFoundException;
-
+    ArrayList<String> getUserInfo(Profile toGet);
+    Post searchPost(Post post);
     boolean signUp(String username, String password, int age, String gender) throws IOException;
 
     Profile login(String username, String password) throws IOException, UserNotFoundException;

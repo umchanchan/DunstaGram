@@ -7,7 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.Socket;
 
-public class LoginGUI implements Runnable {
+public class LoginGUI implements ILoginGUI, Runnable {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private JTextField userField;

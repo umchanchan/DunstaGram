@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
 
-public class SearchGUI extends JFrame implements Runnable {
+public class SearchGUI extends JFrame implements ISearchGUI, Runnable {
     private JTextField searchBar;
     private JButton searchButton;
     private Profile user;
@@ -31,7 +31,7 @@ public class SearchGUI extends JFrame implements Runnable {
         setLocationRelativeTo(null);
     }
 
-    public void initializeGUI() {
+    private void initializeGUI() {
         setTitle("User Profile Search");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -262,7 +262,7 @@ public class SearchGUI extends JFrame implements Runnable {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private String getFriendsList(Profile profile) {
+    public String getFriendsList(Profile profile) {
         try {
             oos.writeObject("getThisFollowing");
             oos.writeUnshared(profile);

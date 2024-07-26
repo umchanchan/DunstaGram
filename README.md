@@ -8,8 +8,9 @@ DunstaGram is a sophisticated social media platform consisting of several classe
 To compile and run the project, follow these steps:
 1. Clone this repository to your local device.
 2. Navigate to the project folder and open it in a java IDE.
-3. Run the `Server` class.
-4. Run the `Client` class to initiate a client.
+3. Ensure that you have Java SDK 22 installed and configured in your IDE.
+4. Run the `Server` class.
+5. Run the `Client` class to initiate a client.
 
 ## Classes
 
@@ -353,31 +354,7 @@ The `FollowingGUI` class represents the GUI for managing the list of users that 
 - Verified unfollow and block actions, including correct server communication and handling responses.
 - Tested error handling for server communication issues and user management actions.
 
-### 13. `InitialGUI`
-
-#### Description
-The `InitialGUI` class provides the initial GUI for user authentication, allowing users to either sign up or log in to the DunstaGram platform.
-
-#### Functionality
-- **Welcome Screen**: Displays a welcome message and options for user authentication.
-- **Sign Up**: Initiates the sign-up process when the "Sign Up" button is clicked.
-- **Login**: Initiates the login process when the "Login" button is clicked.
-- **Server Communication**: Sends commands to the server to indicate the chosen action (sign-up or login).
-
-#### Contribution
-- **User Authentication**: Provides a straightforward entry point for users to either sign up or log in.
-- **Server Interaction**: Communicates user choices to the server to handle authentication.
-
-#### Methods
-- `InitialGUI(ObjectInputStream ois, ObjectOutputStream oos)`: Constructor to initialize the GUI with server communication streams.
-- `void run()`: Sets up and displays the initial login menu GUI, including buttons for sign-up and login.
-
-#### Testing
-- Verified that the GUI displays the welcome message and buttons correctly.
-- Tested that clicking "Sign Up" or "Login" disposes of the frame and sends the correct command to the server.
-- Ensured error handling for IOException during server communication.
-
-### 14. `LoginGUI`
+### 13. `LoginGUI`
 
 #### Description
 The `LoginGUI` class provides the GUI for user login and account creation. It handles user authentication by communicating with the server and displays appropriate messages based on the login status.
@@ -404,7 +381,7 @@ The `LoginGUI` class provides the GUI for user login and account creation. It ha
 - Ensured that the "Sign Up" button redirects to the sign-up interface.
 - Checked that the application closes resources and connections properly when the window is closed.
 
-### 15. `MainGUI`
+### 14. `MainGUI`
 
 #### Description
 The `MainGUI` class provides the main user interface for our DunstaGram application, allowing users to view posts, make new posts, manage posts, and interact with comments. It supports various actions like searching, following users, adjusting settings, and handling user comments and posts.
@@ -438,7 +415,7 @@ The `MainGUI` class provides the main user interface for our DunstaGram applicat
 - Ensured that commenting, upvoting, and downvoting functionality works as expected, including error handling for server communication issues.
 - Checked that the GUI refreshes properly to show the latest posts and comments.
 
-### 16. ManagePostGUI
+### 15. ManagePostGUI
 
 #### Description
 `ManagePostGUI` is the GUI that allows users to manage their posts on the DunstaGram platform. Users can view, delete posts, and review comments associated with their posts.
@@ -470,35 +447,7 @@ The `MainGUI` class provides the main user interface for our DunstaGram applicat
 - Validated that comments are displayed correctly and that the user can select and inspect comments.
 - Tested that the comment inspection window functions correctly and allows comments to be deleted if needed.
 
-### 17. `NewSearchGUI`
-
-#### Description
-The `NewSearchGUI` class provides the GUI for searching user profiles within the DunstaGram application. It allows users to input a username, search for profiles, and view profile details. The class also handles server communication for performing searches and following users.
-
-#### Functionality
-- **Search Interface**: Provides a search bar and button to input and submit search queries.
-- **Profile Display**: Displays search results as clickable buttons that show profile details when selected.
-- **Profile Details**: Presents detailed information about a user profile, including options to follow other users.
-- **Server Communication**: Sends search queries and follow requests to the server and handles server responses.
-
-#### Contribution
-- **User Interaction**: Manages user inputs for searching and viewing profiles, including updating the GUI with search results.
-- **Server Communication**: Handles communication with the server to perform searches and manage follow requests.
-- **GUI Management**: Updates and refreshes the user interface to display search results and profile details.
-
-#### Methods
-- `NewSearchGUI(ObjectInputStream ois, ObjectOutputStream oos, Profile viewer)`: Constructor to initialize the GUI with server communication streams and the current user profile.
-- `void run()`: Sets up and displays the main search GUI, including panels for search input and results.
-- `private boolean searchProfile() throws IOException, ClassNotFoundException`: Performs a search query and updates the results panel based on the server response.
-- `private void showProfileDetails(String username, String age, String gender, String following, String posts)`: Displays detailed profile information in a dialog, including an option to follow the user if applicable.
-
-#### Testing
-- Verified that the search functionality works correctly, including handling server responses and displaying search results.
-- Tested profile detail display to ensure accurate information is shown and follow actions are correctly processed.
-- Ensured that error handling works for scenarios such as no users found or communication issues with the server.
-- Checked that the user interface updates and refreshes appropriately based on user interactions and server data.
-
-### 18. `SearchGUI`
+### 16. `SearchGUI`
 
 #### Description
 The `SearchGUI` class provides the GUI for searching and managing user profiles in the DunstaGram application. It allows users to search for other profiles, view profile details, and perform actions such as following or blocking users. The class handles interactions with the server to fetch user profiles and process follow/block requests.
@@ -529,7 +478,7 @@ The `SearchGUI` class provides the GUI for searching and managing user profiles 
 - Ensured that server communication works for loading profiles, and handling follow and block requests.
 - Checked error handling for scenarios like server communication issues and invalid user actions.
 
-### 19. `SettingsGUI`
+### 17. `SettingsGUI`
 
 #### Description
 The `SettingsGUI` class provides the GUI for managing user settings in the DunstaGram application. It allows users to view and edit their profile, manage their block list, and log out of the application. The class handles interactions with the server to perform these actions and update the GUI accordingly.
@@ -561,7 +510,7 @@ The `SettingsGUI` class provides the GUI for managing user settings in the Dunst
 - Ensured logout functionality works as expected and transitions to the login screen.
 - Checked that the GUI disposes of properly and handles user actions without errors.
 
-### 20. `SignUpGUI`
+### 18. `SignUpGUI`
 
 #### Description
 The `SignUpGUI` class provides the GUI for user registration in the DunstaGram application. It allows users to create a new account by entering their username, password, age, and gender. The class handles user input, communicates with the server to process sign-up requests, and manages the UI components related to the sign-up process.
@@ -588,7 +537,7 @@ The `SignUpGUI` class provides the GUI for user registration in the DunstaGram a
 - Checked the functionality of the "Back To Login" button to ensure it navigates to the `LoginGUI` without issues.
 - Ensured that the GUI handles window closing events properly, including resource cleanup and communication with the server.
 
-### 21. `ViewProfileGUI`
+### 19. `ViewProfileGUI`
 
 #### Description
 The `ViewProfileGUI` class is responsible for displaying a user's profile information in GUI. It takes user information in the form of a list of strings and presents it in a visually organized manner, including profile picture, username, age, gender, and additional details such as posts and followers.

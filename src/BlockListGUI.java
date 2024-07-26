@@ -10,15 +10,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockListGUI extends JFrame implements Runnable {
-    private Profile currentUser;
+public class BlockListGUI extends JFrame implements IBlockListGUI, Runnable {
+
     private JList<String> blockList;
     private DefaultListModel<String> blockListModel;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
 
-    public BlockListGUI(Profile currentUser, ObjectInputStream ois, ObjectOutputStream oos) {
-        this.currentUser = currentUser;
+    public BlockListGUI(ObjectInputStream ois, ObjectOutputStream oos) {
         this.ois = ois;
         this.oos = oos;
     }

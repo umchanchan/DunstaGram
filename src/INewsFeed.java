@@ -1,13 +1,11 @@
+import java.util.ArrayList;
+
 public interface INewsFeed {
 
-    public void upvotePost(Post post);
+    ArrayList<Post> filterPost(String follow, Base base, ArrayList<Post> hidePost);
 
-    public void cancelUpvotePost(Post post);
+    void hidePost(Post post);
 
-    public void downvotePost(Post post);
-
-    public void cancelDownvotePost(Post post);
-
-    public void hidePost(Post post);
+    void comment(Post post, String msg);
 
 }
