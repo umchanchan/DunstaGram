@@ -40,7 +40,6 @@ public class LoginGUI implements Runnable {
                     Object response = ois.readObject();
                     if (response instanceof Profile) {
                         user = (Profile) response;
-                        System.out.println(user.getUsername());
                         JOptionPane.showMessageDialog(frame, "Login Successful!", "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
                         frame.dispose();

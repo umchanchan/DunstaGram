@@ -31,7 +31,7 @@ class ProfileTest {
 
         profile1.follow(profile);
 
-        ArrayList<Post> friendPost = profile1.getFollowingPosts(base);
+        ArrayList<Post> friendPost = profile1.getFollowingPosts();
         for (Post post2 : friendPost) {
             System.out.println(post2.getPoster());
             System.out.println(post2.getMessage());

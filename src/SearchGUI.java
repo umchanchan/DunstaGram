@@ -93,17 +93,7 @@ public class SearchGUI extends JFrame implements Runnable {
             oos.flush();
 
             Object response = ois.readObject();
-
-            if (response instanceof ArrayList<?>) {
-                ArrayList<?> list = (ArrayList<?>) response;
-
-                if (!list.isEmpty() && list.get(0) instanceof Profile) {
-                    profilesList = (ArrayList<Profile>) list;
-                }
-            } else {
-                JOptionPane.showMessageDialog(SearchGUI.this, "Received data is not a list.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            profilesList = (ArrayList<Profile>) response;
 
         } catch (IOException | ClassNotFoundException e) {
             JOptionPane.showMessageDialog(SearchGUI.this,
@@ -157,18 +147,25 @@ public class SearchGUI extends JFrame implements Runnable {
         followButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean followed = false;
-                for (String friend : user.getFollowing()) {
-                    if (friend.equals(profile.getUsername())) {
-                        followed = true;
-                        break;
+                try {
+                    boolean followed = false;
+                    ArrayList<String> followings = new ArrayList<>();
+                    oos.writeObject("getFollowing");
+                    oos.flush();
+
+                    followings = (ArrayList<String>) ois.readObject();
+
+                    for (String friend : followings) {
+                        if (friend.equals(profile.getUsername())) {
+                            followed = true;
+                            break;
+                        }
                     }
-                }
-                if (followed) {
-                    JOptionPane.showMessageDialog(profilePanel, "You already follow this user",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    try {
+                    if (followed) {
+                        JOptionPane.showMessageDialog(profilePanel, "You already follow this user",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+
                         oos.writeObject("follow");
                         oos.writeObject(profile);
                         oos.flush();
@@ -182,12 +179,13 @@ public class SearchGUI extends JFrame implements Runnable {
                             JOptionPane.showMessageDialog(profilePanel, "Failed to follow user.",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (IOException | ClassNotFoundException ex) {
-                        JOptionPane.showMessageDialog(profilePanel,
-                                "An error occurred while following the user.", "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
 
+
+                    }
+                } catch (IOException | ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(profilePanel,
+                            "An error occurred while following the user.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -217,10 +215,23 @@ public class SearchGUI extends JFrame implements Runnable {
     }
 
     private String getFriendsList(Profile profile) {
-        List<String> friendsUsernames = new ArrayList<>();
-        for (String friend : profile.getFollowing()) {
-            friendsUsernames.add(friend);
+        try {
+            oos.writeObject("getThisFollowing");
+            oos.writeUnshared(profile);
+            oos.flush();
+
+
+            List<String> friendsUsernames = (ArrayList<String>) ois.readObject();
+            for (String friend : profile.getFollowing()) {
+                friendsUsernames.add(friend);
+            }
+
+
+            return String.join(", ", friendsUsernames);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return String.join(", ", friendsUsernames);
+        return null;
     }
 }

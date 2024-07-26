@@ -8,7 +8,7 @@ import java.util.*;
 public class ClientHandler implements IClientHandler {
     private Socket clientSocket;
     private Base base;
-    private Profile profile = new Profile();
+    private Profile profile = null;
 
     public ClientHandler(Socket clientSocket, Base base) {
         this.clientSocket = clientSocket;
@@ -46,7 +46,7 @@ public class ClientHandler implements IClientHandler {
                             String temp = (String) ois.readObject();
                             gender = (String) ois.readObject();
 
-                            if (username.contains("_")) {
+                            if (username.contains("_") || password.contains("_") || temp.equals("_") || gender.equals("_")) {
                                 oos.writeObject("_");
                                 oos.flush();
                                 break;
@@ -155,9 +155,8 @@ public class ClientHandler implements IClientHandler {
 
 
                     case "viewPosts" -> {
-                        base.readAllListFile();
-                        ArrayList<Post> postList = profile.getFollowingPosts(base);
-                        oos.writeObject(postList);
+                        ArrayList<Post> postList = profile.getFollowingPosts();
+                        oos.writeUnshared(postList);
                         oos.flush();
                     }
 
@@ -166,6 +165,7 @@ public class ClientHandler implements IClientHandler {
                         ArrayList<Post> postList = profile.getMyPosts();
                         System.out.println(postList);
                         Profile p = (Profile) ois.readUnshared();
+
                         oos.writeUnshared(postList);
                         oos.flush();
                     }
@@ -199,13 +199,17 @@ public class ClientHandler implements IClientHandler {
 
                     case "hidePost" -> {
                         Post post = (Post) ois.readObject();
-                        base.hidePost(profile, post);
+                        String username = profile.getUsername();
+                        String poster = post.getPoster().getUsername();
+                        String content = post.getMessage();
+
+                        base.hidePost(username, poster, content);
                     }
 
                     case "viewHidePost" -> {
                         base.readAllListFile();
                         ArrayList<Post> postList = profile.getHidePosts();
-                        oos.writeObject(postList);  // This will send an empty list if there are no hidden posts
+                        oos.writeUnshared(postList);
                         oos.flush();
                     }
 
@@ -343,6 +347,7 @@ public class ClientHandler implements IClientHandler {
                         Base b = new Base();
                         String search = (String) ois.readObject();
 
+
                         Profile profileSearch = b.searchUser(search);
                         oos.writeObject(profileSearch);
                         oos.flush();
@@ -369,7 +374,25 @@ public class ClientHandler implements IClientHandler {
                     case "getAllUser"-> {
                         ArrayList<Profile> users = base.getUsers();
 
-                        oos.writeObject(users);
+                        oos.writeUnshared(users);
+                        oos.flush();
+
+                    }
+
+                    case "getFollowing" -> {
+                        ArrayList<String> followings = profile.getFollowing();
+
+
+                        oos.writeUnshared(followings);
+                        oos.flush();
+                    }
+
+                    case "getThisFollowing" -> {
+                        Profile toSearch = (Profile) ois.readObject();
+                        ArrayList<String> followings = toSearch.getFollowing();
+
+
+                        oos.writeUnshared(followings);
                         oos.flush();
 
                     }

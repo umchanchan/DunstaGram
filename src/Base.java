@@ -83,9 +83,11 @@ public class Base implements IBase {
             boolean worked = false;
             int index = 0;
             for (Profile user : users) {
-                if (user.getUsername().equals(profile.getUsername())) {
+                if (user.equals(profile)) {
                     user.follow(toAdd);
+                    System.out.println(user.getFollowing().size());
                     profile.follow(toAdd);
+                    System.out.println(profile.getFollowing().size());
                     users.set(index, user);
                     worked = true;
                     writeUserListFile();
@@ -102,7 +104,7 @@ public class Base implements IBase {
         synchronized (obj) {
             boolean worked = false;
             for (Profile user : users) {
-                if (user.getUsername().equals(profile.getUsername())) {
+                if (user.equals(profile)) {
                     user.unfollow(toUnfollow);
                     profile.unfollow(toUnfollow);
                     worked = true;
@@ -230,7 +232,7 @@ public class Base implements IBase {
                 String line;
                 while ((line = bfr.readLine()) != null) {
                     for (Profile user : users) {
-                        userHidePosts = user.startHidePostList(line);
+                        user.startHidePostList(line, this);
                     }
                 }
             } catch (IOException e) {
@@ -349,17 +351,16 @@ public class Base implements IBase {
         }
     }
 
-    public void hidePost(Profile profile, Post post) throws IOException {
+    public void hidePost(String mainUser, String poster, String message) throws IOException {
         synchronized (obj) {
             for (Profile user : users) {
-                if (user.getUsername().equals(profile.getUsername())) {
-                    if (!(user.getUsername().equals(post.getPoster().getUsername()))) {
+                if (user.getUsername().equals(mainUser)) {
+                    if (!(user.getUsername().equals(poster))) {
                         for (Post post1 : allPosts) {
-                            if (post.equals(post1)) {
+                            if (post1.getPoster().getUsername().equals(poster) && post1.getMessage().equals(message)) {
 
-                                System.out.println(user.getFollowingPosts(this).size());
-                                user.getFollowingPosts(this).remove(post1);
-                                user.hidePost(post1);
+                                System.out.println(user.getFollowingPosts().size());
+                                user.hidePost(poster, message);
                                 writeHidePostListFile(user, post1);
                                 readAllListFile();
                                 return;
