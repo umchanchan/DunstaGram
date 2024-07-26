@@ -36,12 +36,14 @@ public class Base implements IBase {
     }
 
     public Post searchPost(Post post) {
-        for(Post p: allPosts) {
-            if (post.equals(p)) {
-                return p;
+        synchronized (obj) {
+            for (Post p : allPosts) {
+                if (post.equals(p)) {
+                    return p;
+                }
             }
+            return null;
         }
-        return null;
     }
 
 
@@ -520,16 +522,18 @@ public class Base implements IBase {
 
     public void addUpvote(Post post) throws IOException {
         synchronized (obj) {
-            int index = 0;
+            //int index = 0;
             for (Post post1 : allPosts) {
                 if (post1.getPoster().getUsername().equals(post.getPoster().getUsername())
                         && post1.getMessage().equals(post.getMessage())) {
                     post1.addUpvote();
-                    post.addUpvote();
-                    allPosts.set(index, post);
+                    //System.out.println(post1 + " post1");
+                    //post.addUpvote(); //commented these lines because they somehow double counted in server
+                    //System.out.println(post + " post");
+                    //allPosts.set(index, post1);
                     break;
                 }
-                index++;
+                //index++;
             }
             writePostListFile();
             updateFiles();
@@ -538,10 +542,14 @@ public class Base implements IBase {
 
     public void addDownvote(Post post) throws IOException {
         synchronized (obj) {
+            //int index = 0;
             for (Post post1 : allPosts) {
                 if (post1.equals(post)) {
                     post1.addDownvote();
+                    //allPosts.set(index, post1);
+                    break;
                 }
+               // index++;
             }
             writePostListFile();
             updateFiles();

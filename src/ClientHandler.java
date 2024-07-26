@@ -256,6 +256,9 @@ public class ClientHandler implements IClientHandler {
                     case "upvotePost" -> {
                         Post post = (Post) ois.readObject();
                         base.addUpvote(post);
+                        base.readAllListFile();
+                        post = base.searchPost(post);
+                        oos.writeObject(post);
 
                         System.out.println(post.getUpvotes());
                     }
@@ -263,6 +266,9 @@ public class ClientHandler implements IClientHandler {
                     case "downvotePost" -> {
                         Post post = (Post) ois.readObject();
                         base.addDownvote(post);
+                        base.readAllListFile();
+                        post = base.searchPost(post);
+                        oos.writeObject(post);
                     }
 
                     case "upvoteComment" -> {

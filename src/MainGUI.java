@@ -362,12 +362,17 @@ public class MainGUI extends JComponent implements Runnable {
                     try {
                         oos.writeObject("upvotePost");
                         oos.writeObject(upPost);
+                       // upPost.addUpvote(); //temporary fix to update client screen (correct way: server should sent info)
+                        Post p = (Post) ois.readObject();
+                        upPost.setUpvotes(p.getUpvotes());
                         oos.flush();
 
                         refresh();
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
                                 "Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
                     }
 
 
@@ -379,12 +384,16 @@ public class MainGUI extends JComponent implements Runnable {
                     try {
                         oos.writeObject("downvotePost");
                         oos.writeObject(upPost);
+                        Post p = (Post) ois.readObject();
+                        upPost.setDownvotes(p.getDownvotes());
                         oos.flush();
 
                         refresh();
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(mainFrame, "Error occurred while communicating with server",
                                 "Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
                     }
                 }
             });
