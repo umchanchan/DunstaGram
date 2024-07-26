@@ -59,6 +59,7 @@ public class NewSearchGUI implements Runnable{
 
         frame.add(new JScrollPane(resultsPanel), BorderLayout.CENTER);
 
+
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {

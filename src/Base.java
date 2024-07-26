@@ -328,9 +328,11 @@ public class Base implements IBase {
     public boolean removePost(Profile poster, Post post) throws IOException {
         synchronized (obj) {
             if (poster.getUsername().equals(post.getPoster().getUsername())) {
+                boolean change = false;
                 for (Post post1 : allPosts) {
                     if (post1.equals(post)) {
                         allPosts.remove(post1);
+                        change = true;
                         break;
                     }
                 }
@@ -341,7 +343,7 @@ public class Base implements IBase {
                 }
                 writePostListFile();
                 readAllListFile();
-                return true;
+                return change;
             }
             return false;
         }
