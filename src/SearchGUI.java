@@ -173,7 +173,7 @@ public class SearchGUI extends JFrame implements Runnable {
 
                         String response = (String) ois.readObject();
                         if (response.equals("Success")) {
-                            JOptionPane.showMessageDialog(profilePanel, "Follow success!",
+                            JOptionPane.showMessageDialog(profilePanel, "Follow successful!",
                                     "Follow", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(profilePanel, "Failed to follow user.",
