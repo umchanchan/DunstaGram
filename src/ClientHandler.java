@@ -210,12 +210,10 @@ public class ClientHandler implements IClientHandler {
                         String username = profile.getUsername();
                         String poster = post.getPoster().getUsername();
                         String content = post.getMessage();
-
                         base.hidePost(username, poster, content);
                         base.readAllListFile();
-
                         profile = base.searchUser(username);
-                        oos.writeObject(profile);
+                        oos.writeUnshared(profile);
                         oos.flush();
                     }
 
@@ -265,6 +263,7 @@ public class ClientHandler implements IClientHandler {
                         base.readAllListFile();
                         post = base.searchPost(post);
                         oos.writeObject(post);
+                        oos.flush();
                     }
 
                     case "downvotePost" -> {
@@ -273,6 +272,7 @@ public class ClientHandler implements IClientHandler {
                         base.readAllListFile();
                         post = base.searchPost(post);
                         oos.writeObject(post);
+                        oos.flush();
                     }
 
                     case "upvoteComment" -> {
