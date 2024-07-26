@@ -72,6 +72,7 @@ public class ManagePostGUI implements Runnable {
                 public void actionPerformed(ActionEvent e) {
                     boolean removePost = false;
                     try {
+                        frame.dispose();
                         removePost = showOption(post);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
@@ -168,7 +169,9 @@ public class ManagePostGUI implements Runnable {
 
             commentButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    commentPanel.dispose();
                     inspectComment(post, c);
+
                 }
             });
             panel.add(commentButton);
