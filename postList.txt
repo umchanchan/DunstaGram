@@ -1,12 +1,11 @@
-Jeff_Hungry_7_5_John_That's nice_156_24_
-Chris_Thank you_34_15_admin_hello it's me_1_1_
-Chris_Nh_15_22_
+Jeff_Hungry_8_5_John_That's nice_157_24_
+Chris_Thank you_40_15_admin_hello it's me_1_1_
+Chris_Nh_16_22_
 admin_I liked to play_19_7_chan_how are you doing?_0_0_
-username_test123_1_0_userxD_test321!_0_0_
 Jeff_This is a test message_4_3_
 Jeff_hi yolo_1_0_admin_hi_1_0_admin_hello_0_0_
 Jeff_I want to go travel_0_0_
 Yoon_I want food_0_0_
 Yoon_I need rest....._0_0_
 Johnny_Hungry........!@!!!_0_0_
-admin_My name is CHan Um Nice to meet you!_0_0_
+username_hey_0_0_

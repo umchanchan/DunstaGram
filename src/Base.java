@@ -48,6 +48,16 @@ public class Base implements IBase {
 
 
     public ArrayList<String> getUserInfo(Profile toGet) {
+        try {
+            readAllListFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            toGet = searchUser(toGet.getUsername());
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
         ArrayList<String> retrievedUserInfo = new ArrayList<>();
         retrievedUserInfo.add(toGet.getUsername());
         retrievedUserInfo.add(String.valueOf(toGet.getAge()));

@@ -1,5 +1,8 @@
 import java.net.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -428,6 +431,21 @@ public class ClientHandler implements IClientHandler {
                         System.out.println(p.getComments());
                         oos.writeObject(p);
                         oos.flush();
+                    }
+
+                    case "uploadPic" -> {
+                        String encoded = (String) ois.readObject();
+                        String username = (String) ois.readObject();
+                        System.out.println(encoded);
+                        String desiredPath = "ProfilePictures/" + username +
+                                ".png";
+                        byte[] decoded = Base64.getDecoder().decode(encoded);
+
+                        Files.write(Paths.get(desiredPath), decoded);
+
+                        oos.writeObject("Success");
+                        oos.flush();
+
                     }
 
                     default -> {

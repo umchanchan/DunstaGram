@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -236,7 +239,14 @@ public class SearchGUI extends JFrame implements ISearchGUI, Runnable {
             }
         });
 
-        ImageIcon profilePicIcon = new ImageIcon("default_profile_pic.png");
+        String path = "default_profile_pic.png";
+        String userPic = "ProfilePictures/" + user.getUsername() + ".png";
+
+        if (dirExists(userPic)) {
+            path = userPic;
+        }
+
+        ImageIcon profilePicIcon = new ImageIcon(path);
         Image image = profilePicIcon.getImage();
         Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
@@ -281,5 +291,10 @@ public class SearchGUI extends JFrame implements ISearchGUI, Runnable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private boolean dirExists(String file) {
+        Path parent = Paths.get(file).getParent();
+        return parent != null && Files.isDirectory(parent);
     }
 }

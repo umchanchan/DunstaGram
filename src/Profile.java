@@ -225,7 +225,9 @@ public class Profile implements IProfile, Serializable {
     }
 
     public void follow(Profile p) {
-        following.add(p.getUsername());
+        if (!following.contains(p.getUsername())) {
+            following.add(p.getUsername());
+        }
     }
 
     public void unfollow(Profile p) {

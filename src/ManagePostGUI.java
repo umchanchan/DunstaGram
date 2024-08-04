@@ -175,17 +175,35 @@ public class ManagePostGUI implements IManagePostGUI, Runnable {
         JFrame inspectArea = new JFrame();
         inspectArea.setLayout(new FlowLayout());
         inspectArea.setSize(600, 400);
+        JPanel partOne = new JPanel();
+        Color color = new Color(150, 180, 200);
+        partOne.setBackground(color);
+        partOne.setSize(600, 100);
+        partOne.setPreferredSize(new Dimension(600, 60));
+        JPanel partTwo = new JPanel();
+        partTwo.setSize(600, 100);
+        partTwo.setPreferredSize(new Dimension(600, 60));
+        partTwo.setBackground(Color.WHITE);
+
+        JPanel space = new JPanel();
+        space.setSize(600, 100);
+        space.setPreferredSize(new Dimension(600, 100));
+
+
         JLabel poster = new JLabel("Commenter: " + c.getCommenter().getUsername());
-        poster.setFont(new Font("Arial", Font.PLAIN, 48));
+        poster.setFont(new Font("Arial", Font.BOLD, 48));
         JLabel message = new JLabel("Message: " + c.getCommentContents());
-        message.setFont(new Font("Arial", Font.PLAIN, 36));
+        message.setFont(new Font("Arial", Font.BOLD, 36));
         JButton deleteButton = new JButton("Delete Comment");
-        deleteButton.setFont(new Font("Arial", Font.PLAIN, 48));
-        Dimension d = new Dimension(400, 100);
+        deleteButton.setFont(new Font("Arial", Font.BOLD, 48));
+        Dimension d = new Dimension(550, 100);
         deleteButton.setSize(d);
         deleteButton.setPreferredSize(d);
-        inspectArea.add(poster);
-        inspectArea.add(message);
+        partOne.add(poster);
+        partTwo.add(message);
+        inspectArea.add(partOne);
+        inspectArea.add(partTwo);
+        inspectArea.add(space);
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {

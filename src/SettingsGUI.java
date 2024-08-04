@@ -106,7 +106,7 @@ public class SettingsGUI implements ISettingsGUI, Runnable {
                 } catch (IOException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
-                SwingUtilities.invokeLater(new ViewProfileGUI(userInfo));
+                SwingUtilities.invokeLater(new ViewProfileGUI(userInfo, in, out));
 
 
             }
