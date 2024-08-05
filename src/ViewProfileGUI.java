@@ -29,16 +29,17 @@ public class ViewProfileGUI implements IViewProfileGUI, Runnable {
         profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
         profilePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        String path = "default_profile_pic.png";
-        String userPic = "ProfilePictures/" + userInfo.getFirst() + ".png";
 
-        if (dirExists(userPic)) {
-            path = userPic;
+        ImageIcon scaledIcon = null;
+        try {
+            out.writeObject("loadPic");
+            out.writeObject(userInfo.getFirst());
+            out.flush();
+            scaledIcon = (ImageIcon) in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        ImageIcon profilePicIcon = new ImageIcon(path);
-        Image image = profilePicIcon.getImage();
-        Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
         JLabel profilePic = new JLabel(scaledIcon);
         profilePic.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         profilePanel.add(profilePic);
@@ -71,10 +72,7 @@ public class ViewProfileGUI implements IViewProfileGUI, Runnable {
 
     }
 
-    private boolean dirExists(String file) {
-        Path parent = Paths.get(file).getParent();
-        return parent != null && Files.isDirectory(parent);
-    }
+
 
 
 

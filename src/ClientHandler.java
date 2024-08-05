@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.net.*;
 import java.io.*;
 import java.nio.file.Files;
@@ -448,6 +450,41 @@ public class ClientHandler implements IClientHandler {
 
                     }
 
+                    case "loadPic" -> {
+                        Object object = ois.readObject();
+                        String username = null;
+                        Profile profile = null;
+                        boolean isYou = false;
+
+                        if (object instanceof String) {
+                            username = (String) object;
+                            isYou = true;
+                        } else {
+                            profile = (Profile) object;
+                        }
+                        String path;
+                        String userPic;
+
+                        if (!isYou) {
+                            path = "default_profile_pic.png";
+                            userPic = "ProfilePictures/" + profile.getUsername() + ".png";
+                        } else {
+                            path = "default_profile_pic.png";
+                            userPic = "ProfilePictures/" + username + ".png";
+                        }
+
+                        if (dirExists(userPic)) {
+                            path = userPic;
+                        }
+
+                        ImageIcon profilePicIcon = new ImageIcon(path);
+                        Image image = profilePicIcon.getImage();
+                        Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+                        oos.writeObject(scaledIcon);
+                        oos.flush();
+                    }
+
                     default -> {
                         System.out.println("Invalid message...why are you here");
                         break;
@@ -477,5 +514,10 @@ public class ClientHandler implements IClientHandler {
         }
 
 
+    }
+
+    private boolean dirExists(String file) {
+        Path parent = Paths.get(file).getParent();
+        return parent != null && Files.isDirectory(parent);
     }
 }

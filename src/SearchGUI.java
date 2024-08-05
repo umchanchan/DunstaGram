@@ -239,17 +239,17 @@ public class SearchGUI extends JFrame implements ISearchGUI, Runnable {
             }
         });
 
-        String path = "default_profile_pic.png";
-        String userPic = "ProfilePictures/" + user.getUsername() + ".png";
-
-        if (dirExists(userPic)) {
-            path = userPic;
+        ImageIcon scaledIcon = null;
+        try {
+            oos.writeObject("loadPic");
+            oos.writeObject(profile);
+            oos.flush();
+            scaledIcon = (ImageIcon) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        ImageIcon profilePicIcon = new ImageIcon(path);
-        Image image = profilePicIcon.getImage();
-        Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
         JLabel profilePic = new JLabel(scaledIcon);
         profilePic.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         profilePanel.add(profilePic);
@@ -293,8 +293,5 @@ public class SearchGUI extends JFrame implements ISearchGUI, Runnable {
         return null;
     }
 
-    private boolean dirExists(String file) {
-        Path parent = Paths.get(file).getParent();
-        return parent != null && Files.isDirectory(parent);
-    }
+
 }
